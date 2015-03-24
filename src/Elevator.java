@@ -62,8 +62,8 @@ public class Elevator {
 	}
 	
 	/*
-	 * Returns the moving field of the elvator.
-	 * *descirption of how we want the moving field to work*
+	 * Returns the moving field of the elevator.
+	 * *description of how we want the moving field to work*
 	 * @param: none
 	 * @returns: the moving field.
 	 */
