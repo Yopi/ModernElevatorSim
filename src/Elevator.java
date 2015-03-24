@@ -60,4 +60,14 @@ public class Elevator {
 	public int getGoal() {
 		return goal;
 	}
+	
+	/*
+	 * Returns the moving field of the elvator.
+	 * *descirption of how we want the moving field to work*
+	 * @param: none
+	 * @returns: the moving field.
+	 */
+	public int getMoving() {
+		return moving;
+	}
 }
