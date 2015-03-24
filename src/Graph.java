@@ -17,6 +17,14 @@ public class Graph {
 		graph = new ArrayList<ArrayList<Integer>>(numEdges);
 	}
 	
+	/*
+	 * Vi behöver utvärdera hur vi lagrar kanter. Matris är kanske en bra ide eftersom det kan lagra
+	 * vikter på att naturligt sätt. Det kommer ju aldrig att vara stora grafer (lär alltid vara <100 hörn)
+	 * så en matris kommer ju aldrig bli dålig i minnet typ.
+	 * 
+	 * Den här saniterar just nu bara input. Kan kanske göras bättre med matrisen, eftersom vi då
+	 * direkt kan se var den skulle bli out of bounds.
+	 */
 	public boolean addEdge(int from, int to, int weight)  {
 		// Sanitize the input.
 		if (from < 0 || from > (numNodes - 1)) {
