@@ -14,7 +14,11 @@ public class Elevator {
 	int moving;		// In which direction the elevator is moving. We will have four possible directions.
 	
 	public Elevator() {
-		
+		nextNode = -1;
+		prevNode = -1;
+		position = 0;
+		goal = -1;
+		moving = 0;
 	}
 	
 	/*
