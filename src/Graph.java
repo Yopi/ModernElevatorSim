@@ -4,9 +4,18 @@
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-24
  */
-public class Graph {
+import java.util.*;
 
+public class Graph {
 	
+	int numNodes;
+	int numEdges;
+	ArrayList<ArrayList<Integer>> graph;
+	
+	public Graph(int n) {
+		numEdges = n;
+		graph = new ArrayList<ArrayList<Integer>>(numEdges);
+	}
 	
 	
 }
