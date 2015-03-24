@@ -7,7 +7,10 @@
 public class Elevator {
 	
 	// Private fields
-	int position;	// This one will perhaps have to change.
+	int nextNode;	// The next node that the elevator will reach.
+	int prevNode;	// The previous node that the elevator visited.
+	int position;	// The progress of the elevator between two nodes.
+	int goal;		// The goal of the elevator, where it is travelling to.
 	int moving;
 	
 	public Elevator() {
