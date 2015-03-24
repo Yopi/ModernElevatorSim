@@ -52,4 +52,12 @@ public class Elevator {
 		return position;
 	}
 	
+	/*
+	 * Returns the goal node that the elevator is moving towards via other nodes.
+	 * @param: none
+	 * @returns: int, the goal node.
+	 */
+	public int getGoal() {
+		return goal;
+	}
 }
