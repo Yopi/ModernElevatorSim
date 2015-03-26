@@ -10,7 +10,7 @@ public class Elevator {
 	int nextNode;	// The next node that the elevator will reach.
 	int prevNode;	// The previous node that the elevator visited.
 	double position;	// The progress of the elevator between two nodes.
-	int goal;		// The goal of the elevator, where it is travelling to.
+	int target;		// The goal of the elevator, where it is travelling to.
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
 	int[] targets;	// The queued targets (goals) for the elevator
 	
@@ -22,7 +22,7 @@ public class Elevator {
 		nextNode = -1;
 		prevNode = -1;
 		position = 0;
-		goal = -1;
+		target = -1;
 		moving = false;
 		targets = new int[numDestinations];
 	}
@@ -67,8 +67,8 @@ public class Elevator {
 	 * @param: none
 	 * @returns: int, the goal node.
 	 */
-	public int getGoal() {
-		return goal;
+	public int getTarget() {
+		return target;
 	}
 	
 	/*
@@ -77,7 +77,7 @@ public class Elevator {
 	 * @param: none
 	 * @returns: the moving field.
 	 */
-	public int getMoving() {
+	public boolean getMoving() {
 		return moving;
 	}
 }
