@@ -80,4 +80,14 @@ public class Elevator {
 	public boolean getMoving() {
 		return moving;
 	}
+	
+	public boolean addTarget(int target) {
+		if (validTarget(target)) {
+			targets[target] = 1;
+			return true;
+		}
+ 		return false;
+	}
+	
+	
 }
