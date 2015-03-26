@@ -16,15 +16,16 @@ public class Elevator {
 	int[] targets;	// The queued targets (goals) for the elevator
 	
 	/*
-	 * 
+	 * Constructor for the elevator class.
+	 * @param: The number of nodes within the system
 	 */
-	public Elevator(int numNodes) {
+	public Elevator(int numDestinations) {
 		nextNode = -1;
 		prevNode = -1;
 		position = 0;
 		goal = -1;
 		moving = 0;
-		targets = new int[numNodes];
+		targets = new int[numDestinations];
 	}
 	
 	/*
