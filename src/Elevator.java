@@ -89,5 +89,12 @@ public class Elevator {
  		return false;
 	}
 	
+	private boolean validTarget(int target) {
+		if (target < targets.length && target > 0) {
+			return true;
+		} else {
+			return false;
+		}
+	}
 	
 }
