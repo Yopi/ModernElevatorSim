@@ -7,8 +7,10 @@
  */
 public class Building {
 	
-	public Building() {
-		
+	Graph graph;
+	
+	public Building(Graph graph) {
+		this.graph = graph;
 	}
 	
 	public void addElevator() {

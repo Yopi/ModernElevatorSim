@@ -13,8 +13,7 @@ public class Simulator {
 	Building building;
 	Graph graph;
 	
-	public Simulator() {
-		building = new Building();
+	public Simulator(int numElevators, int numPersons, String filename) {
 		// Read a graph from a text file.
 		graph = new Graph(8);
 		graph.addEdge(0, 1, 4);
@@ -24,11 +23,23 @@ public class Simulator {
 		graph.addEdge(4, 5, 4);
 		graph.addEdge(5, 6, 4);
 		graph.addEdge(6, 7, 4);
+		
+		building = new Building(graph);
+		
+		
 	}
 	
 	public static void main(String[] args) {
-		// feck static.
-		new Simulator();
+		// Sanitize input and then start the simulation.
+		if (args.length >= 3) {
+			try {
+				new Simulator(Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3]);
+			} catch (Exception e) {
+				System.err.println("Simulation failed to start, error: " + e);
+			}
+		} else {
+			System.err.println("Bad parameters, correct use: java Simulator filename_graph number_elevators number_persons");
+		}
 	}
 
 }
