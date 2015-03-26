@@ -13,7 +13,7 @@ public class Elevator {
 	int goal;		// The goal of the elevator, where it is travelling to.
 	int moving;		// In which direction the elevator is moving. We will have four possible directions.
 					// But it can probably be a binary, since we know the targets..
-	int[][] targets;	// The queued targets for the elevator, the second row is for its direction (up/down).
+	int[] targets;	// The queued targets (goals) for the elevator
 	
 	public Elevator() {
 		nextNode = -1;
