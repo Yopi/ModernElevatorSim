@@ -12,9 +12,12 @@ public class Graph {
 	int numEdges;
 	int[][] graph;
 	
+	/*
+	 * Creates a graph with numNodes number of nodes with IDs ranging from 0 to numNodes - 1.
+	 */
 	public Graph(int numNodes) {
-		this.numNodes = numNodes;
-		graph = new int[numNodes][numNodes];
+		this.numNodes = numNodes-1;
+		graph = new int[this.numNodes][this.numNodes];
 	}
 	
 	/*
