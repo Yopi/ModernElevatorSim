@@ -12,8 +12,8 @@ public class Graph {
 	int numEdges;
 	int[][] graph;
 	
-	public Graph(int n) {
-		numEdges = n;
+	public Graph(int numNodes) {
+		this.numNodes = numNodes;
 		graph = new int[numNodes][numNodes];
 	}
 	

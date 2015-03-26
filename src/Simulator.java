@@ -11,9 +11,11 @@ public class Simulator {
 	Elevator[] elevators;
 	Person[] persons;
 	Building building;
+	Graph graph;
 	
 	public Simulator() {
 		building = new Building();
+		
 	}
 	
 	public static void main(String[] args) {
