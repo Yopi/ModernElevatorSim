@@ -25,18 +25,17 @@ public class Graph {
 	 */
 	public boolean addEdge(int from, int to, int weight)  {
 		// Sanitize the input.
-		if (from < 0 || from > graph.length) {
-			System.err.println("Bad value of from: " + from + " in addEdge.");
-			return false;
-		} else if (to < 0 || to > graph[0].length) {
-			System.err.println("Bad value of to: " + to + " in addEdge.");
-			return false;
-		} else if (weight < 1) {
-			System.err.println("Bad value of weight: " + weight + " in addEdge.");
+		if (checkIndexes(from, to)) {
+			if (weight < 1) {
+				System.err.println("Bad value of weight: " + weight + " in addEdge.");
+				return false;
+			} else {
+				graph[from][to] = weight;
+				return true;
+			}
+		} else {
 			return false;
 		}
-		graph[from][to] = weight;
-		return true;
 	}
 	
 	/*
@@ -46,7 +45,26 @@ public class Graph {
 	 * @returns: the weight of the edge or zero in the case of no edge.
 	 */
 	public int getEdgeWeight(int from, int to) {
-		return graph[from][to];
+		if (checkIndexes(from, to))
+			return graph[from][to];
+		else
+			return -1;
+	}
+	
+	/*
+	 * Checks the indexes given to the graph to see that they are valid.
+	 * @param: from, to
+	 * @returns: true or false depending on if the indexes are in bounds.
+	 */
+	private boolean checkIndexes(int from, int to) {
+		if (from < 0 || from > graph.length) {
+			System.err.println("Bad value of from: " + from + " in addEdge.");
+			return false;
+		} else if (to < 0 || to > graph[0].length) {
+			System.err.println("Bad value of to: " + to + " in addEdge.");
+			return false;
+		}
+		return true;
 	}
 	
 }
