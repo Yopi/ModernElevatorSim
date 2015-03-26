@@ -5,6 +5,7 @@
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-26
  */
+import java.util.Random;
 
 public class Simulator {
 	
@@ -12,6 +13,8 @@ public class Simulator {
 	Person[] persons;
 	Building building;
 	Graph graph;
+	Random rand;
+	double second = 1;	// How many ticks required for a second. What am i doing?
 	
 	public Simulator(String filename, int numPersons, int numElevators) {
 		// Read a graph from a text file.
@@ -28,11 +31,24 @@ public class Simulator {
 		
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
-			elevators[i] = new Elevator(8);
+			elevators[i] = new Elevator(8, building);
 		}
 		
-		
+		rand = new Random();
 		persons = new Person[numPersons];
+		for (int i = 0; i < persons.length; i++) {
+			double beginWork = rand.nextGaussian() * (900 * second);
+			double endWork = rand.nextGaussian() * (900 * second);
+			double lunchTime = rand.nextGaussian() * (3600 * second);
+			int numMeetings = rand.nextInt(5);
+			int[] meetings = new int[numMeetings];
+			int interval = 9*60*60 / numMeetings; 
+			for (int j = 0; j < meetings.length; j++) {
+				meetings[j] = rand.nextInt(interval) + (interval * j);
+			}
+			persons[i] = new Person((int)beginWork, (int)endWork, (int)lunchTime, meetings);
+		}
+		
 		
 	}
 	
