@@ -20,6 +20,7 @@ public class Graph {
 	/*
 	 * Adds an edge to the graph.
 	 * Returns true or false depending on if the add was successful.
+	 * An add to a previous set edge (adding an edge that already exists) will overwrite the older one.
 	 * @param: from (node), to (node) and weight.
 	 * @returns: true or false depending on if the add was successful.
 	 */
