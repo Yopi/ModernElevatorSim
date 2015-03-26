@@ -27,13 +27,13 @@ public class Graph {
 	 */
 	public boolean addEdge(int from, int to, int weight)  {
 		// Sanitize the input.
-		if (from < 0 || from > (numNodes - 1)) {
+		if (from < 0 || from > graph.length) {
 			System.err.println("Bad value of from: " + from + " in addEdge.");
 			return false;
-		} else if (to < 0 || to > (numNodes - 1)) {
+		} else if (to < 0 || to > graph[0].length) {
 			System.err.println("Bad value of to: " + to + " in addEdge.");
 			return false;
-		} else if (weight < 0) {
+		} else if (weight < 1) {
 			System.err.println("Bad value of weight: " + weight + " in addEdge.");
 			return false;
 		}
