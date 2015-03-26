@@ -13,7 +13,7 @@ public class Simulator {
 	Building building;
 	Graph graph;
 	
-	public Simulator(int numElevators, int numPersons, String filename) {
+	public Simulator(String filename, int numPersons, int numElevators) {
 		// Read a graph from a text file.
 		graph = new Graph(8);
 		graph.addEdge(0, 1, 4);
@@ -26,6 +26,13 @@ public class Simulator {
 		
 		building = new Building(graph);
 		
+		elevators = new Elevator[numElevators];
+		for (int i = 0; i < elevators.length; i++) {
+			elevators[i] = new Elevator(8);
+		}
+		
+		
+		persons = new Person[numPersons];
 		
 	}
 	
@@ -33,7 +40,7 @@ public class Simulator {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
 			try {
-				new Simulator(Integer.parseInt(args[1]), Integer.parseInt(args[2]), args[3]);
+				new Simulator(args[1], Integer.parseInt(args[2]), Integer.parseInt(args[3]));
 			} catch (Exception e) {
 				System.err.println("Simulation failed to start, error: " + e);
 			}
