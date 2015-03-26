@@ -11,8 +11,7 @@ public class Elevator {
 	int prevNode;	// The previous node that the elevator visited.
 	double position;	// The progress of the elevator between two nodes.
 	int goal;		// The goal of the elevator, where it is travelling to.
-	int moving;		// In which direction the elevator is moving. We will have four possible directions.
-					// But it can probably be a binary, since we know the targets..
+	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
 	int[] targets;	// The queued targets (goals) for the elevator
 	
 	/*
@@ -24,7 +23,7 @@ public class Elevator {
 		prevNode = -1;
 		position = 0;
 		goal = -1;
-		moving = 0;
+		moving = false;
 		targets = new int[numDestinations];
 	}
 	
