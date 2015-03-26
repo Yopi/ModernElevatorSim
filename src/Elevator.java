@@ -15,12 +15,16 @@ public class Elevator {
 					// But it can probably be a binary, since we know the targets..
 	int[] targets;	// The queued targets (goals) for the elevator
 	
-	public Elevator() {
+	/*
+	 * 
+	 */
+	public Elevator(int numNodes) {
 		nextNode = -1;
 		prevNode = -1;
 		position = 0;
 		goal = -1;
 		moving = 0;
+		targets = new int[numNodes];
 	}
 	
 	/*
