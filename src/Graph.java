@@ -18,12 +18,10 @@ public class Graph {
 	}
 	
 	/*
-	 * Vi behöver utvärdera hur vi lagrar kanter. Matris är kanske en bra ide eftersom det kan lagra
-	 * vikter på att naturligt sätt. Det kommer ju aldrig att vara stora grafer (lär alltid vara <100 hörn)
-	 * så en matris kommer ju aldrig bli dålig i minnet typ.
-	 * 
-	 * Den här saniterar just nu bara input. Kan kanske göras bättre med matrisen, eftersom vi då
-	 * direkt kan se var den skulle bli out of bounds.
+	 * Adds an edge to the graph.
+	 * Returns true or false depending on if the add was successful.
+	 * @param: from (node), to (node) and weight.
+	 * @returns: true or false depending on if the add was successful.
 	 */
 	public boolean addEdge(int from, int to, int weight)  {
 		// Sanitize the input.
