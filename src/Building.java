@@ -23,7 +23,15 @@ public class Building {
 		return 0.0;
 	}
 	
-	public void updateElevatorPosition(int elevatorId, int position) {
+	public void updateElevatorPosition(int elevatorId, double position, int nextNode, int prevNode) {
+		
+	}
+	
+	public double readElevatorPosition(int elevatorId) {
+		return 0.0;
+	}
+	
+	public void updatePersonPosition(int personId, int position) {
 		
 	}
 	
@@ -39,7 +47,8 @@ public class Building {
 	}
 	
 	private class Person {
-		
+		int floor;
+		int id;
 		public Person() {
 			
 		}
