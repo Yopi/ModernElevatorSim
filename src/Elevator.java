@@ -12,6 +12,7 @@ public class Elevator {
 	double position;	// The progress of the elevator between two nodes.
 	int goal;		// The goal of the elevator, where it is travelling to.
 	int moving;		// In which direction the elevator is moving. We will have four possible directions.
+					// But it can probably be a binary, since we know the targets..
 	
 	public Elevator() {
 		nextNode = -1;

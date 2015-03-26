@@ -24,7 +24,6 @@ public class Graph {
 	 * @returns: true or false depending on if the add was successful.
 	 */
 	public boolean addEdge(int from, int to, int weight)  {
-		// Sanitize the input.
 		if (checkIndexes(from, to)) {
 			if (weight < 1) {
 				System.err.println("Bad value of weight: " + weight + " in addEdge.");
