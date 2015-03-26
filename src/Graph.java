@@ -41,4 +41,14 @@ public class Graph {
 		return true;
 	}
 	
+	/*
+	 * Returns the weight for an edge, and 0 if the edge doesn't exist.
+	 * Returns -1 in the case of illegal indexes.
+	 * @param: from and to (nodes)
+	 * @returns: the weight of the edge or zero in the case of no edge.
+	 */
+	public int getEdgeWeight(int from, int to) {
+		return graph[from][to];
+	}
+	
 }
