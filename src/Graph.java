@@ -10,9 +10,11 @@ public class Graph {
 	
 	int numNodes;
 	int numEdges;
+	int[][] graph;
 	
 	public Graph(int n) {
 		numEdges = n;
+		graph = new int[numNodes][numNodes];
 	}
 	
 	/*
@@ -35,7 +37,7 @@ public class Graph {
 			System.err.println("Bad value of weight: " + weight + " in addEdge.");
 			return false;
 		}
-		
+		graph[from][to] = weight;
 		return true;
 	}
 	
