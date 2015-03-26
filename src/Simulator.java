@@ -15,17 +15,13 @@ public class Simulator {
 	Graph graph;
 	Random rand;
 	double second = 1;	// How many ticks required for a second. What am i doing?
+	int time;
 	
 	public Simulator(String filename, int numPersons, int numElevators) {
-		// Read a graph from a text file.
-		graph = new Graph(8);
-		graph.addEdge(0, 1, 4);
-		graph.addEdge(1, 2, 4);
-		graph.addEdge(2, 3, 4);
-		graph.addEdge(3, 4, 1);
-		graph.addEdge(4, 5, 4);
-		graph.addEdge(5, 6, 4);
-		graph.addEdge(6, 7, 4);
+		
+		time = 0;
+		
+		graph = createGraphOne(); //new Graph(8);
 		
 		building = new Building(graph);
 		
@@ -37,12 +33,12 @@ public class Simulator {
 		rand = new Random();
 		persons = new Person[numPersons];
 		for (int i = 0; i < persons.length; i++) {
-			double beginWork = rand.nextGaussian() * (900 * second);
-			double endWork = rand.nextGaussian() * (900 * second);
-			double lunchTime = rand.nextGaussian() * (3600 * second);
-			int numMeetings = rand.nextInt(5);
-			int[] meetings = new int[numMeetings];
-			int interval = 9*60*60 / numMeetings; 
+			double beginWork = rand.nextGaussian() * (900 * second);	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+			double endWork = rand.nextGaussian() * (900 * second);		// Random time for leaving work, +- 15 minutes.
+			double lunchTime = rand.nextGaussian() * (3600 * second);	// Random time for lunch, +- 1 hour.
+			int numMeetings = rand.nextInt(5);	// Random number of meetings for a worker.
+			int[] meetings = new int[numMeetings];	
+			int interval = 9*60*60 / numMeetings; 	// An interval to distribute the meetings over the day. No respect to lunch. Can easily be coded with a while that checks the lunch hour.
 			for (int j = 0; j < meetings.length; j++) {
 				meetings[j] = rand.nextInt(interval) + (interval * j);
 			}
@@ -63,6 +59,19 @@ public class Simulator {
 		} else {
 			System.err.println("Bad parameters, correct use: java Simulator filename_graph number_elevators number_persons");
 		}
+	}
+	
+	private Graph createGraphOne() {
+		Graph graph = new Graph(8);
+		graph.addEdge(0, 1, 4);
+		graph.addEdge(1, 2, 4);
+		graph.addEdge(2, 3, 4);
+		graph.addEdge(3, 4, 1);
+		graph.addEdge(4, 5, 4);
+		graph.addEdge(5, 6, 4);
+		graph.addEdge(6, 7, 4);
+		graph.addEdge(7, 0, 1);
+		return graph;
 	}
 
 }
