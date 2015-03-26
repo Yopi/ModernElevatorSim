@@ -36,6 +36,9 @@ public class Person {
 		int currentTarget = -1;
 	}
 	
+	/*
+	 * Takes care of the pending actions of this person.
+	 */
 	public void tick() {
 		
 	}
