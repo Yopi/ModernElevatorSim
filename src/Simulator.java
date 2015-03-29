@@ -17,6 +17,8 @@ public class Simulator {
 	double second = 1;	// How many ticks required for a second. What am i doing?
 	int maxMeetings = 5;
 	int time;
+	int hours = 0;
+	int days = 1;
 	
 	public Simulator(String filename, int numPersons, int numElevators) {
 		
