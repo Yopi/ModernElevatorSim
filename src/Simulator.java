@@ -46,6 +46,10 @@ public class Simulator {
 			persons[i] = new Person((int)beginWork, (int)endWork, (int)lunchTime, meetings);
 		}
 		
+		/*
+		 * When the building, elevators and persons are created it is time to start ticking.
+		 */
+		
 		
 	}
 	
