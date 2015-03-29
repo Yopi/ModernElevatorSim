@@ -15,6 +15,7 @@ public class Simulator {
 	Graph graph;
 	Random rand;
 	double second = 1;	// How many ticks required for a second. What am i doing?
+	double hour = 3600 * second;
 	int maxMeetings = 5;
 	int time;
 	int hours = 0;
@@ -36,9 +37,9 @@ public class Simulator {
 		rand = new Random();
 		persons = new Person[numPersons];
 		for (int i = 0; i < persons.length; i++) {
-			double beginWork = rand.nextGaussian() * (900 * second);	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+			double beginWork = ((int)hour * 8) + (rand.nextGaussian() * (900 * second));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
 			double endWork = rand.nextGaussian() * (900 * second);		// Random time for leaving work, +- 15 minutes.
-			double lunchTime = rand.nextGaussian() * (3600 * second);	// Random time for lunch, +- 1 hour.
+			double lunchTime = rand.nextGaussian() * hour;	// Random time for lunch, +- 1 hour.
 			int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 			int[] meetings = new int[numMeetings];	
 			int interval = 9*60*60 / numMeetings; 	// An interval to distribute the meetings over the day. No respect to lunch. Can easily be coded with a while that checks the lunch hour.
@@ -51,7 +52,7 @@ public class Simulator {
 		/*
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
-		int limit = ((int)second * 3600 * hours) + ((int)second * 3600 * 24 * days);
+		int limit = ((int)hour * hours) + ((int)hour * 24 * days);
 		
 		for (time = 0; time < limit; time++) {
 			// Here is where the ticks will be made.
