@@ -39,7 +39,7 @@ public class Person {
 	/*
 	 * Takes care of the pending actions of this person.
 	 */
-	public void tick() {
+	public void tick(int time) {
 		
 	}
 	
