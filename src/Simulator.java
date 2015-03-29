@@ -51,8 +51,11 @@ public class Simulator {
 		/*
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
+		int limit = ((int)second * 3600 * hours) + ((int)second * 3600 * 24 * days);
 		
-		
+		for (time = 0; time < limit; time++) {
+			// Here is where the ticks will be made.
+		}
 	}
 	
 	public static void main(String[] args) {
