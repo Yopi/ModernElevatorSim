@@ -15,6 +15,7 @@ public class Simulator {
 	Graph graph;
 	Random rand;
 	double second = 1;	// How many ticks required for a second. What am i doing?
+	int maxMeetings = 5;
 	int time;
 	
 	public Simulator(String filename, int numPersons, int numElevators) {
@@ -36,7 +37,7 @@ public class Simulator {
 			double beginWork = rand.nextGaussian() * (900 * second);	// Random time for arrival at work, +- 15 minutes, 900 seconds.
 			double endWork = rand.nextGaussian() * (900 * second);		// Random time for leaving work, +- 15 minutes.
 			double lunchTime = rand.nextGaussian() * (3600 * second);	// Random time for lunch, +- 1 hour.
-			int numMeetings = rand.nextInt(5);	// Random number of meetings for a worker.
+			int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 			int[] meetings = new int[numMeetings];	
 			int interval = 9*60*60 / numMeetings; 	// An interval to distribute the meetings over the day. No respect to lunch. Can easily be coded with a while that checks the lunch hour.
 			for (int j = 0; j < meetings.length; j++) {
