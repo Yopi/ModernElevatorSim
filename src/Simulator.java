@@ -52,7 +52,7 @@ public class Simulator {
 			for (int j = 0; j < meetings.length; j++) {
 				myMeetings[j] = meetings[j];
 			}
-			persons[i] = new Person(beginWork, endWork, lunchTime, meetings, rand.nextInt(graph.getNumNodes()));
+			persons[i] = new Person(beginWork, endWork, lunchTime, meetings, rand.nextInt(graph.getNumNodes()), second);
 		}
 		
 		/*
@@ -62,6 +62,8 @@ public class Simulator {
 		
 		for (time = 0; time < limit; time++) {
 			// Here is where the ticks will be made.
+			// To consider: The time ticks during the night will be useless and that
+			// should perhaps be dealt with to get a faster simulation.
 		}
 	}
 	
