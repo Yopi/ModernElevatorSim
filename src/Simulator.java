@@ -83,6 +83,12 @@ public class Simulator {
 		}
 	}
 	
+	/*
+	 * Creates a predefined graph.
+	 * 
+	 * Tanke: Ska denna även skapa hur många hissar som ska agera? Nej, det borde vara en separat grej.
+	 * Det är ju ett argument ja.. heh. nvm.
+	 */
 	private Graph createGraphOne() {
 		Graph graph = new Graph(8);
 		graph.addEdge(0, 1, 4);
