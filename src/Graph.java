@@ -55,6 +55,15 @@ public class Graph {
 	}
 	
 	/*
+	 * Method to get the number of nodes in the graph.
+	 * @param: None
+	 * @Returns: The number of nodes in the graph.
+	 */
+	public int getNumNodes() {
+		return numNodes;
+	}
+	
+	/*
 	 * Checks the indexes given to the graph to see that they are valid.
 	 * @param: from, to
 	 * @returns: true or false depending on if the indexes are in bounds.
