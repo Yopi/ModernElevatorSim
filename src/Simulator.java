@@ -36,6 +36,13 @@ public class Simulator {
 		
 		rand = new Random();
 		persons = new Person[numPersons];
+		Meeting[] meetings = new Meeting[maxMeetings];
+		int interval = ((int)hour * (17-8)) / maxMeetings;
+		int first = interval / 2;
+		for (int i = 0; i < meetings.length; i++) {
+			meetings[i] = new Meeting((first + (interval * i)), rand.nextInt(graph.getNumNodes()));
+		}
+		
 		for (int i = 0; i < persons.length; i++) {
 			double beginWork = ((int)hour * 8) + (rand.nextGaussian() * (900 * second));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
 			double endWork = rand.nextGaussian() * (900 * second);		// Random time for leaving work, +- 15 minutes.
