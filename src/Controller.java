@@ -8,9 +8,11 @@
 public class Controller {
 	
 	Elevator[] elevators;
+	Building building;
 	
-	public Controller(Elevator[] elevators) {
+	public Controller(Elevator[] elevators, Building building) {
 		this.elevators = elevators;
+		this.building = building;
 	}
 	
 	/*

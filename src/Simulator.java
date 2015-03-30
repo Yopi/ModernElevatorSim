@@ -13,6 +13,7 @@ public class Simulator {
 	Person[] persons;
 	Building building;
 	Graph graph;
+	Controller controller;
 	Random rand;
 	double second = 1;	// How many ticks required for a second. What am i doing?
 	double hour = 3600 * second;
@@ -35,6 +36,8 @@ public class Simulator {
 		}
 		
 		rand = new Random();
+		controller = new Controller(elevators, building);
+		
 		persons = new Person[numPersons];
 		Meeting[] meetings = new Meeting[maxMeetings];
 		int interval = ((int)hour * (17-8)) / maxMeetings;
