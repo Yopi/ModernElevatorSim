@@ -38,22 +38,21 @@ public class Simulator {
 		persons = new Person[numPersons];
 		Meeting[] meetings = new Meeting[maxMeetings];
 		int interval = ((int)hour * (17-8)) / maxMeetings;
-		int first = interval / 2;
+		int first = (int)(hour * 8) + interval / 2;
 		for (int i = 0; i < meetings.length; i++) {
 			meetings[i] = new Meeting((first + (interval * i)), rand.nextInt(graph.getNumNodes()));
 		}
 		
 		for (int i = 0; i < persons.length; i++) {
-			double beginWork = ((int)hour * 8) + (rand.nextGaussian() * (900 * second));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
-			double endWork = rand.nextGaussian() * (900 * second);		// Random time for leaving work, +- 15 minutes.
-			double lunchTime = rand.nextGaussian() * hour;	// Random time for lunch, +- 1 hour.
+			int beginWork = (int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+			int endWork = (int)((hour * 17) + rand.nextGaussian() * (900 * second));		// Random time for leaving work, +- 15 minutes.
+			int lunchTime = (int)((hour * 12) + (rand.nextGaussian() * hour));	// Random time for lunch, +- 1 hour.
 			int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
-			int[] meetings = new int[numMeetings];	
-			int interval = 9*60*60 / numMeetings; 	// An interval to distribute the meetings over the day. No respect to lunch. Can easily be coded with a while that checks the lunch hour.
+			Meeting[] myMeetings = new Meeting[numMeetings];
 			for (int j = 0; j < meetings.length; j++) {
-				meetings[j] = rand.nextInt(interval) + (interval * j);
+				myMeetings[j] = meetings[j];
 			}
-			persons[i] = new Person((int)beginWork, (int)endWork, (int)lunchTime, meetings);
+			persons[i] = new Person(beginWork, endWork, lunchTime, meetings, rand.nextInt(graph.getNumNodes()));
 		}
 		
 		/*
