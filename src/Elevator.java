@@ -57,6 +57,16 @@ public class Elevator {
 	}
 	
 	/*
+	 * The tick-method for the Elevator class.
+	 * Does what work that has to be done for each elevator.
+	 * @param: the current time
+	 * @returns: void
+	 */
+	public void tick(int time) {
+		
+	}
+	
+	/*
 	 * Returns the next Node for this cabin.
 	 * A positive integer indicates that it is moving towards a new node,
 	 * -1 is when it is standing still.
