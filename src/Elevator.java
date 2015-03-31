@@ -12,7 +12,7 @@ public class Elevator {
 	int nextNode;	// The next node that the elevator will reach.
 	int prevNode;	// The previous node that the elevator visited.
 	int target;		// The goal of the elevator, where it is travelling to.
-	
+	int numDestinations; // The number of nodes. One node = 1 destination.
 	double position;	// The progress of the elevator between two nodes.
 	
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
@@ -31,6 +31,7 @@ public class Elevator {
 		position = 0;
 		target = -1;
 		moving = false;
+		this.numDestinations = numDestinations;
 		jobs = new ArrayList<Job>();
 		this.building = building;
 	}
@@ -122,6 +123,9 @@ public class Elevator {
 		if (!(validTarget(from) && validTarget(to))) {
 			return false;
 		}
+		if (from == to) {
+			return true;	// Already there!
+		}
 		jobs.add(new Job(from, to));
 		return true;
 	}
@@ -130,15 +134,15 @@ public class Elevator {
 	 * Use addJob(2) to add targets for the elevator.
 	 */
 	public boolean addTarget(int target) {
-		if (validTarget(target)) {
+		/*if (validTarget(target)) {
 			targets[target] = 1;
 			return true;
-		}
+		}*/
  		return false;
 	}
 	
 	private boolean validTarget(int target) {
-		if (target < targets.length && target > 0) {
+		if (target < numDestinations && target > 0) {
 			return true;
 		} else {
 			return false;
