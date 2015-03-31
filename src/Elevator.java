@@ -63,7 +63,14 @@ public class Elevator {
 	 * @returns: void
 	 */
 	public void tick(int time) {
-		
+		/*
+		 * Jag behövde någonstans att kommentera.
+		 * 
+		 * Varje jobb som skapas bör skicka med personens ID som kopplas till jobbet.
+		 * På så sätt går det att avgöra vilken person det var som gjorde anropet
+		 * och från personen som gjorde det går det att avgöra när hissen ämnad åt
+		 * den har anlänt och att dens position nu är kopplat till hissens.
+		 */
 	}
 	
 	/*
