@@ -87,6 +87,20 @@ public class Elevator {
 		return moving;
 	}
 	
+	
+	/*
+	 * Since the elevator calls are made with full details
+	 * about where the traveller wants to go, the targets for the
+	 * elevator will always be coupled with a from and to in the building.
+	 * This method adds a new job to the elevator.
+	 * @param: int from and to
+	 * @returns: true or false depending on if the add was successful.
+	 */
+	public boolean addJob(int from, int to) {
+		return false;
+	}
+	
+	
 	public boolean addTarget(int target) {
 		if (validTarget(target)) {
 			targets[target] = 1;
