@@ -100,7 +100,9 @@ public class Elevator {
 		return false;
 	}
 	
-	
+	/*
+	 * Use addJob(2) to add targets for the elevator.
+	 */
 	public boolean addTarget(int target) {
 		if (validTarget(target)) {
 			targets[target] = 1;
