@@ -17,11 +17,9 @@ public class Elevator {
 	
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
 	
-	int[] targets;	// The queued targets (goals) for the elevator
+	ArrayList<Job> jobs;	// The active jobs for the elevator
 	
-	ArrayList<Job> jobs;
-	
-	Building building;
+	Building building;	// The building that the elevator is in.
 	
 	/*
 	 * Constructor for the elevator class.
@@ -33,7 +31,6 @@ public class Elevator {
 		position = 0;
 		target = -1;
 		moving = false;
-		targets = new int[numDestinations];
 		jobs = new ArrayList<Job>();
 		this.building = building;
 	}
@@ -45,9 +42,16 @@ public class Elevator {
 					// be calculated upon startup instead of doing it over 
 					// and over and over. Or perhaps just store it and 
 					// calculate each one when needed.
+					/*
+					 * On second thought, the path might change if
+					 * the elevator gets a new job in the middle of it,
+					 * so it will probably be useless.
+					 */
+		
 		
 		public Job(int from, int to) {
-			
+			this.from = from;
+			this.to = to;
 		}
 	}
 	
@@ -115,7 +119,11 @@ public class Elevator {
 	 * @returns: true or false depending on if the add was successful.
 	 */
 	public boolean addJob(int from, int to) {
-		return false;
+		if (!(validTarget(from) && validTarget(to))) {
+			return false;
+		}
+		jobs.add(new Job(from, to));
+		return true;
 	}
 	
 	/*
