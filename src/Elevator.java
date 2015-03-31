@@ -4,6 +4,8 @@
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-24
  */
+import java.util.ArrayList;
+
 public class Elevator {
 	
 	// Private fields
@@ -16,6 +18,8 @@ public class Elevator {
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
 	
 	int[] targets;	// The queued targets (goals) for the elevator
+	
+	ArrayList<Job> jobs;
 	
 	Building building;
 	
@@ -30,7 +34,21 @@ public class Elevator {
 		target = -1;
 		moving = false;
 		targets = new int[numDestinations];
+		jobs = new ArrayList<Job>();
 		this.building = building;
+	}
+	
+	private class Job {
+		
+		int from, to;
+		int[] path;	// An idea i have about letting each path in the graph 
+					// be calculated upon startup instead of doing it over 
+					// and over and over. Or perhaps just store it and 
+					// calculate each one when needed.
+		
+		public Job(int from, int to) {
+			
+		}
 	}
 	
 	/*
