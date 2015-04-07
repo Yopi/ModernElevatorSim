@@ -38,8 +38,8 @@ public class Elevator {
 	
 	private class Job {
 		
-		int from, to;
-		int[] path;	// An idea i have about letting each path in the graph 
+		int from, to, id;
+					// An idea i have about letting each path in the graph 
 					// be calculated upon startup instead of doing it over 
 					// and over and over. Or perhaps just store it and 
 					// calculate each one when needed.
@@ -50,9 +50,10 @@ public class Elevator {
 					 */
 		
 		
-		public Job(int from, int to) {
+		public Job(int from, int to, int id) {
 			this.from = from;
 			this.to = to;
+			this.id = id;
 		}
 	}
 	
@@ -136,14 +137,14 @@ public class Elevator {
 	 * @param: int from and to
 	 * @returns: true or false depending on if the add was successful.
 	 */
-	public boolean addJob(int from, int to) {
+	public boolean addJob(int from, int to, int id) {
 		if (!(validTarget(from) && validTarget(to))) {
 			return false;
 		}
 		if (from == to) {
 			return true;	// Already there!
 		}
-		jobs.add(new Job(from, to));
+		jobs.add(new Job(from, to, id));
 		return true;
 	}
 	
