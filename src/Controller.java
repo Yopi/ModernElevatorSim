@@ -21,7 +21,7 @@ public class Controller {
 	 * @param: source and destination for the traveller
 	 * @returns: true if the parameters are good and false if the parameters are out of bounds.
 	 */
-	public boolean requestElevator(int from, int to) {
+	public boolean requestElevator(int from, int to, int id) {
 		return false;
 	}
 	
