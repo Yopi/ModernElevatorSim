@@ -55,6 +55,31 @@ public class Building {
 		
 	}
 	
+	public boolean checkEmptyAhead(int from, int to, double position) {
+		for (int i = 0; i < elevators.size(); i++) {
+			if (elevators.get(i).nextNode == to && elevators.get(i).prevNode == from) {
+				// This elevator is on the same edge
+				if (elevators.get(i).position < position + 1.0) {
+					// This elevator is is the way of the checking elevator.
+					return false;
+				}
+			}
+			
+			/*
+			 * Alla hissar får pusha vilken nod de är på väg mot
+			 * för att det ska bli enkelt att kontrollera
+			 * eftersom hissar kan vara påväg emot varandra
+			 * om de rör sig mot samma nod.
+			 * För att båda inte heller ska sakta in 
+			 * så behöver en lämplig hiss låsa noden.
+			 * 
+			 * Den hiss som når noden med 1 i avstånd får låsa noden
+			 * och sedan låsa upp den när den rör sig därifrån.
+			 */
+		}
+		return true;
+	}
+	
 	private class Elevator {
 		
 		double position;
