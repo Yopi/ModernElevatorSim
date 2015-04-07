@@ -76,6 +76,17 @@ public class Building {
 		return true;
 	}
 	
+	
+	/*
+	 * Method to get the traveled distance for a person
+	 * when they are finished elevatoring.
+	 * @param: id for the person
+	 * @return: the distance traveled as a double.
+	 */
+	public double getTraveledDistance(int id) {
+		return persons.get(id).distance;
+	}
+	
 	/*
 	 * Called by elevator to signal that the person
 	 * is dropped of.
@@ -84,6 +95,7 @@ public class Building {
 	 */
 	public void dropOfPerson(int id, double distance) {
 		persons.get(id).elevatoring = -1;
+		persons.get(id).distance = distance;
 	}
 	
 	/*
