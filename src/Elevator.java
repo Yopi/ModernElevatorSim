@@ -40,6 +40,7 @@ public class Elevator {
 		position = 0;
 		target = -1;
 		moving = false;
+		idle = true;
 		this.numDestinations = numDestinations;
 		jobs = new ArrayList<Job>();
 		this.building = building;
