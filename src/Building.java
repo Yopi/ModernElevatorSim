@@ -4,7 +4,7 @@
  * 
  * TODO: 
  * 1. check - Elevator picking up person
- * 2. Person read how far they have traveled
+ * 2. check - Person read how far they have traveled
  * 3. Tell elevator to MOVE
  * 4. Fix the adding of elevators, what information is needed.
  * 
@@ -63,6 +63,8 @@ public class Building {
 	public void updatePersonPosition(int personId, int position) {
 		
 	}
+	
+	
 	
 	/*
 	 * Method to see if a person is in an elevator.

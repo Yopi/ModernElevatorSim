@@ -15,6 +15,7 @@ import java.util.ArrayList;
 public class Elevator {
 	
 	// Private fields
+	int id;
 	int nextNode;	// The next node that the elevator will reach.
 	int prevNode;	// The previous node that the elevator visited.
 	int target;		// The goal of the elevator, where it is traveling to.
@@ -32,7 +33,8 @@ public class Elevator {
 	 * Constructor for the elevator class.
 	 * @param: The number of nodes within the system
 	 */
-	public Elevator(int numDestinations, Building building) {
+	public Elevator(int numDestinations, Building building, int id) {
+		this.id = id;
 		nextNode = -1;
 		prevNode = -1;
 		position = 0;
