@@ -154,6 +154,16 @@ public class Building {
 	}
 	
 	/*
+	 * Checks wether or not an elevator has been
+	 * asked to move.
+	 * @param: elevator id
+	 * @returns: wether or not it is true that it should.
+	 */
+	public boolean shouldIMove(int eid) {
+		return elevators.get(eid).move;
+	}
+	
+	/*
 	 * Tells the elevator with the specific id to move.
 	 * @þaram: id
 	 * @returns: void
