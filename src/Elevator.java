@@ -15,13 +15,16 @@ import java.util.ArrayList;
 
 public class Elevator {
 	
+	final int ADDED_JOB = 1;
+	final int maxPassengers = 7;	// Maximum number of passengers
+	
 	// Private fields
 	int id;		// Id for the elevator
 	int nextNode;	// The next node that the elevator will reach.
 	int prevNode;	// The previous node that the elevator visited.
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
-	final int maxPassangers = 7;	// Maximum number of passangers
+	int passengers;
 	
 	double position;	// The progress of the elevator between two nodes.
 	
@@ -42,6 +45,7 @@ public class Elevator {
 		prevNode = -1;
 		position = 0;
 		target = -1;
+		passengers = 0;
 		moving = false;
 		idle = true;
 		this.numDestinations = numDestinations;
