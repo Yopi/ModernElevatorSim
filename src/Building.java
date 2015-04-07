@@ -57,13 +57,13 @@ public class Building {
 		
 	}
 	
-	public boolean checkEmptyAhead(int from, int to, double position) {
+	public double checkEmptyAhead(int from, int to, double position) {
 		for (int i = 0; i < elevators.size(); i++) {
 			if (elevators.get(i).nextNode == to && elevators.get(i).prevNode == from) {
 				// This elevator is on the same edge
 				if (elevators.get(i).position < position + 1.0) {
 					// This elevator is is the way of the checking elevator.
-					return false;
+					return Math.abs(elevators.get(i).position - position);
 				}
 			}
 			
@@ -79,7 +79,7 @@ public class Building {
 			 * och sedan låsa upp den när den rör sig därifrån.
 			 */
 		}
-		return true;
+		return -1d;
 	}
 	
 	private boolean lockNode(int node) {
