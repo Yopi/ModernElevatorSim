@@ -9,6 +9,7 @@
 
 
 public class Person {
+	int id;
 	
 	int beginWork;	// The time that the person begins work.
 	int endWork;	// The time when the person ends work. (leaves building)
@@ -25,7 +26,8 @@ public class Person {
 	
 	
 	
-	public Person(int beginWork, int endWork, int lunchTime, Meeting[] meetings, int workFloor, double second) {
+	public Person(int id, int beginWork, int endWork, int lunchTime, Meeting[] meetings, int workFloor, double second) {
+		this.id = id;
 		this.beginWork = beginWork;
 		this.endWork = endWork;
 		this.lunchTime = lunchTime;
