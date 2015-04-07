@@ -16,7 +16,7 @@ public class Graph {
 	 * Creates a graph with numNodes number of nodes with IDs ranging from 0 to numNodes - 1.
 	 */
 	public Graph(int numNodes) {
-		this.numNodes = numNodes-1;
+		this.numNodes = numNodes;
 		graph = new int[this.numNodes][this.numNodes];
 	}
 	
@@ -69,10 +69,10 @@ public class Graph {
 	 * @returns: true or false depending on if the indexes are in bounds.
 	 */
 	private boolean checkIndexes(int from, int to) {
-		if (from < 0 || from > graph.length) {
+		if (from < 0 || from >= graph.length) {
 			System.err.println("Bad value of from: " + from + " in addEdge.");
 			return false;
-		} else if (to < 0 || to > graph[0].length) {
+		} else if (to < 0 || to >= graph[0].length) {
 			System.err.println("Bad value of to: " + to + " in addEdge.");
 			return false;
 		}
