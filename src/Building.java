@@ -154,10 +154,10 @@ public class Building {
 	}
 	
 	/*
-	 * Checks wether or not an elevator has been
+	 * Checks whether or not an elevator has been
 	 * asked to move.
 	 * @param: elevator id
-	 * @returns: wether or not it is true that it should.
+	 * @returns: whether or not it is true that it should.
 	 */
 	public boolean shouldIMove(int eid) {
 		return elevators.get(eid).move;
