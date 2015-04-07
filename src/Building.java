@@ -5,8 +5,8 @@
  * TODO: 
  * 1. check - Elevator picking up person
  * 2. check - Person read how far they have traveled
- * 3. Tell elevator to MOVE
- * 4. Fix the adding of elevators, what information is needed.
+ * 3. check - Tell elevator to MOVE
+ * 4. check - Fix the adding of elevators, what information is needed.
  * 
  * 
  * @author Viktor Björkholm & Jesper Bränn
