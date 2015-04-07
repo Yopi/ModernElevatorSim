@@ -20,13 +20,13 @@ public class Building {
 	Graph graph;
 	ArrayList<Elevator> elevators;
 	ArrayList<Person> persons;
-	boolean[] nodes;
+	int[] nodes;
 	
 	public Building(Graph graph, int numPersons) {
 		this.graph = graph;
 		elevators = new ArrayList<Elevator>();
 		persons = new ArrayList<Person>(numPersons);
-		nodes = new boolean[this.graph.getNumNodes()];
+		nodes = new int[this.graph.getNumNodes()];
 	}
 	
 	/*
@@ -34,8 +34,8 @@ public class Building {
 	 * @param: Elevator
 	 * @returns: void
 	 */
-	public void addElevator(Elevator e) {
-		elevators.add(e);
+	public void addElevator(int eid, double position) {
+		elevators.add(eid, new Elevator(position, eid));
 	}
 	
 	/*
@@ -85,8 +85,8 @@ public class Building {
 	 * @param: id for the person
 	 * @return: the distance traveled as a double.
 	 */
-	public double getTraveledDistance(int id) {
-		return persons.get(id).distance;
+	public double getTraveledDistance(int pid) {
+		return persons.get(pid).distance;
 	}
 	
 	/*
@@ -95,9 +95,9 @@ public class Building {
 	 * @param: id for the person
 	 * @return: void
 	 */
-	public void dropOfPerson(int id, double distance) {
-		persons.get(id).elevatoring = -1;
-		persons.get(id).distance = distance;
+	public void dropOfPerson(int pid, double distance) {
+		persons.get(pid).elevatoring = -1;
+		persons.get(pid).distance = distance;
 	}
 	
 	/*
@@ -106,8 +106,8 @@ public class Building {
 	 * @param: id for the person
 	 * @returns: void
 	 */
-	public void pickUpPerson(int id) {
-		persons.get(id).elevatoring = 1;
+	public void pickUpPerson(int pid) {
+		persons.get(pid).elevatoring = 1;
 	}
 	
 	/*
@@ -117,15 +117,14 @@ public class Building {
 	 * @param: nodes from and to, and position between them.
 	 * @returns: true if the elevator can continue, false if it should slow down.
 	 */
-	public boolean checkEmptyAhead(int from, int to, double position) {
+	public boolean checkEmptyAhead(int from, int to, double position, int eid) {
 		if (graph.getEdgeWeight(from, to) - position <= 1.0) {
-			if (lockNode(to)) {
+			int owner = lockNode(to, eid);
+			if (owner == eid) {
 				return true;
 			} else {
-				/*
-				 * Hörnet var låst, här borde den säga
-				 * till den framför to GET MOVIN
-				 */
+				// TODO: owner of node, MOVE
+				
 				return false;
 			}
 		}
@@ -134,6 +133,7 @@ public class Building {
 				// This elevator is on the same edge
 				if (elevators.get(i).position < position + 1.0) {
 					// This elevator is is the way of the checking elevator.
+					// TODO: MOVE
 					return false;
 				}
 			}
@@ -153,22 +153,41 @@ public class Building {
 		return true;
 	}
 	
-	private boolean lockNode(int node) {
-		if (nodes[node]) {
-			nodes[node] = false;
-			return true;
+	private void movedatass(int eid) {
+		elevators.get(eid).move = true;
+	}
+	
+	/*
+	 * locks a node in the building.
+	 * An elevator has to lock a node that it
+	 * is traveling to, when it is close enough,
+	 * to avoid mutual exclusion from them, in other
+	 * words to avoid crashes.
+	 * @param: the node and the elevators id
+	 * @return: id of elevator that locked it, own id.
+	 */
+	private int lockNode(int node, int eid) {
+		if (nodes[node] < 0) {
+			nodes[node] = eid;
+			return eid;
 		}
-		return false;
+		return nodes[node];
 	}
 	
 	private class Elevator {
 		
 		double position;
+		int id;
 		int nextNode;
 		int prevNode;
+		boolean move;
 		
-		public Elevator() {
-			
+		public Elevator(double position, int id) {
+			move = false;
+			nextNode = -1;
+			prevNode = -1;
+			this.position = position;
+			this.id = id;
 		}
 	}
 	
