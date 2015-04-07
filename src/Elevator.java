@@ -45,8 +45,7 @@ public class Elevator {
 		
 					// The job does not store path since this might change
 					// during the job if new jobs are added.
-		
-		
+				
 		public Job(int from, int to, int id) {
 			this.from = from;
 			this.to = to;

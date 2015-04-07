@@ -23,7 +23,7 @@ public class Building {
 	/*
 	 * Add an elevator to the building to keep track of.
 	 * @param: Elevator
-	 * @returns: vid
+	 * @returns: void
 	 */
 	public void addElevator(Elevator e) {
 		elevators.add(e);
