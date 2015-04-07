@@ -11,10 +11,10 @@ public class Statistics {
 	SQLiteConnection db;
 	double second;
 	
-	public Statistics(double second) {
+	public Statistics(String dbPath, double second) {
 		this.second = second;
 		
-		File dbFile = new File("/tmp/database");
+		File dbFile = new File(dbPath);
 		boolean newDB = (dbFile.exists()) ? false : true; 
 		db = new SQLiteConnection(dbFile);
 		try {	
