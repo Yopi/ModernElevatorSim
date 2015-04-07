@@ -76,6 +76,16 @@ public class Building {
 	}
 	
 	/*
+	 * Called by elevator to signal that the person
+	 * is dropped of.
+	 * @param: id for the person
+	 * @return: void
+	 */
+	public void dropOfPerson(int id) {
+		persons.get(id).elevatoring = -1;
+	}
+	
+	/*
 	 * Called to by elevator to signal that the person
 	 * is now busy elevatoring.
 	 * @param: id for the person
