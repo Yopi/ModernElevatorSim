@@ -153,7 +153,12 @@ public class Building {
 		return true;
 	}
 	
-	private void movedatass(int eid) {
+	/*
+	 * Tells the elevator with the specific id to move.
+	 * @þaram: id
+	 * @returns: void
+	 */
+	private void move(int eid) {
 		elevators.get(eid).move = true;
 	}
 	
