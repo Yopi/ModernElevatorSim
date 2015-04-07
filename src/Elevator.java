@@ -43,15 +43,8 @@ public class Elevator {
 		int to;		// To what node the job is finished.
 		int id;		// The person that called for the job.
 		
-					// An idea i have about letting each path in the graph 
-					// be calculated upon startup instead of doing it over 
-					// and over and over. Or perhaps just store it and 
-					// calculate each one when needed.
-					/*
-					 * On second thought, the path might change if
-					 * the elevator gets a new job in the middle of it,
-					 * so it will probably be useless.
-					 */
+					// The job does not store path since this might change
+					// during the job if new jobs are added.
 		
 		
 		public Job(int from, int to, int id) {
