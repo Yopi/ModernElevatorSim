@@ -25,7 +25,7 @@ public class Elevator {
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
 	int passengers;	// Number of passengers in the elevator.
-	int change;
+	int change;		// Changed by the controller to thell the elevator what has changed.
 	
 	double position;	// The progress of the elevator between two nodes.
 	
@@ -78,18 +78,24 @@ public class Elevator {
 	 * @returns: void
 	 */
 	public void tick(int time) {
-		
+		// Lets do this.
+		if (change != 0) {
+			if ((change & ADDED_JOB) != 0) {
+				// A job was added!
+				change = change ^ ADDED_JOB;	// Reset change
+			}
+		}
 	}
 	
 	/*
 	 * Adds the new value to the change field.
-	 * Does this via bit-wise operators not to
+	 * Does this via bit-wise or not to
 	 * delete older ones.
 	 * @param: the new value to add
 	 * @return: void
 	 */
 	public void addChange(int change) {
-		this.change = change;
+		this.change = this.change | change;
 	}
 	
 	/*
