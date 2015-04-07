@@ -159,6 +159,9 @@ public class Elevator {
  		return false;
 	}
 	
+	/*
+	 * Checks if the target is valid within the graph.
+	 */
 	private boolean validTarget(int target) {
 		if (target < numDestinations && target > 0) {
 			return true;
