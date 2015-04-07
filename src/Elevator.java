@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class Elevator {
 	
-	final int ADDED_JOB = 1;
+	final int ADDED_JOB = 0b1;
 	final int maxPassengers = 7;	// Maximum number of passengers
 	
 	// Private fields
@@ -24,7 +24,8 @@ public class Elevator {
 	int prevNode;	// The previous node that the elevator visited.
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
-	int passengers;
+	int passengers;	// Number of passengers in the elevator.
+	int change;
 	
 	double position;	// The progress of the elevator between two nodes.
 	
@@ -46,6 +47,7 @@ public class Elevator {
 		position = 0;
 		target = -1;
 		passengers = 0;
+		change = 0;
 		moving = false;
 		idle = true;
 		this.numDestinations = numDestinations;
@@ -77,6 +79,17 @@ public class Elevator {
 	 */
 	public void tick(int time) {
 		
+	}
+	
+	/*
+	 * Adds the new value to the change field.
+	 * Does this via bit-wise operators not to
+	 * delete older ones.
+	 * @param: the new value to add
+	 * @return: void
+	 */
+	public void addChange(int change) {
+		this.change = change;
 	}
 	
 	/*
