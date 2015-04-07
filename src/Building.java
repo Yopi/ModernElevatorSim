@@ -123,8 +123,7 @@ public class Building {
 			if (owner == eid) {
 				return true;
 			} else {
-				// TODO: owner of node, MOVE
-				
+				move(owner);
 				return false;
 			}
 		}
@@ -133,7 +132,7 @@ public class Building {
 				// This elevator is on the same edge
 				if (elevators.get(i).position < position + 1.0) {
 					// This elevator is is the way of the checking elevator.
-					// TODO: MOVE
+					move(i);
 					return false;
 				}
 			}
