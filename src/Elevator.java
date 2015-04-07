@@ -11,10 +11,11 @@ public class Elevator {
 	// Private fields
 	int nextNode;	// The next node that the elevator will reach.
 	int prevNode;	// The previous node that the elevator visited.
-	int target;		// The goal of the elevator, where it is travelling to.
+	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
 	double position;	// The progress of the elevator between two nodes.
 	
+	boolean idle;	// True if the elevator has no active jobs and is standing still.
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
 	
 	ArrayList<Job> jobs;	// The active jobs for the elevator
