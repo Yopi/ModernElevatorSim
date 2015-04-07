@@ -21,7 +21,7 @@ public class Statistics {
 			db.open(true);
 			if(newDB) {
 				db.exec("BEGIN TRANSACTION");
-				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INTEGER, type VARCHAR(255), duration REAL)");
+				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INTEGER, type VARCHAR(255), duration REAL, distance INTEGER)");
 				db.exec("COMMIT");
 			}
 		} catch(SQLiteException e) {
@@ -44,10 +44,10 @@ public class Statistics {
 		}
 	}
 	
-	public void addTravelTime(int personID, int ticksDuration) {
+	public void addTravelTime(int personID, int ticksDuration, int distance) {
 		SQLiteStatement st = null;
 		try {
-			st = db.prepare("INSERT INTO statistics (person_id, type, duration) VALUES (?, ?, ?)");
+			st = db.prepare("INSERT INTO statistics (person_id, type, duration, distance) VALUES (?, ?, ?, ?)");
 			st.bind(1, personID);
 			st.bind(2, "travel");
 			st.bind(3, ticksDuration * second);
