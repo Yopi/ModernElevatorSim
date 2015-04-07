@@ -136,20 +136,20 @@ public class Building {
 					return false;
 				}
 			}
-			
-			/*
-			 * Alla hissar får pusha vilken nod de är på väg mot
-			 * för att det ska bli enkelt att kontrollera
-			 * eftersom hissar kan vara påväg emot varandra
-			 * om de rör sig mot samma nod.
-			 * För att båda inte heller ska sakta in 
-			 * så behöver en lämplig hiss låsa noden.
-			 * 
-			 * Den hiss som når noden med 1 i avstånd får låsa noden
-			 * och sedan låsa upp den när den rör sig därifrån.
-			 */
 		}
 		return true;
+	}
+	
+	/*
+	 * Resets the moving field in the elevator
+	 * class by setting it to false.
+	 * Appropriate to do when the elevator
+	 * has responded to a move request.
+	 * @param: id for elevator
+	 * @returns: void
+	 */
+	public void ResetMove(int eid) {
+		elevators.get(eid).move = false;
 	}
 	
 	/*
