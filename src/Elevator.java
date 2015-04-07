@@ -39,7 +39,10 @@ public class Elevator {
 	
 	private class Job {
 		
-		int from, to, id;
+		int from;	// From what node the job origins
+		int to;		// To what node the job is finished.
+		int id;		// The person that called for the job.
+		
 					// An idea i have about letting each path in the graph 
 					// be calculated upon startup instead of doing it over 
 					// and over and over. Or perhaps just store it and 
