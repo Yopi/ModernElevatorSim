@@ -3,13 +3,14 @@
  * Is updated with all the elevators and persons positions.
  * 
  * TODO: 
- * 1. Elevator picking up person
- * 2. Person read how far they have travelled
+ * 1. check - Elevator picking up person
+ * 2. Person read how far they have traveled
  * 3. Tell elevator to MOVE
+ * 4. Fix the adding of elevators, what information is needed.
  * 
  * 
- * Authors: Viktor Björkholm & Jesper Bränn
- * Date: 2015-03-26
+ * @author Viktor Björkholm & Jesper Bränn
+ * @version 2015-03-26
  */
 import java.util.ArrayList;
 
@@ -81,7 +82,7 @@ public class Building {
 	 * @param: id for the person
 	 * @return: void
 	 */
-	public void dropOfPerson(int id) {
+	public void dropOfPerson(int id, double distance) {
 		persons.get(id).elevatoring = -1;
 	}
 	
@@ -154,8 +155,12 @@ public class Building {
 		int floor;
 		int id;
 		public int elevatoring;
+		public double distance;
 		public Person(int id) {
 			this.id = id;
+			distance = 0d;
+			elevatoring = -1;
+			floor = 0;
 		}
 	}
 }
