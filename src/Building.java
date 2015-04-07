@@ -15,10 +15,10 @@ public class Building {
 	ArrayList<Person> persons;
 	boolean[] nodes;
 	
-	public Building(Graph graph) {
+	public Building(Graph graph, int numPersons) {
 		this.graph = graph;
 		elevators = new ArrayList<Elevator>();
-		persons = new ArrayList<Person>();
+		persons = new ArrayList<Person>(numPersons);
 		nodes = new boolean[this.graph.getNumNodes()];
 	}
 	
@@ -36,8 +36,8 @@ public class Building {
 	 * @param: Person
 	 * @returns: void
 	 */
-	public void addPerson(Person p) {
-		persons.add(p);
+	public void addPerson(int id) {
+		persons.add(new Person(id));
 	}
 	
 	/*
@@ -55,6 +55,18 @@ public class Building {
 	
 	public void updatePersonPosition(int personId, int position) {
 		
+	}
+	
+	/*
+	 * Method to see if a person is in an elevator.
+	 * @param: person id
+	 * @return: true if the person is in an elevator, false otherwise.
+	 */
+	public boolean isInElevator(int pid) {
+		if (persons.get(pid).elevatoring >= 0){
+			return false;
+		}
+		return true;
 	}
 	
 	public boolean checkEmptyAhead(int from, int to, double position) {
@@ -115,9 +127,9 @@ public class Building {
 	private class Person {
 		int floor;
 		int id;
-		int elevatoring;
-		public Person() {
-			
+		public int elevatoring;
+		public Person(int id) {
+			this.id = id;
 		}
 	}
 }
