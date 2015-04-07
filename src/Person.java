@@ -11,6 +11,10 @@ import java.util.Random;
 
 
 public class Person {
+	// Status fields
+	static final int STATUS_IDLE = 0;
+	static final int STATUS_WAITING = 1;
+	static final int STATUS_ELEVATORING = 2;
 	
 	Building building;
 	Statistics stats;
@@ -27,6 +31,9 @@ public class Person {
 	int currentFloor;	// The position of the person.
 	int workFloor; // The floor that the person works on.
 	
+	int maxMeetings = 5;
+	int status;
+	int startTime;
 	
 	public Person(int id, Building building, Statistics stats, Random rand, double second) {
 		double hour = 3600 * second;
@@ -53,6 +60,7 @@ public class Person {
 			myMeetings[j] = meetings[j];
 		}*/
 		
+		status = STATUS_IDLE;
 	}
 	
 	/*
@@ -61,20 +69,35 @@ public class Person {
 	 * @returns: void.
 	 */
 	public void tick(int time) {
-		if (time == beginWork) {
-			// Request elevator from entrance floor to work floor.
-		} else if (time == endWork) {
-			// Request elevator from current position to entrance floor.
-		} else if (doneMeetings < meetings.length && time == meetings[doneMeetings].getTime()) {
-			doneMeetings++;
-			// request elevator from current position to meeting floor.
-		} else if (time == lunchTime) {
-			// request elevator from current position to work floor.
-		} else if (time == backFromLunch) {
-			// request elevator from (hopefully) ground floor to work floor.
-			// Case might be though, that the person was called to a meeting before
-			// backFromLunch. 
+		if (status == STATUS_WAITING) {
+			if(building.isInElevator(id)) {
+				stats.addWaitingTime(id, (time - startTime));
+				startTime = time;
+				status = STATUS_ELEVATORING;
+			}
+		} else if (status == STATUS_ELEVATORING) {
+			if(!building.isInElevator(id)) {
+				stats.addTravelTime(id, (time - startTime), 0);
+				status = STATUS_IDLE;
+			}
+		}
+		
+		if (status == STATUS_IDLE) {
+			if (time == beginWork) {
+				startElevator(time);
+				// Call for elevator
+			} else if(time == endWork) {
+				startElevator(time);
+			} else if(time == lunchTime) {
+				startElevator(time);
+			} else if(time == backFromLunch) {
+				startElevator(time);
+			}
 		}
 	}
-	
+
+	private void startElevator(int time) {
+		status = STATUS_WAITING;
+		startTime = time;
+	}
 }
