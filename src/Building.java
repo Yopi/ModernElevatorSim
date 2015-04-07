@@ -179,6 +179,15 @@ public class Building {
 		return nodes[node];
 	}
 	
+	/*
+	 * Unlocks the specified node.
+	 * @param: node
+	 * @return: void
+	 */
+	private void unlockNode(int node) {
+		nodes[node] = -1;
+	}
+	
 	private class Elevator {
 		
 		double position;
