@@ -2,6 +2,12 @@
  * Class to control the elevators and give the person class
  * an API to call for an elevator.
  * 
+ * TODO:
+ * 1. Implement different heuristics
+ * 2. Figure out how the heuristics are used in the simulation (Code-wise)
+ * 2a. How 2 hook into elevator / person
+ * 
+ * 
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-30
  */

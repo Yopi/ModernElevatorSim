@@ -2,6 +2,12 @@
  * The building in the elevator project.
  * Is updated with all the elevators and persons positions.
  * 
+ * TODO: 
+ * 1. Elevator picking up person
+ * 2. Person read how far they have travelled
+ * 3. Tell elevator to MOVE
+ * 
+ * 
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-26
  */

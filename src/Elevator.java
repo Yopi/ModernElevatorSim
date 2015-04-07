@@ -1,6 +1,12 @@
 /*
  * Class to represent the elevator cabins in the simulation.
  * 
+ * TODO:
+ * 1. Handle getting a job.
+ * 2. Handle idle behaviour (from heuristic?)
+ * 3. Max passenger count
+ * 4. 
+ * 
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-24
  */

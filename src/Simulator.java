@@ -2,6 +2,13 @@
  * Main class for the simulator, creates all the other classes and triggers the ticks
  * in the eventloop.
  * 
+ * 
+ * TODO:
+ * 1. Call ticks on (elevators, persons)
+ * 2. Create web server (Optional)
+ * 3. Double check how second and ticks cooperate.
+ * 4. Create alternative graphs for different buildings.
+ * 
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-26
  */
