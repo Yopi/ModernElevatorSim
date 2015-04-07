@@ -110,6 +110,13 @@ public class Building {
 		persons.get(id).elevatoring = 1;
 	}
 	
+	/*
+	 * checks ahead towards the next node to see if the elevator
+	 * has to slow down not to crash with another one.
+	 * Also tells the next elevator to move if it is idle.
+	 * @param: nodes from and to, and position between them.
+	 * @returns: true if the elevator can continue, false if it should slow down.
+	 */
 	public boolean checkEmptyAhead(int from, int to, double position) {
 		if (graph.getEdgeWeight(from, to) - position <= 1.0) {
 			if (lockNode(to)) {
