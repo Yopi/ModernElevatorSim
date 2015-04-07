@@ -1,3 +1,5 @@
+import java.util.Random;
+
 /*
  * Person class.
  * All you need to represent a person.
@@ -9,36 +11,48 @@
 
 
 public class Person {
+	
+	Building building;
+	Statistics stats;
 	int id;
+	double second;
 	
 	int beginWork;	// The time that the person begins work.
 	int endWork;	// The time when the person ends work. (leaves building)
 	int lunchTime;	// Time for the person to eat lunch (movement in building)
 	int backFromLunch;
+	
 	Meeting[] meetings;	// Meetings (movement in building)
+	
 	int currentFloor;	// The position of the person.
 	int workFloor; // The floor that the person works on.
-	int idleWait;
-	int travelWait;
-	int travelDist;
-	int currentTarget;
-	int doneMeetings;
 	
 	
-	
-	public Person(int id, int beginWork, int endWork, int lunchTime, Meeting[] meetings, int workFloor, double second) {
+	public Person(int id, Building building, Statistics stats, Random rand, double second) {
+		double hour = 3600 * second;
 		this.id = id;
-		this.beginWork = beginWork;
-		this.endWork = endWork;
-		this.lunchTime = lunchTime;
+		this.building = building;
+		this.stats = stats;
+		this.second = second;
+		
+		beginWork = (int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+		endWork = (int)((hour * 17) + rand.nextGaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
+		lunchTime = (int)((hour * 12) + (rand.nextGaussian() * hour));			// Random time for lunch, +- 1 hour.
 		backFromLunch = lunchTime + (int)(2700 * second); // 45 minutes lunch
-		this.meetings = meetings;
-		this.workFloor = workFloor;
-		idleWait = 0;
-		travelWait = 0;
-		travelDist = 0;
-		currentTarget = -1;
-		doneMeetings = 0;
+		workFloor = rand.nextInt(building.graph.getNumNodes());
+		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
+		
+		/*Meeting[] meetings = new Meeting[maxMeetings];
+		int interval = ((int)hour * (17-8)) / maxMeetings;
+		int first = (int)(hour * 8) + interval / 2;
+		for (int i = 0; i < meetings.length; i++) {
+			meetings[i] = new Meeting((first + (interval * i)), rand.nextInt(graph.getNumNodes()));
+		}
+		Meeting[] myMeetings = new Meeting[numMeetings];
+		for (int j = 0; j < meetings.length; j++) {
+			myMeetings[j] = meetings[j];
+		}*/
+		
 	}
 	
 	/*
