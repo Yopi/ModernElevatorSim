@@ -75,6 +75,16 @@ public class Building {
 		return true;
 	}
 	
+	/*
+	 * Called to by elevator to signal that the person
+	 * is now busy elevatoring.
+	 * @param: id for the person
+	 * @returns: void
+	 */
+	public void pickUpPerson(int id) {
+		persons.get(id).elevatoring = 1;
+	}
+	
 	public boolean checkEmptyAhead(int from, int to, double position) {
 		if (graph.getEdgeWeight(from, to) - position <= 1.0) {
 			if (lockNode(to)) {
