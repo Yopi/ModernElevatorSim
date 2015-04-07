@@ -12,14 +12,17 @@
  */
 import java.util.ArrayList;
 
+
 public class Elevator {
 	
 	// Private fields
-	int id;
+	int id;		// Id for the elevator
 	int nextNode;	// The next node that the elevator will reach.
 	int prevNode;	// The previous node that the elevator visited.
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
+	final int maxPassangers = 7;	// Maximum number of passangers
+	
 	double position;	// The progress of the elevator between two nodes.
 	
 	boolean idle;	// True if the elevator has no active jobs and is standing still.
@@ -69,14 +72,7 @@ public class Elevator {
 	 * @returns: void
 	 */
 	public void tick(int time) {
-		/*
-		 * Jag behövde någonstans att kommentera.
-		 * 
-		 * Varje jobb som skapas bör skicka med personens ID som kopplas till jobbet.
-		 * På så sätt går det att avgöra vilken person det var som gjorde anropet
-		 * och från personen som gjorde det går det att avgöra när hissen ämnad åt
-		 * den har anlänt och att dens position nu är kopplat till hissens.
-		 */
+		
 	}
 	
 	/*
@@ -135,6 +131,7 @@ public class Elevator {
 	
 	
 	/*
+	 * Adds a job to this elevator.
 	 * Since the elevator calls are made with full details
 	 * about where the traveler wants to go, the targets for the
 	 * elevator will always be coupled with a from and to in the building.
