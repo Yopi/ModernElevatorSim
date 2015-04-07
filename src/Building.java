@@ -37,7 +37,7 @@ public class Building {
 	 * @returns: void
 	 */
 	public void addPerson(int id) {
-		persons.add(new Person(id));
+		persons.add(id, new Person(id));
 	}
 	
 	/*
