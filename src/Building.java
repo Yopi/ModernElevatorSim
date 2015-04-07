@@ -13,11 +13,13 @@ public class Building {
 	Graph graph;
 	ArrayList<Elevator> elevators;
 	ArrayList<Person> persons;
+	boolean[] nodes;
 	
 	public Building(Graph graph) {
 		this.graph = graph;
 		elevators = new ArrayList<Elevator>();
 		persons = new ArrayList<Person>();
+		nodes = new boolean[this.graph.getNumNodes()];
 	}
 	
 	/*
@@ -80,6 +82,14 @@ public class Building {
 		return true;
 	}
 	
+	private boolean lockNode(int node) {
+		if (nodes[node]) {
+			nodes[node] = false;
+			return true;
+		}
+		return false;
+	}
+	
 	private class Elevator {
 		
 		double position;
@@ -94,6 +104,7 @@ public class Building {
 	private class Person {
 		int floor;
 		int id;
+		int elevatoring;
 		public Person() {
 			
 		}
