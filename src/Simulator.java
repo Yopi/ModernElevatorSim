@@ -35,7 +35,7 @@ public class Simulator {
 		building = new Building(graph, numPersons);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
-			elevators[i] = new Elevator(8, building);
+			elevators[i] = new Elevator(8, building, i);
 		}
 		
 		controller = new Controller(elevators, building);
