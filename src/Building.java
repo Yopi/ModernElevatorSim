@@ -100,6 +100,18 @@ public class Building {
 		persons.get(pid).distance = distance;
 	}
 	
+	
+	/*
+	 * Returns the distance between two floors in the graph.
+	 */
+	public int getDistance(int from, int to) {
+		int dist = graph.getEdgeWeight(from, to);
+		if (dist < 1) {
+			return -1; // No edge.
+		}
+		return dist;
+	}
+	
 	/*
 	 * Called to by elevator to signal that the person
 	 * is now busy elevatoring.

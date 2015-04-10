@@ -16,10 +16,17 @@ import java.util.ArrayList;
 /*
  * TODO:
  * 1. Fortsätt på tick-metoden
- * 1.1 Kolla efter ändringar från controllern via change-variabeln, och lägga till det. Agera på det? Läsa det och göra vad det säger.
- * 1.2 Ta hand om aktuellt arbete, röra sig framåt.
- * 1.3 Om idle... What do?
+ * 1.1 Kolla om hissen har en position hägre än noll -> mellan två våningar
+ * 1.1.1 Kolla om den är framme vid sin target
+ * 1.1.1.1 Simulera dörröppning
+ * 1.1.1.2 Eller ta reda på nästa nod. Du kodade något sådant va jesper?
+ * 1.1.2 Fortsätt åka, kolla framåt och anpassa hastigheten
+ * 1.2 Om idle - vad ska den göra? Chilla? Kontrollera om den 
+ * 		fått en move-order från controller för att den står stilla. Tänker mig att då får den bara ett target.
+ * 		Alternativt ett jobb som är där den är nu till vilken nod controllern nu tycker är lämplig.
  * 2. Vad som nu dyker upp när tick-metoden skrivits.
+ * 3. Kontrollera hur vi ska sätta intervallet som avgör att en hiss är vid target.
+ * 		Det måste vara mindre än vad building använder för att låsa en nod.
  */
 
 public class Elevator {
@@ -94,13 +101,34 @@ public class Elevator {
 		// Since the MES is single-directed, the elevator always has to travel to the next node.
 		// So if it is in between nodes, travel!
 		if (position > 0.01) {
-			// The elevator is moving, keep moving.
+			// The elevator is moving, check if at target or keep moving.
+			if (Math.abs(building.getDistance(prevNode, nextNode) - position) < step/8 ) {	
+				/* Åttan är godtycklig. 
+				 * Det är ett litet intervall. 
+				 * Viktigaste är typ att det är inom 
+				 * intervallet som building använder för att låsa en nod.
+				 */
+				// The elevator is at the next node.
+				// Check the current job, and see if this is the target
+				// or if the next node should be aquired.
+				if (jobs.get(0).to == nextNode) {
+					// At the target. Time to simulate drop-of
+				}
+			}
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
+				if (Math.abs(building.getDistance(prevNode, nextNode) - position) > 0 ) {
+					
+				}
 				position = position + step;
 				resetSlowDown();
 				building.updateElevatorPosition(id, position, nextNode, prevNode);
 			} else {
-				
+				increaseSlowDown();
+				if (slowDown < 8) {
+					position = position + (step / slowDown);
+				} else {
+					// The elevator stops.
+				}
 			}
 		}
 	}
