@@ -33,6 +33,7 @@ public class Elevator {
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
 	int passengers;	// Number of passengers in the elevator.
+	int slowDown;
 	
 	double step;
 	double position;	// The progress of the elevator between two nodes.
@@ -55,6 +56,7 @@ public class Elevator {
 		prevNode = -1;
 		this.second = second;
 		step = setStep(this.second);
+		slowDown = 2;
 		position = 0;
 		target = -1;
 		passengers = 0;
@@ -91,8 +93,15 @@ public class Elevator {
 		// Lets do this.
 		// Since the MES is single-directed, the elevator always has to travel to the next node.
 		// So if it is in between nodes, travel!
-		if (position < 0.01) {
-			
+		if (position > 0.01) {
+			// The elevator is moving, keep moving.
+			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
+				position = position + step;
+				resetSlowDown();
+				building.updateElevatorPosition(id, position, nextNode, prevNode);
+			} else {
+				
+			}
 		}
 	}
 	
