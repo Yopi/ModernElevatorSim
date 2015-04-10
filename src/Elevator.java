@@ -34,7 +34,9 @@ public class Elevator {
 	int numDestinations; // The number of nodes. One node = 1 destination.
 	int passengers;	// Number of passengers in the elevator.
 	
+	double step;
 	double position;	// The progress of the elevator between two nodes.
+	double second;
 	
 	boolean idle;	// True if the elevator has no active jobs and is standing still.
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
@@ -47,10 +49,12 @@ public class Elevator {
 	 * Constructor for the elevator class.
 	 * @param: The number of nodes within the system
 	 */
-	public Elevator(int numDestinations, Building building, int id) {
+	public Elevator(int numDestinations, Building building, int id, double second) {
 		this.id = id;
 		nextNode = -1;
 		prevNode = -1;
+		this.second = second;
+		setStep(this.second);
 		position = 0;
 		target = -1;
 		passengers = 0;
@@ -176,6 +180,17 @@ public class Elevator {
 			return true;
 		}*/
  		return false;
+	}
+	
+	/*
+	 * Sets the step speed of the elevator, 1 distance is set to one meter,
+	 * and here it is set how many meters per second the elevator will
+	 * be traveling with use of the 'second' variable.
+	 * @param: how many ticks per second
+	 * @returns: The length of a step.
+	 */
+	private double setStep(int second) {
+		return 0.0;
 	}
 	
 	/*
