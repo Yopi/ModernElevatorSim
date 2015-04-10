@@ -24,7 +24,6 @@ import java.util.ArrayList;
 
 public class Elevator {
 	
-	final int ADDED_JOB = 0b1;
 	final int maxPassengers = 7;	// Maximum number of passengers
 	
 	// Private fields
@@ -55,7 +54,6 @@ public class Elevator {
 		position = 0;
 		target = -1;
 		passengers = 0;
-		change = 0;
 		moving = false;
 		idle = true;
 		this.numDestinations = numDestinations;
@@ -87,18 +85,11 @@ public class Elevator {
 	 */
 	public void tick(int time) {
 		// Lets do this.
-		
-	}
-	
-	/*
-	 * Adds the new value to the change field.
-	 * Does this via bit-wise or not to
-	 * delete older ones.
-	 * @param: the new value to add
-	 * @return: void
-	 */
-	public void addChange(int change) {
-		this.change = this.change | change;
+		// Since the MES is single-directed, the elevator always has to travel to the next node.
+		// So if it is in between nodes, travel!
+		if (position < 0.01) {
+			
+		}
 	}
 	
 	/*
