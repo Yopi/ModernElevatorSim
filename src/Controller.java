@@ -3,9 +3,11 @@
  * an API to call for an elevator.
  * 
  * TODO:
- * 1. Implement different heuristics
- * 2. Figure out how the heuristics are used in the simulation (Code-wise)
- * 2a. How 2 hook into elevator / person
+ * 1. Figure out how the heuristics are used in the simulation (Code-wise)
+ * 1a. How 2 hook into elevator / person
+ * 2. Implement a first heuristic
+ * 3. Make sure to re-arange an elevators current jobs to prioritize among them.
+ * 4. Figure out how to ensure fairness (a job is always taken care of)
  * 
  * 
  * Authors: Viktor Björkholm & Jesper Bränn

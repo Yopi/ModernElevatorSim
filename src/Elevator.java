@@ -16,7 +16,7 @@ import java.util.ArrayList;
 /*
  * TODO:
  * 1. Fortsätt på tick-metoden
- * 1.1 Kolla efter ändringar från controllern via change-variabeln
+ * 1.1 Kolla efter ändringar från controllern via change-variabeln, och lägga till det. Agera på det? Läsa det och göra vad det säger.
  * 1.2 Ta hand om aktuellt arbete, röra sig framåt.
  * 1.3 Om idle... What do?
  * 2. Vad som nu dyker upp när tick-metoden skrivits.
@@ -92,6 +92,8 @@ public class Elevator {
 			if ((change & ADDED_JOB) != 0) {
 				// A job was added!
 				change = change ^ ADDED_JOB;	// Reset change
+				// The controller decides in what order the jobs will be taken care of.
+				
 			}
 		}
 	}
