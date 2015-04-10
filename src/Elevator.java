@@ -191,6 +191,31 @@ public class Elevator {
  		return false;
 	}
 	
+	
+	/*
+	 * Increases the slowDown variable.
+	 * When the path is not clear for a few ticks in a row,
+	 * the slow down variable will ensure that the
+	 * elevator stops.
+	 * @param: none
+	 * @returns: none
+	 */
+	private void increaseSlowDown() {
+		slowDown = slowDown * 2;
+	}
+	
+	/*
+	 * Resets the slowdown-variable.
+	 * The slowdown variable is used to decrease the
+	 * speed of the elevator when there is another elevator ahead.
+	 * Resetting it means that the shaft ahead is clear.
+	 * @param: none
+	 * @returns: void
+	 */
+	private void resetSlowDown() {
+		slowDown = 2;
+	}
+	
 	/*
 	 * Sets the step speed of the elevator, 1 distance is set to one meter,
 	 * and here it is set how many meters per second the elevator will
