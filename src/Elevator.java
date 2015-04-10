@@ -13,6 +13,15 @@
 import java.util.ArrayList;
 
 
+/*
+ * TODO:
+ * 1. Fortsätt på tick-metoden
+ * 1.1 Kolla efter ändringar från controllern via change-variabeln
+ * 1.2 Ta hand om aktuellt arbete, röra sig framåt.
+ * 1.3 Om idle... What do?
+ * 2. Vad som nu dyker upp när tick-metoden skrivits.
+ */
+
 public class Elevator {
 	
 	final int ADDED_JOB = 0b1;
@@ -25,7 +34,7 @@ public class Elevator {
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
 	int passengers;	// Number of passengers in the elevator.
-	int change;		// Changed by the controller to thell the elevator what has changed.
+	int change;		// Changed by the controller to tell the elevator what has changed.
 	
 	double position;	// The progress of the elevator between two nodes.
 	
