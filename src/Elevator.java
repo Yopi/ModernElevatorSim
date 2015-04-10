@@ -54,7 +54,7 @@ public class Elevator {
 		nextNode = -1;
 		prevNode = -1;
 		this.second = second;
-		setStep(this.second);
+		step = setStep(this.second);
 		position = 0;
 		target = -1;
 		passengers = 0;
@@ -189,8 +189,9 @@ public class Elevator {
 	 * @param: how many ticks per second
 	 * @returns: The length of a step.
 	 */
-	private double setStep(int second) {
-		return 0.0;
+	private double setStep(double second) {
+		// The elevator will travel at 0.5 m/s
+		return 0.5 / second;
 	}
 	
 	/*
