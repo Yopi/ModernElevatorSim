@@ -102,25 +102,32 @@ public class Elevator {
 		// So if it is in between nodes, travel!
 		if (position > 0.01) {
 			// The elevator is moving, check if at target or keep moving.
-			if (Math.abs(building.getDistance(prevNode, nextNode) - position) < step/8 ) {	
-				/* Åttan är godtycklig. 
-				 * Det är ett litet intervall. 
-				 * Viktigaste är typ att det är inom 
-				 * intervallet som building använder för att låsa en nod.
-				 */
+			if ((building.getDistance(prevNode, nextNode) - position) < step/8 ) {	
 				// The elevator is at the next node.
 				// Check the current job, and see if this is the target
 				// or if the next node should be aquired.
 				if (jobs.get(0).to == nextNode) {
-					// At the target. Time to simulate drop-of
+					// TODO: At the target. Time to simulate drop-of
+				} else {
+					// Get the next node from the building class.
 				}
 			}
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
-				if (Math.abs(building.getDistance(prevNode, nextNode) - position) > 0 ) {
-					
+				if ((building.getDistance(prevNode, nextNode) - position) < 0 ) {
+					// The elevator is less than a step away from the next node.
+					/*
+					 * This could become a little weird. If it takes a step
+					 * small enough to reach the next node only, it could result
+					 * in a really tiny step while the chaft might be completely
+					 * straight here, in a curve it would be logical but not here.
+					 * 
+					 * Solution: feck et, take small step. Not important for our data.
+					 */
+					position = 0d;
+					// TODO: Aquire next target.
 				}
 				position = position + step;
-				resetSlowDown();
+				resetSlowDown();	// In case there was a slowdown before.
 				building.updateElevatorPosition(id, position, nextNode, prevNode);
 			} else {
 				increaseSlowDown();
@@ -248,12 +255,17 @@ public class Elevator {
 	 * Sets the step speed of the elevator, 1 distance is set to one meter,
 	 * and here it is set how many meters per second the elevator will
 	 * be traveling with use of the 'second' variable.
+	 * Returns a step lower than 1.0.
 	 * @param: how many ticks per second
 	 * @returns: The length of a step.
 	 */
 	private double setStep(double second) {
 		// The elevator will travel at 0.5 m/s
-		return 0.5 / second;
+		double step = 0.5 / second;
+		while (step > 1.0) {
+			step = step - 0.2;
+		}
+		return step;
 	}
 	
 	/*
