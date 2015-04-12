@@ -36,7 +36,7 @@ import java.util.ArrayList;
 
 public class Elevator {
 	
-	final int maxPassengers = 7;	// Maximum number of passengers
+	final int MAX_PASSENGERS = 7;	// Maximum number of passengers
 	
 	// Private fields
 	int id;		// Id for the elevator
@@ -60,6 +60,7 @@ public class Elevator {
 					// order not do delete the wrong job it can reference to it via this field.
 	
 	ArrayList<Job> jobs;	// The active jobs for the elevator
+	ArrayList<Integer> persons;
 	
 	Building building;	// The building that the elevator is in.
 	
@@ -81,6 +82,7 @@ public class Elevator {
 		idle = true;
 		this.numDestinations = numDestinations;
 		jobs = new ArrayList<Job>();
+		persons = new ArrayList<Integer>(MAX_PASSENGERS);
 		this.building = building;
 	}
 	
@@ -110,8 +112,12 @@ public class Elevator {
 		// Lets do this.
 		// Since the MES is single-directed, the elevator always has to travel to the next node.
 		// So if it is in between nodes, travel!
+		if (doorsOpen()) {
+			// The doors are open, the elevator shouldn't do anything.
+			return;
+		}
 		if (position > (step/8)) {
-			// The elevator is moving, check if at target or keep moving.
+			// The elevator is moving, keep moving.
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// Clear ahead, proceed with movings.
 				if (((double)building.getDistance(prevNode, nextNode) - (position + step)) <= 0 ) {
@@ -120,10 +126,25 @@ public class Elevator {
 					position = 0d; // reset position, it is now relatively 0 to the nextNode.
 					prevNode = nextNode;
 					if (nextNode == target) {
-						// The elevator is at its target
-						// TODO: Remove job from queue and open doors.
-						jobs.remove(0);
+						// The elevator is at its target.
+						// Loop through all the jobs to see who gets picked up and who don't.
+						for (int i = 0; i < jobs.size(); i++) {
+							if (jobs.get(i).from == nextNode) {
+								jobs.get(i).from = -1;
+								building.pickUpPerson(jobs.get(i).id);
+							} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
+								building.dropOfPerson(jobs.get(i).id, 0.0);
+								jobs.remove(i);
+							}
+						}
+						openDoors();
 					} else {
+						currentJob = jobs.get(0); // In case the controller changed the order of jobs.
+						if (currentJob.from >= 0) {
+							nextNode = building.getNextNodeInPath(nextNode, currentJob.from);
+						} else {
+							nextNode = building.getNextNodeInPath(nextNode, currentJob.to);
+						}
 						// TODO: Get the next node from the building and keep moving.
 					}
 				} else {
