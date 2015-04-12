@@ -124,29 +124,39 @@ public class Elevator {
 					// The elevator is less than a step away from the next node.
 					// This step will take it to the target.
 					position = 0d; // reset position, it is now relatively 0 to the nextNode.
-					prevNode = nextNode;
-					if (nextNode == target) {
-						// The elevator is at its target.
-						// Loop through all the jobs to see who gets picked up and who don't.
-						for (int i = 0; i < jobs.size(); i++) {
-							if (jobs.get(i).from == nextNode) {
-								jobs.get(i).from = -1;
-								building.pickUpPerson(jobs.get(i).id);
-							} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
-								building.dropOfPerson(jobs.get(i).id, 0.0);
-								jobs.remove(i);
-							}
+					prevNode = nextNode;	// The previous node is now the next node.
+					
+					// Is there any job here for the elevator?
+					// Loop through the jobs.
+					for (int i = 0; i < jobs.size(); i++) {
+						if (jobs.get(i).from == nextNode) {
+							// Pick up a person!
+							// TODO: increment number of persons in elevator.
+							jobs.get(i).from = -1;
+							building.pickUpPerson(jobs.get(i).id);
+							openDoors();
+						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
+							// Drop of a person!
+							// TODO: Decrease the number of persons in the elevator.
+							building.dropOfPerson(jobs.get(i).id, 0.0);
+							openDoors();
+							jobs.remove(i);
 						}
-						openDoors();
-					} else {
-						currentJob = jobs.get(0); // In case the controller changed the order of jobs.
-						if (currentJob.from >= 0) {
-							nextNode = building.getNextNodeInPath(nextNode, currentJob.from);
-						} else {
-							nextNode = building.getNextNodeInPath(nextNode, currentJob.to);
-						}
-						// TODO: Get the next node from the building and keep moving.
 					}
+					
+					// Set the next target.
+					if (jobs.size() > 0) {
+						// More jobs available!
+						if (jobs.get(0).from >= 0) {
+							nextNode = building.getNextNodeInPath(nextNode, jobs.get(0).from);
+						} else {
+							nextNode = building.getNextNodeInPath(nextNode, jobs.get(0).to);
+						}
+					} else {
+						// The elevator is now idle.
+						idle = true;
+					}
+					
 				} else {
 					position = position + step;
 					resetSlowDown();	// In case there was a slowdown before.
