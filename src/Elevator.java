@@ -42,6 +42,8 @@ public class Elevator {
 	int passengers;	// Number of passengers in the elevator.
 	int slowDown;	// Used to slowly slow down, and not just stop on the 5-öring -> ded.
 	
+	int doorOpening;
+	
 	double step;
 	double position;	// The progress of the elevator between two nodes.
 	double second;
