@@ -175,6 +175,18 @@ public class Building {
 	}
 	
 	/*
+	 * Returns the next node for an elevator
+	 * given its target and current node.
+	 * @param: Current node and target node
+	 * @returns: The next node in the path.
+	 */
+	public int getNextNodeInPath(int currentNode, int targetNode) {
+		//TODO, write this when it is fully decided how the graph api for this looks like.
+		// Jespers idea regarding storing next node in path in a matrix makes this easy.
+		return -1;
+	}
+	
+	/*
 	 * Tells the elevator with the specific id to move.
 	 * @þaram: id
 	 * @returns: void

@@ -105,18 +105,12 @@ public class Elevator {
 		if (position > (step/8)) {
 			// The elevator is moving, check if at target or keep moving.
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
-				// The elevator is not at the target, keep moving
+				// Clear ahead, proceed with movings.
 				if ((building.getDistance(prevNode, nextNode) - (position + step)) < 0 ) {
 					// The elevator is less than a step away from the next node.
-					/*
-					 * This could become a little weird. If it takes a step
-					 * small enough to reach the next node only, it could result
-					 * in a really tiny step while the chaft might be completely
-					 * straight here, in a curve it would be logical but not here.
-					 * 
-					 * Solution: feck et, take small step. Not important for our data.
-					 */
-					position = 0d;
+					// This step will take it to the target.
+					position = 0d; // reset position, it is now relatively 0 to the nextNode.
+					prevNode = nextNode;
 					// TODO: Aquire next target.
 				}
 				position = position + step;
