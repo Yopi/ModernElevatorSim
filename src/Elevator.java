@@ -229,6 +229,21 @@ public class Elevator {
 	}
 	
 	/*
+	 * Returns true if the doors are open and
+	 * then decreases the counter. Returns false
+	 * when the counter has reached zero.
+	 * @param: none
+	 * @returns: true if the doors are open, false if they are closed
+	 */
+	private boolean doorsOpen() {
+		if (doorOpening > 0) {
+			doorOpening--;
+			return true;
+		}
+		return false;
+	}
+	
+	/*
 	 * Sets the door opening variable
 	 * to 5 seconds in relation to ticks.
 	 * @param: none
