@@ -40,7 +40,7 @@ public class Elevator {
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
 	int passengers;	// Number of passengers in the elevator.
-	int slowDown;
+	int slowDown;	// Used to slowly slow down, and not just stop on the 5-öring -> ded.
 	
 	double step;
 	double position;	// The progress of the elevator between two nodes.
@@ -113,7 +113,7 @@ public class Elevator {
 				}
 			}
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
-				if ((building.getDistance(prevNode, nextNode) - position) < 0 ) {
+				if ((building.getDistance(prevNode, nextNode) - (position + step)) < 0 ) {
 					// The elevator is less than a step away from the next node.
 					/*
 					 * This could become a little weird. If it takes a step
