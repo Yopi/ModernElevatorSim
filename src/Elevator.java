@@ -104,16 +104,6 @@ public class Elevator {
 		// So if it is in between nodes, travel!
 		if (position > (step/8)) {
 			// The elevator is moving, check if at target or keep moving.
-			/*if ((building.getDistance(prevNode, nextNode) - position) < step/8 ) {	
-				// The elevator is at the next node.
-				// Check the current job, and see if this is the target
-				// or if the next node should be aquired.
-				if (jobs.get(0).to == nextNode) {
-					// TODO: At the target. Time to simulate drop-of
-				} else {
-					// Get the next node from the building class.
-				}
-			}*/
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// The elevator is not at the target, keep moving
 				if ((building.getDistance(prevNode, nextNode) - (position + step)) < 0 ) {
