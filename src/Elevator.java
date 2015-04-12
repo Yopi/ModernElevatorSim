@@ -27,6 +27,11 @@ import java.util.ArrayList;
  * 2. Vad som nu dyker upp när tick-metoden skrivits.
  * 3. Kontrollera hur vi ska sätta intervallet som avgör att en hiss är vid target.
  * 		Det måste vara mindre än vad building använder för att låsa en nod.
+ * 4. Just nu saktar hissen in när den stannar, men tar fart på noll tid -> errybody ded.
+ * 		Finns det något värde för oss att simulera inbromsning och accelerering?
+ * 		Vi kan ju resonera att detta sker mellan ticksen, ish. Annars kanske det
+ * 		bara inte har ett värde, vi kan ju påstå oss simulera medelhastigheten! Såklart.
+ * 5. Ta bort den simulerade start- och stopp-sträckan.
  */
 
 public class Elevator {
@@ -106,17 +111,24 @@ public class Elevator {
 			// The elevator is moving, check if at target or keep moving.
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// Clear ahead, proceed with movings.
-				if ((building.getDistance(prevNode, nextNode) - (position + step)) < 0 ) {
+				if (((double)building.getDistance(prevNode, nextNode) - (position + step)) <= 0 ) {
 					// The elevator is less than a step away from the next node.
 					// This step will take it to the target.
 					position = 0d; // reset position, it is now relatively 0 to the nextNode.
 					prevNode = nextNode;
-					// TODO: Aquire next target.
+					if (nextNode == target) {
+						// The elevator is at its target
+						// TODO: Remove job from queue and open doors.
+					} else {
+						// TODO: Get the next node from the building and keep moving.
+					}
+				} else {
+					position = position + step;
+					resetSlowDown();	// In case there was a slowdown before.
 				}
-				position = position + step;
-				resetSlowDown();	// In case there was a slowdown before.
 				building.updateElevatorPosition(id, position, nextNode, prevNode);
 			} else {
+				// The path ahead was not clear.
 				increaseSlowDown();
 				if (slowDown < 8) {
 					position = position + (step / slowDown);
