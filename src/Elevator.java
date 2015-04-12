@@ -228,6 +228,15 @@ public class Elevator {
  		return false;
 	}
 	
+	/*
+	 * Sets the door opening variable
+	 * to 5 seconds in relation to ticks.
+	 * @param: none
+	 * @returns: void
+	 */
+	private void openDoors() {
+		doorOpening = (int)(second * 5);
+	}
 	
 	/*
 	 * Increases the slowDown variable.
