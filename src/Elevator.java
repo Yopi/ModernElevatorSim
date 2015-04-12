@@ -56,6 +56,9 @@ public class Elevator {
 	boolean idle;	// True if the elevator has no active jobs and is standing still.
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
 	
+	Job currentJob;	// The current job. The elevator won't know if the controller changes the queue, so in
+					// order not do delete the wrong job it can reference to it via this field.
+	
 	ArrayList<Job> jobs;	// The active jobs for the elevator
 	
 	Building building;	// The building that the elevator is in.
@@ -83,9 +86,9 @@ public class Elevator {
 	
 	private class Job {
 		
-		int from;	// From what node the job origins
-		int to;		// To what node the job is finished.
-		int id;		// The person that called for the job.
+		public int from;	// From what node the job origins
+		public int to;		// To what node the job is finished.
+		public int id;		// The person that called for the job.
 		
 					// The job does not store path since this might change
 					// during the job if new jobs are added.
@@ -119,6 +122,7 @@ public class Elevator {
 					if (nextNode == target) {
 						// The elevator is at its target
 						// TODO: Remove job from queue and open doors.
+						jobs.remove(0);
 					} else {
 						// TODO: Get the next node from the building and keep moving.
 					}

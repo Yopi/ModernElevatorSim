@@ -8,6 +8,8 @@
  * 2. Implement a first heuristic
  * 3. Make sure to re-arange an elevators current jobs to prioritize among them.
  * 4. Figure out how to ensure fairness (a job is always taken care of)
+ * 5. Tell an elevator to get a move on by adding a new job with only a target and
+ * 		-1 as from, the elevator will be set to ignore these.
  * 
  * 
  * Authors: Viktor Björkholm & Jesper Bränn
