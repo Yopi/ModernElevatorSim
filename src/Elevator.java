@@ -102,9 +102,9 @@ public class Elevator {
 		// Lets do this.
 		// Since the MES is single-directed, the elevator always has to travel to the next node.
 		// So if it is in between nodes, travel!
-		if (position > (step/2)) {
+		if (position > (step/8)) {
 			// The elevator is moving, check if at target or keep moving.
-			if ((building.getDistance(prevNode, nextNode) - position) < step/8 ) {	
+			/*if ((building.getDistance(prevNode, nextNode) - position) < step/8 ) {	
 				// The elevator is at the next node.
 				// Check the current job, and see if this is the target
 				// or if the next node should be aquired.
@@ -113,8 +113,9 @@ public class Elevator {
 				} else {
 					// Get the next node from the building class.
 				}
-			}
+			}*/
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
+				// The elevator is not at the target, keep moving
 				if ((building.getDistance(prevNode, nextNode) - (position + step)) < 0 ) {
 					// The elevator is less than a step away from the next node.
 					/*
