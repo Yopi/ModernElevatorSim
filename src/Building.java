@@ -142,7 +142,7 @@ public class Building {
 		for (int i = 0; i < elevators.size(); i++) {
 			if (elevators.get(i).nextNode == to && elevators.get(i).prevNode == from) {
 				// This elevator is on the same edge
-				if (elevators.get(i).position < position + 1.0) {
+				if (elevators.get(i).position < position + 2.1) {
 					// This elevator is is the way of the checking elevator.
 					move(i);
 					return false;
