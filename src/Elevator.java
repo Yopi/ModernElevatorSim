@@ -120,6 +120,7 @@ public class Elevator {
 			// The elevator is moving, keep moving.
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// Clear ahead, proceed with movings.
+				resetSlowDown();	// In case there was a slowdown before.
 				if (((double)building.getDistance(prevNode, nextNode) - (position + step)) <= 0 ) {
 					// The elevator is less than a step away from the next node.
 					// This step will take it to the target.
@@ -159,7 +160,6 @@ public class Elevator {
 					
 				} else {
 					position = position + step;
-					resetSlowDown();	// In case there was a slowdown before.
 				}
 				building.updateElevatorPosition(id, position, nextNode, prevNode);
 			} else {
@@ -171,6 +171,10 @@ public class Elevator {
 					// The elevator stops.
 				}
 			}
+		} else {
+			// The elevator is standing still. Or, is at a target.
+			// Same procedure either way, check for most urgen job and continue.
+			
 		}
 	}
 	
