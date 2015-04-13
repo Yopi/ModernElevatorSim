@@ -116,6 +116,8 @@ public class Elevator {
 			// The doors are open, the elevator shouldn't do anything.
 			return;
 		}
+		// TODO: Överväg att börja använda moving-fältet för att avgöra rörelse.
+		// Kan göra att jag slipper dubbel kod för att röra skiten framåt.
 		if (position > (step/8)) {
 			// The elevator is moving, keep moving.
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
