@@ -118,7 +118,7 @@ public class Elevator {
 		}
 		// TODO: Överväg att börja använda moving-fältet för att avgöra rörelse.
 		// Kan göra att jag slipper dubbel kod för att röra skiten framåt.
-		if (position > (step/8)) {
+		if (moving) {
 			// The elevator is moving, keep moving.
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// Clear ahead, proceed with movings.
@@ -138,11 +138,13 @@ public class Elevator {
 							jobs.get(i).from = -1;
 							building.pickUpPerson(jobs.get(i).id);
 							openDoors();
+							moving = false;
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
 							// TODO: Decrease the number of persons in the elevator.
 							building.dropOfPerson(jobs.get(i).id, 0.0);
 							openDoors();
+							moving = false;
 							jobs.remove(i);
 						}
 					}
@@ -161,6 +163,8 @@ public class Elevator {
 					}
 					
 				} else {
+					// Next node is more than a step away from the elevator.
+					// Just keep moving.
 					position = position + step;
 				}
 				building.updateElevatorPosition(id, position, nextNode, prevNode);
@@ -176,7 +180,15 @@ public class Elevator {
 		} else {
 			// The elevator is standing still. Or, is at a target.
 			// Same procedure either way, check for most urgen job and continue.
-			
+			if (jobs.size() > 0) {
+				// There are available jobs for the elevator.
+				if (jobs.get(0).from < 0) {
+					nextNode = building.getNextNodeInPath(prevNode, jobs.get(0).to);
+				} else {
+					nextNode = building.getNextNodeInPath(prevNode, jobs.get(0).from);
+				}
+				moving = true;
+			}
 		}
 	}
 	
