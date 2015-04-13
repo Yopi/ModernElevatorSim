@@ -25,13 +25,14 @@ import java.util.ArrayList;
  * 		fått en move-order från controller för att den står stilla. Tänker mig att då får den bara ett target.
  * 		Alternativt ett jobb som är där den är nu till vilken nod controllern nu tycker är lämplig.
  * 2. Vad som nu dyker upp när tick-metoden skrivits.
- * 3. Kontrollera hur vi ska sätta intervallet som avgör att en hiss är vid target.
+ * check - 3. Kontrollera hur vi ska sätta intervallet som avgör att en hiss är vid target.
  * 		Det måste vara mindre än vad building använder för att låsa en nod.
  * 4. Just nu saktar hissen in när den stannar, men tar fart på noll tid -> errybody ded.
  * 		Finns det något värde för oss att simulera inbromsning och accelerering?
  * 		Vi kan ju resonera att detta sker mellan ticksen, ish. Annars kanske det
  * 		bara inte har ett värde, vi kan ju påstå oss simulera medelhastigheten! Såklart.
  * 5. Ta bort den simulerade start- och stopp-sträckan.
+ * 6. Lägg till stödet för personer.
  */
 
 public class Elevator {
@@ -60,7 +61,7 @@ public class Elevator {
 					// order not do delete the wrong job it can reference to it via this field.
 	
 	ArrayList<Job> jobs;	// The active jobs for the elevator
-	ArrayList<Integer> persons;
+	ArrayList<Integer> persons;	// The persons aboard the elevator.
 	
 	Building building;	// The building that the elevator is in.
 	
@@ -136,14 +137,18 @@ public class Elevator {
 						if (jobs.get(i).from == nextNode) {
 							// Pick up a person!
 							// TODO: increment number of persons in elevator.
-							jobs.get(i).from = -1;
-							building.pickUpPerson(jobs.get(i).id);
-							openDoors();
-							moving = false;
+							if (persons.size() < MAX_PASSENGERS) {
+								jobs.get(i).from = -1;
+								building.pickUpPerson(jobs.get(i).id);
+								persons.add(jobs.get(i).id);
+								openDoors();
+								moving = false;
+							}
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
 							// TODO: Decrease the number of persons in the elevator.
 							building.dropOfPerson(jobs.get(i).id, 0.0);
+							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
 							openDoors();
 							moving = false;
 							jobs.remove(i);
@@ -179,7 +184,7 @@ public class Elevator {
 				}
 			}
 		} else {
-			// The elevator is standing still. Or, is at a target.
+			// The elevator is idle or just closed doors.
 			// Same procedure either way, check for most urgen job and continue.
 			if (jobs.size() > 0) {
 				// There are available jobs for the elevator.
