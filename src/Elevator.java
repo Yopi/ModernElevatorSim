@@ -16,12 +16,12 @@ import java.util.ArrayList;
 /*
  * TODO:
  * 1. Fortsätt på tick-metoden
- * 1.1 Kolla om hissen har en position hägre än noll -> mellan två våningar
- * 1.1.1 Kolla om den är framme vid sin target
- * 1.1.1.1 Simulera dörröppning
- * 1.1.1.2 Eller ta reda på nästa nod. Du kodade något sådant va jesper?
- * 1.1.2 Fortsätt åka, kolla framåt och anpassa hastigheten
- * 1.2 Om idle - vad ska den göra? Chilla? Kontrollera om den 
+ * check - 1.1 Kolla moving-fältet för att se om den rör på sig.
+ * check - 1.1.1 Kolla om den är framme vid sin target
+ * check - 1.1.1.1 Simulera dörröppning
+ * check - 1.1.1.2 Eller ta reda på nästa nod. Du kodade något sådant va jesper?
+ * check, ish - 1.1.2 Fortsätt åka, kolla framåt och anpassa hastigheten
+ * check, ish - 1.2 Om idle - vad ska den göra? Chilla? Kontrollera om den 
  * 		fått en move-order från controller för att den står stilla. Tänker mig att då får den bara ett target.
  * 		Alternativt ett jobb som är där den är nu till vilken nod controllern nu tycker är lämplig.
  * 2. Vad som nu dyker upp när tick-metoden skrivits.
@@ -120,6 +120,7 @@ public class Elevator {
 		// Kan göra att jag slipper dubbel kod för att röra skiten framåt.
 		if (moving) {
 			// The elevator is moving, keep moving.
+			idle = false;
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// Clear ahead, proceed with movings.
 				resetSlowDown();	// In case there was a slowdown before.
@@ -187,7 +188,13 @@ public class Elevator {
 				} else {
 					nextNode = building.getNextNodeInPath(prevNode, jobs.get(0).from);
 				}
+				idle = false;
 				moving = true;
+			} else {
+				// No available jobs, just sitting here.
+				// I think that the checking wether to move or not should be handled
+				// By the controller in the largest extent. This is otherwise where
+				// that would have been implemented
 			}
 		}
 	}
