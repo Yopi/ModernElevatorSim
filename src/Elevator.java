@@ -300,6 +300,17 @@ public class Elevator {
 		return true;
 	}
 	
+	/*
+	 * Sets the job list to the parameter list of jobs.
+	 * This exists so that the controller can easily change
+	 * the order of jobs for the elevator.
+	 * I wonder, this method does perhaps change the need
+	 * for the addJob(2)-method, if the controller
+	 * can simply modify the list directly.
+	 */
+	public void setJobs(ArrayList<Job> jobs) {
+		this.jobs = jobs;
+	}
 	
 	/*
 	 * Returns the jobs-list from the elevator.
