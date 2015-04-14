@@ -70,7 +70,7 @@ public class Elevator {
 	Job currentJob;	// The current job. The elevator won't know if the controller changes the queue, so in
 					// order not do delete the wrong job it can reference to it via this field.
 	
-	ArrayList<Job> jobs;	// The active jobs for the elevator
+	ArrayList<Job> jobs;	// The active jobs for the elevator.
 	HashMap<Integer, Double> persons;	// The persons aboard the elevator.
 	
 	Building building;	// The building that the elevator is in.
@@ -298,6 +298,16 @@ public class Elevator {
 		}
 		jobs.add(new Job(from, to, id));
 		return true;
+	}
+	
+	
+	/*
+	 * Returns the jobs-list from the elevator.
+	 * @param: none
+	 * @returns: ArrayList<Job> with the jobs
+	 */
+	public ArrayList<Job> getJobs() {
+		return jobs;
 	}
 	
 	/*
