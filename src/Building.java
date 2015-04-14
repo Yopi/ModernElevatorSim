@@ -204,9 +204,7 @@ public class Building {
 	 * @returns: The next node in the path.
 	 */
 	public int getNextNodeInPath(int currentNode, int targetNode) {
-		//TODO, write this when it is fully decided how the graph api for this looks like.
-		// Jespers idea regarding storing next node in path in a matrix makes this easy.
-		return -1;
+		return graph.shortestPath[currentNode][targetNode];
 	}
 	
 	/*
