@@ -12,6 +12,7 @@
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-26
  */
+import java.security.Security;
 import java.util.Random;
 
 public class Simulator {
@@ -44,6 +45,8 @@ public class Simulator {
 			persons[i] = new Person(i, building, stats, rand, second);		
 		}
 		
+		building.graph.calculateShortestPath();
+		
 		/*
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
@@ -59,11 +62,11 @@ public class Simulator {
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
-			try {
+			//try {
 				new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-			} catch (Exception e) {
+			/*} catch (Exception e) {
 				System.err.println("Simulation failed to start, error: " + e);
-			}
+			}*/
 		} else {
 			System.err.println("Bad parameters, correct use: java Simulator filename_graph number_elevators number_persons");
 		}
@@ -76,15 +79,23 @@ public class Simulator {
 	 * Det är ju ett argument ja.. heh. nvm.
 	 */
 	private Graph createGraphOne() {
-		Graph graph = new Graph(8);
-		graph.addEdge(0, 1, 4);
+		Graph graph = new Graph(4);
+		/* graph.addEdge(0, 1, 4);
 		graph.addEdge(1, 2, 4);
 		graph.addEdge(2, 3, 4);
 		graph.addEdge(3, 4, 1);
 		graph.addEdge(4, 5, 4);
 		graph.addEdge(5, 6, 4);
 		graph.addEdge(6, 7, 4);
-		graph.addEdge(7, 0, 1);
+		graph.addEdge(7, 0, 1); */
+		
+		graph.addEdge(0, 1, 1);
+		graph.addEdge(1, 2, 1);
+		graph.addEdge(2, 3, 1);
+		graph.addEdge(3, 4, 1);
+		
+		System.out.println("Heeeeej");
+
 		return graph;
 	}
 

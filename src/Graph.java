@@ -1,3 +1,9 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Set;
+
 /*
  * Class to represent a single directed graph with weighted edges to simulate length.
  * 
@@ -10,14 +16,21 @@ public class Graph {
 	
 	int numNodes;
 	int numEdges;
-	int[][] graph;
+	Node[] graph;
+	int[][] shortestPath;
+	
 	
 	/*
 	 * Creates a graph with numNodes number of nodes with IDs ranging from 0 to numNodes - 1.
 	 */
 	public Graph(int numNodes) {
 		this.numNodes = numNodes;
-		graph = new int[this.numNodes][this.numNodes];
+		shortestPath = new int[this.numNodes][this.numNodes]; // [From][To]
+
+		graph = new Node[this.numNodes];
+		for(int i = 0; i < numNodes; i++) {
+			graph[i] = new Node(i);
+		}
 	}
 	
 	/*
@@ -33,7 +46,7 @@ public class Graph {
 				System.err.println("Bad value of weight: " + weight + " in addEdge.");
 				return false;
 			} else {
-				graph[from][to] = weight;
+				graph[from].addEdge(graph[to], weight);
 				return true;
 			}
 		} else {
@@ -49,7 +62,7 @@ public class Graph {
 	 */
 	public int getEdgeWeight(int from, int to) {
 		if (checkIndexes(from, to))
-			return graph[from][to];
+			return graph[from].getWeight(graph[to]);
 		else
 			return -1;
 	}
@@ -72,11 +85,148 @@ public class Graph {
 		if (from < 0 || from >= graph.length) {
 			System.err.println("Bad value of from: " + from + " in addEdge.");
 			return false;
-		} else if (to < 0 || to >= graph[0].length) {
+		} else if (to < 0 || to >= graph.length) {
 			System.err.println("Bad value of to: " + to + " in addEdge.");
 			return false;
 		}
 		return true;
 	}
 	
+	
+	/**
+	 * Calculate the shortest path from/to each node and fill shortestPath matrix.
+	 */
+	public void calculateShortestPath() {
+
+		System.out.println(getNumNodes());
+		for(int i = 0; i < getNumNodes(); i++) {
+			for(int j = 0; j < getNumNodes(); j++) {
+				if(i != j) {
+					System.out.println("From: " + i + " to " + j);
+					Integer[] p = dijkstra(i, j);
+					if(p.length > 0) {
+						shortestPath[i][j] = p[0];
+					} else {
+						shortestPath[i][j] = -1;
+					}
+				}
+			}
+		}
+		
+		// Print
+		for(int[] i : shortestPath) {
+			System.out.println(Arrays.toString(i));
+		}
+	}
+	/**
+  function Dijkstra(Graph, source):
+
+      dist[source] ← 0                       // Distance from source to source
+      prev[source] ← undefined               // Previous node in optimal path initialization
+
+      for each vertex v in Graph:  // Initialization
+          if v ≠ source            // Where v has not yet been removed from Q (unvisited nodes)
+              dist[v] ← infinity             // Unknown distance function from source to v
+              prev[v] ← undefined            // Previous node in optimal path from source
+          end if 
+          add v to Q                     // All nodes initially in Q (unvisited nodes)
+      end for
+      
+      while Q is not empty:
+          u ← vertex in Q with min dist[u]  // Source node in first case
+          remove u from Q 
+          
+          for each neighbor v of u:           // where v is still in Q.
+              alt ← dist[u] + length(u, v)
+              if alt < dist[v]:               // A shorter path to v has been found
+                  dist[v] ← alt 
+                  prev[v] ← u 
+              end if
+          end for
+      end while
+
+      return dist[], prev[]
+
+  end function
+	 */
+	private Integer[] dijkstra(int source, int to) {
+		//ArrayList<Integer> dist = new ArrayList<Integer>();
+		//ArrayList<Integer> prev = new ArrayList<Integer>();
+		int[] dist = new int[getNumNodes()];
+		Node[] prev = new Node[getNumNodes()];
+		ArrayList<Node> Q = new ArrayList<Node>();
+
+		for(Node v_n : graph) {
+			int v = v_n.getID();
+			if(v != source) {
+				dist[source] = Integer.MAX_VALUE;
+				prev[source] = null;
+			}
+			
+			Q.add(v_n);
+		}
+
+		Node u = null;
+		while(!Q.isEmpty()) {
+			u = getLowestValue(Q, dist);
+			Q.remove(u);
+						
+			int counter = 0;
+			if(u == null) break;
+			for(Node v : u.getNeighbours()) {
+				int alt = dist[u.getID()] + graph[u.getID()].getWeight(v);
+				if (alt < dist[v.getID()]) {
+					dist[v.getID()] = alt;
+					prev[v.getID()] = u;
+				}
+			}
+		}
+				
+		ArrayList<Integer> S = new ArrayList<Integer>();
+		while(prev[u.getID()] != null) {
+			S.add(u.getID());
+			u = prev[u.getID()];
+		}
+		Collections.reverse(S);
+		return S.toArray(new Integer[S.size()]);
+	}
+	
+	private Node getLowestValue(ArrayList<Node> Q, int[] dist) {
+		int minDist = Integer.MAX_VALUE;
+		Node u = null;
+
+		for(Node i : Q) {
+			if(dist[i.getID()] < minDist) {
+				minDist = dist[i.getID()];
+				u = i;
+			}
+		}
+		
+		return u;
+	}
+	
+	private class Node {
+		int id;
+		HashMap<Node, Integer> neighbours = new HashMap<Node, Integer>();
+		public Node(int i) {
+			id = i;
+		}
+		
+		public int getID() {
+			return id;
+		}
+		
+		public HashMap<Node, Integer> getNeighbours() {
+			return neighbours;
+		}
+		
+		
+		public void addEdge(Node n, int weight) {
+			neighbours.put(n, weight);
+		}
+		
+		public int getWeight(Node n) {
+			return neighbours.get(n);
+		}
+	}
 }
