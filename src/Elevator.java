@@ -39,6 +39,7 @@ import java.util.HashMap;
  * 		håller reda på sin totala resväg och lagrar två värden
  * 		för varje person, en när den klev på och sedan
  * 		nästa när den kliver av.
+ * 8. add way for controller to be able to modify jobs list.
  */
 
 public class Elevator {
