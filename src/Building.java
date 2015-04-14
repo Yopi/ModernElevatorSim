@@ -50,7 +50,6 @@ public class Building {
 	/*
 	 * Update the position for an elevator.
 	 * Unlocks the node that the elevator is leaving.
-	 * This has to be done right. When can we always unlock a node?
 	 * @param: Elevator, position, nextNode and previous Node.
 	 * @returns: true if it was successful, false if the elevator does not exist.
 	 */
@@ -58,7 +57,7 @@ public class Building {
 		elevators[eid].position = position;
 		elevators[eid].nextNode = nextNode;
 		elevators[eid].prevNode = prevNode;
-		if (position > 0d) {
+		if (position > (0d + 0.01)) { // 0.01 because doubles
 			// The elevator is leaving a node, so unlock it.
 			unlockNode(prevNode, eid);
 		}
