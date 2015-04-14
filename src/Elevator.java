@@ -151,7 +151,6 @@ public class Elevator {
 					for (int i = 0; i < jobs.size(); i++) {
 						if (jobs.get(i).from == nextNode) {
 							// Pick up a person!
-							// TODO: increment number of persons in elevator.
 							if (persons.size() < MAX_PASSENGERS) {
 								jobs.get(i).from = -1;
 								building.pickUpPerson(jobs.get(i).id);
@@ -163,19 +162,16 @@ public class Elevator {
 							}
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
-							// TODO: Decrease the number of persons in the elevator.
+							moving = false;
+							jobs.remove(i);
 							if (jobs.get(i).id < 0) {
 								// This was a job added by controller to get the elevator to move.
 								// The elevator is empty.
-								jobs.remove(i);
-								moving = false;
 								continue;
 							}
 							building.dropOfPerson(jobs.get(i).id, (distance - persons.get(jobs.get(i).id)));
 							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
 							openDoors();
-							moving = false;
-							jobs.remove(i);
 						}
 					}
 					
@@ -225,6 +221,7 @@ public class Elevator {
 				idle = false;
 				moving = true;
 			} else {
+				idle = true;
 				// No available jobs, just sitting here.
 				// I think that the checking wether to move or not should be handled
 				// By the controller in the largest extent. This is otherwise where
