@@ -11,6 +11,7 @@
  * Date: 2015-03-24
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 /*
@@ -32,7 +33,12 @@ import java.util.ArrayList;
  * 		Vi kan ju resonera att detta sker mellan ticksen, ish. Annars kanske det
  * 		bara inte har ett värde, vi kan ju påstå oss simulera medelhastigheten! Såklart.
  * 5. Ta bort den simulerade start- och stopp-sträckan.
- * 6. Lägg till stödet för personer.
+ * check - 6. Lägg till stödet för personer.
+ * check - 7. Lagra distance för personerna som åker.
+ * 		Detta kan kanske göras enkelt genom att hissen själv
+ * 		håller reda på sin totala resväg och lagrar två värden
+ * 		för varje person, en när den klev på och sedan
+ * 		nästa när den kliver av.
  */
 
 public class Elevator {
@@ -50,9 +56,10 @@ public class Elevator {
 	
 	int doorOpening;
 	
-	double step;
+	double step;		// The length of a step
 	double position;	// The progress of the elevator between two nodes.
-	double second;
+	double second;		// How many ticks per second, from the simulator class
+	double distance;	// How far the elevator has traveled.
 	
 	boolean idle;	// True if the elevator has no active jobs and is standing still.
 	boolean moving;		// If the elevator is moving or not. Where it is moving can be found by nextNode and prevNode.
@@ -61,7 +68,7 @@ public class Elevator {
 					// order not do delete the wrong job it can reference to it via this field.
 	
 	ArrayList<Job> jobs;	// The active jobs for the elevator
-	ArrayList<Integer> persons;	// The persons aboard the elevator.
+	HashMap<Integer, Double> persons;	// The persons aboard the elevator.
 	
 	Building building;	// The building that the elevator is in.
 	
@@ -83,7 +90,8 @@ public class Elevator {
 		idle = true;
 		this.numDestinations = numDestinations;
 		jobs = new ArrayList<Job>();
-		persons = new ArrayList<Integer>(MAX_PASSENGERS);
+		persons = new HashMap<Integer, Double>();
+		distance = 0d;
 		this.building = building;
 	}
 	
@@ -128,6 +136,7 @@ public class Elevator {
 				if (((double)building.getDistance(prevNode, nextNode) - (position + step)) <= 0 ) {
 					// The elevator is less than a step away from the next node.
 					// This step will take it to the target.
+					distance = distance + ((double)building.getDistance(prevNode, nextNode) - position);
 					position = 0d; // reset position, it is now relatively 0 to the nextNode.
 					prevNode = nextNode;	// The previous node is now the next node.
 					
@@ -140,14 +149,14 @@ public class Elevator {
 							if (persons.size() < MAX_PASSENGERS) {
 								jobs.get(i).from = -1;
 								building.pickUpPerson(jobs.get(i).id);
-								persons.add(jobs.get(i).id);
+								persons.put(jobs.get(i).id, distance);
 								openDoors();
 								moving = false;
 							}
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
 							// TODO: Decrease the number of persons in the elevator.
-							building.dropOfPerson(jobs.get(i).id, 0.0);
+							building.dropOfPerson(jobs.get(i).id, (distance - persons.get(jobs.get(i).id)));
 							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
 							openDoors();
 							moving = false;
@@ -171,6 +180,7 @@ public class Elevator {
 				} else {
 					// Next node is more than a step away from the elevator.
 					// Just keep moving.
+					distance = distance + step;
 					position = position + step;
 				}
 				building.updateElevatorPosition(id, position, nextNode, prevNode);
@@ -178,6 +188,7 @@ public class Elevator {
 				// The path ahead was not clear.
 				increaseSlowDown();
 				if (slowDown < 8) {
+					distance = distance + (step / slowDown);
 					position = position + (step / slowDown);
 				} else {
 					// The elevator stops.
