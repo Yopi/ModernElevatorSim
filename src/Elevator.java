@@ -39,7 +39,7 @@ import java.util.HashMap;
  * 		håller reda på sin totala resväg och lagrar två värden
  * 		för varje person, en när den klev på och sedan
  * 		nästa när den kliver av.
- * 8. add way for controller to be able to modify jobs list.
+ * check - 8. add way for controller to be able to modify jobs list.
  * check - 9. Implement different behaviour when id in job is -1, noone to drop of. That or check
  * length of passenger list, both give same result i guess.
  */
@@ -130,12 +130,15 @@ public class Elevator {
 		}
 		// TODO: Överväg att börja använda moving-fältet för att avgöra rörelse.
 		// Kan göra att jag slipper dubbel kod för att röra skiten framåt.
-		if (moving) {
+		if (moving || position >= (step/2)) {
 			// The elevator is moving, keep moving.
+			// It could also be on its way forward, but got interupted
+			// by a blocking cabin.
+			moving = true;
 			idle = false;
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
 				// Clear ahead, proceed with movings.
-				resetSlowDown();	// In case there was a slowdown before.
+				// resetSlowDown();	// In case there was a slowdown before.
 				if (((double)building.getDistance(prevNode, nextNode) - (position + step)) <= 0 ) {
 					// The elevator is less than a step away from the next node.
 					// This step will take it to the target.
@@ -195,13 +198,16 @@ public class Elevator {
 				}
 			} else {
 				// The path ahead was not clear.
+				moving = false;
+				
+				/* This was to simulate slowdown.
 				increaseSlowDown();
 				if (slowDown < 8) {
 					distance = distance + (step / slowDown);
 					position = position + (step / slowDown);
 				} else {
 					// The elevator stops.
-				}
+				}*/
 			}
 			building.updateElevatorPosition(id, position, nextNode, prevNode);
 		} else {
