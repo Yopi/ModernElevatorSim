@@ -176,6 +176,8 @@ public class Building {
 	
 	/*
 	 * Returns a list with information on what elevators that should move.
+	 * @param: none
+	 * @returns: ArrayList of the integers of elevator-ids
 	 */
 	public ArrayList<Integer> getShouldMoves() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
