@@ -10,6 +10,7 @@
  * 4. Figure out how to ensure fairness (a job is always taken care of)
  * 5. Tell an elevator to get a move on by adding a new job with only a target and
  * 		-1 as from, the elevator will be set to ignore these.
+ * 6. Write tick method to check for elevators that should move.
  * 
  * 
  * Authors: Viktor Björkholm & Jesper Bränn
