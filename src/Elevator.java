@@ -281,7 +281,7 @@ public class Elevator {
 	 * @returns: true or false depending on if the add was successful.
 	 */
 	public boolean addJob(int from, int to, int id) {
-		if (!(validTarget(from) && validTarget(to))) {
+		if (!(validTarget(to))) {
 			return false;
 		}
 		if (from == to) {
