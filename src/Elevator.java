@@ -396,7 +396,7 @@ public class Elevator {
 	private double setStep(double second) {
 		// The elevator will travel at 0.5 m/s
 		double step = 0.5 / second;
-		while (step > 1.0) {
+		while (step >= 1.0) {
 			step = step - 0.2;
 		}
 		return step;

@@ -18,13 +18,13 @@ import java.util.ArrayList;
 public class Building {
 	
 	Graph graph;
-	ArrayList<Elevator> elevators;
+	Elevator[] elevators;
 	ArrayList<Person> persons;
 	int[] nodes;
 	
-	public Building(Graph graph, int numPersons) {
+	public Building(Graph graph, int numPersons, int numElevators) {
 		this.graph = graph;
-		elevators = new ArrayList<Elevator>();
+		elevators = new Elevator[numElevators];
 		persons = new ArrayList<Person>(numPersons);
 		nodes = new int[this.graph.getNumNodes()];
 	}
@@ -35,7 +35,7 @@ public class Building {
 	 * @returns: void
 	 */
 	public void addElevator(int eid, double position) {
-		elevators.add(eid, new Elevator(position, eid));
+		elevators[eid] = new Elevator(position, eid);
 	}
 	
 	/*
@@ -49,15 +49,23 @@ public class Building {
 	
 	/*
 	 * Update the position for an elevator.
+	 * Unlocks the node that the elevator is leaving.
+	 * This has to be done right. When can we always unlock a node?
 	 * @param: Elevator, position, nextNode and previous Node.
 	 * @returns: true if it was successful, false if the elevator does not exist.
 	 */
-	public void updateElevatorPosition(int elevatorId, double position, int nextNode, int prevNode) {
-		//if (elevators.contains(o))
+	public void updateElevatorPosition(int eid, double position, int nextNode, int prevNode) {
+		elevators[eid].position = position;
+		elevators[eid].nextNode = nextNode;
+		elevators[eid].prevNode = prevNode;
+		if (position > 0d) {
+			// The elevator is leaving a node, so unlock it.
+			unlockNode(prevNode, eid);
+		}
 	}
 	
-	public double readElevatorPosition(int elevatorId) {
-		return 0.0;
+	public double readElevatorPosition(int eid) {
+		return elevators[eid].position;
 	}
 	
 	public void updatePersonPosition(int personId, int position) {
@@ -139,10 +147,10 @@ public class Building {
 				return false;
 			}
 		}
-		for (int i = 0; i < elevators.size(); i++) {
-			if (elevators.get(i).nextNode == to && elevators.get(i).prevNode == from) {
+		for (int i = 0; i < elevators.length; i++) {
+			if (elevators[i].nextNode == to && elevators[i].prevNode == from) {
 				// This elevator is on the same edge
-				if (elevators.get(i).position < position + 2.1) {
+				if (elevators[i].position < position + 2.1) {
 					// This elevator is is the way of the checking elevator.
 					move(i);
 					return false;
@@ -161,7 +169,7 @@ public class Building {
 	 * @returns: void
 	 */
 	public void ResetMove(int eid) {
-		elevators.get(eid).move = false;
+		elevators[eid].move = false;
 	}
 	
 	/*
@@ -171,7 +179,7 @@ public class Building {
 	 * @returns: whether or not it is true that it should.
 	 */
 	public boolean shouldIMove(int eid) {
-		return elevators.get(eid).move;
+		return elevators[eid].move;
 	}
 	
 	/*
@@ -181,10 +189,10 @@ public class Building {
 	 */
 	public ArrayList<Integer> getShouldMoves() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
-		for (int i = 0; i < elevators.size(); i++) {
-			if (elevators.get(i).move) {
+		for (int i = 0; i < elevators.length; i++) {
+			if (elevators[i].move) {
 				list.add(i);
-				ResetMove(elevators.get(i).id);
+				ResetMove(elevators[i].id);
 			}
 		}
 		return list;
@@ -208,7 +216,7 @@ public class Building {
 	 * @returns: void
 	 */
 	private void move(int eid) {
-		elevators.get(eid).move = true;
+		elevators[eid].move = true;
 	}
 	
 	/*
@@ -230,20 +238,26 @@ public class Building {
 	
 	/*
 	 * Unlocks the specified node.
+	 * The node has to be own by the calling elevator
+	 * to be allowed to unlock.
 	 * @param: node
 	 * @return: void
 	 */
-	private void unlockNode(int node) {
-		nodes[node] = -1;
+	private void unlockNode(int node, int eid) {
+		if (nodes[node] == eid) {
+			nodes[node] = -1;
+		} else {
+			// No unlocks for you.
+		}
 	}
 	
 	private class Elevator {
 		
-		double position;
-		int id;
-		int nextNode;
-		int prevNode;
-		boolean move;
+		public double position;
+		public int id;
+		public int nextNode;
+		public int prevNode;
+		public boolean move;
 		
 		public Elevator(double position, int id) {
 			move = false;
