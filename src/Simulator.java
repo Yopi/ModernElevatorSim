@@ -32,7 +32,7 @@ public class Simulator {
 		rand = new Random();
 		graph = createGraphOne(); //new Graph(8);
 		stats = new Statistics("/tmp/database.db", second);
-		building = new Building(graph, numPersons);
+		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
 			elevators[i] = new Elevator(8, building, i, second);
