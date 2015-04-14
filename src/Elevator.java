@@ -25,7 +25,7 @@ import java.util.HashMap;
  * check, ish - 1.2 Om idle - vad ska den göra? Chilla? Kontrollera om den 
  * 		fått en move-order från controller för att den står stilla. Tänker mig att då får den bara ett target.
  * 		Alternativt ett jobb som är där den är nu till vilken nod controllern nu tycker är lämplig.
- * 2. Vad som nu dyker upp när tick-metoden skrivits.
+ * que - 2. Vad som nu dyker upp när tick-metoden skrivits.
  * check - 3. Kontrollera hur vi ska sätta intervallet som avgör att en hiss är vid target.
  * 		Det måste vara mindre än vad building använder för att låsa en nod.
  * 4. Just nu saktar hissen in när den stannar, men tar fart på noll tid -> errybody ded.
@@ -183,7 +183,6 @@ public class Elevator {
 					distance = distance + step;
 					position = position + step;
 				}
-				building.updateElevatorPosition(id, position, nextNode, prevNode);
 			} else {
 				// The path ahead was not clear.
 				increaseSlowDown();
@@ -194,6 +193,7 @@ public class Elevator {
 					// The elevator stops.
 				}
 			}
+			building.updateElevatorPosition(id, position, nextNode, prevNode);
 		} else {
 			// The elevator is idle or just closed doors.
 			// Same procedure either way, check for most urgen job and continue.

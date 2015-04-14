@@ -175,6 +175,20 @@ public class Building {
 	}
 	
 	/*
+	 * Returns a list with information on what elevators that should move.
+	 */
+	public ArrayList<Integer> getShouldMoves() {
+		ArrayList<Integer> list = new ArrayList<Integer>();
+		for (int i = 0; i < elevators.size(); i++) {
+			if (elevators.get(i).move) {
+				list.add(i);
+				ResetMove(elevators.get(i).id);
+			}
+		}
+		return list;
+	}
+	
+	/*
 	 * Returns the next node for an elevator
 	 * given its target and current node.
 	 * @param: Current node and target node
