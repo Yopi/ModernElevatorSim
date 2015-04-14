@@ -40,6 +40,8 @@ import java.util.HashMap;
  * 		för varje person, en när den klev på och sedan
  * 		nästa när den kliver av.
  * 8. add way for controller to be able to modify jobs list.
+ * check - 9. Implement different behaviour when id in job is -1, noone to drop of. That or check
+ * length of passenger list, both give same result i guess.
  */
 
 public class Elevator {
@@ -157,6 +159,13 @@ public class Elevator {
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
 							// TODO: Decrease the number of persons in the elevator.
+							if (jobs.get(i).id < 0) {
+								// This was a job added by controller to get the elevator to move.
+								// The elevator is empty.
+								jobs.remove(i);
+								moving = false;
+								continue;
+							}
 							building.dropOfPerson(jobs.get(i).id, (distance - persons.get(jobs.get(i).id)));
 							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
 							openDoors();
