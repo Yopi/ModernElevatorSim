@@ -28,11 +28,11 @@ import java.util.HashMap;
  * que - 2. Vad som nu dyker upp när tick-metoden skrivits.
  * check - 3. Kontrollera hur vi ska sätta intervallet som avgör att en hiss är vid target.
  * 		Det måste vara mindre än vad building använder för att låsa en nod.
- * 4. Just nu saktar hissen in när den stannar, men tar fart på noll tid -> errybody ded.
+ * check - 4. Just nu saktar hissen in när den stannar, men tar fart på noll tid -> errybody ded.
  * 		Finns det något värde för oss att simulera inbromsning och accelerering?
  * 		Vi kan ju resonera att detta sker mellan ticksen, ish. Annars kanske det
  * 		bara inte har ett värde, vi kan ju påstå oss simulera medelhastigheten! Såklart.
- * 5. Ta bort den simulerade start- och stopp-sträckan.
+ * check - 5. Ta bort den simulerade start- och stopp-sträckan.
  * check - 6. Lägg till stödet för personer.
  * check - 7. Lagra distance för personerna som åker.
  * 		Detta kan kanske göras enkelt genom att hissen själv
@@ -128,8 +128,7 @@ public class Elevator {
 			// The doors are open, the elevator shouldn't do anything.
 			return;
 		}
-		// TODO: Överväg att börja använda moving-fältet för att avgöra rörelse.
-		// Kan göra att jag slipper dubbel kod för att röra skiten framåt.
+		
 		if (moving || position >= (step/2)) {
 			// The elevator is moving, keep moving.
 			// It could also be on its way forward, but got interupted
