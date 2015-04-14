@@ -158,6 +158,8 @@ public class Elevator {
 								persons.put(jobs.get(i).id, distance);
 								openDoors();
 								moving = false;
+							} else {
+								// Sorry brah
 							}
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
