@@ -47,7 +47,11 @@ public class Controller {
 	 * @returns: true if the parameters are good and false if the parameters are out of bounds.
 	 */
 	public boolean requestElevator(int from, int to, int id) {
-		return false;
+		if (!(building.legalNode(from) && building.legalNode(to))) {
+			return false;
+		}
+		nearestCar(from, to, id);
+		return true;
 	}
 	
 }
