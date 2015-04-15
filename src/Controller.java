@@ -146,8 +146,13 @@ public class Controller {
 		int target;
 		if (jobs.get(0).from > 0) {
 			target = jobs.get(0).from;
-		} else {
+		} else if (jobs.get(0).to > 0){
 			target = jobs.get(0).to;
+		} else {
+			// Illegal job, should be deleted
+			// neeee händer aldrig.
+			target = 0;
+			System.out.println("Woow, slow down there satan.");
 		}
 		
 		int next = building.getNextNodeInPath(position, jobs.get(0).from);
@@ -158,6 +163,14 @@ public class Controller {
 			 * modifiera ev. jobb i listan (Juste, därför jag kopierade den. Kan jag lösa detta på annat vis?)
 			 * kör vidare, vad är nästa nod på vägen.
 			 */
+			for (int i = 0; i < jobs.size(); i++) {
+				if (next == jobs.get(i).from) {
+					jobs.get(i).from = -1;
+				} else if (next == jobs.get(i).to && jobs.get(i).from < 0) {
+					jobs.get(i).to = -1;
+				}
+			}
+			next = building.getNextNodeInPath(next, target);
 		}
 		return 0;
 	}
