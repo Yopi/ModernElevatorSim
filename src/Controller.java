@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 /*
  * Class to control the elevators and give the person class
  * an API to call for an elevator.
@@ -60,7 +61,30 @@ public class Controller {
 	 * the nearest car and adds the job to that elevator.
 	 */
 	private void nearestCar(int from, int to, int id) {
-		
+		double min = Double.MAX_VALUE;
+		int mindex = 0;
+		// Find the elevator with the lowest distance to the caller.
+		for (int i = 0; i < elevators.length; i++) {
+			int next = elevators[i].getNextNode();
+			double dist = 0d;
+			// If the elevator is between nodes, this is relevant. Add it to the distance.
+			if (elevators[i].position > 0.01) {
+				dist = building.getDistance(elevators[i].getPrevNode(), elevators[i].getNextNode()) - elevators[i].position;
+			}
+			// Now get the total distance from the position of the elevator and the caller
+			while (next != from) {
+				dist += building.getDistance(next, building.getNextNodeInPath(next, from));
+				next = building.getNextNodeInPath(next, from);
+			}
+			// Check if it is the smallest so far.
+			if (min > dist) {
+				min = dist;
+				mindex = i;
+			}
+		}
+		// We now have the elevator with the smallest distance to the caller.
+		// Add it to its jobs.
+		ArrayList jobs = elevators[mindex].getJobs();
 	}
 	
 }
