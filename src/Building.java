@@ -105,6 +105,8 @@ public class Building {
 	public void dropOfPerson(int pid, double distance) {
 		persons.get(pid).elevatoring = -1;
 		persons.get(pid).distance = distance;
+		// Hur tänker vi att distance ska fungera? Ska den kontinuerligt växa eller nolställas emellanåt?
+		kompileringsfel, lol. Se kommentaren ^
 	}
 	
 	
