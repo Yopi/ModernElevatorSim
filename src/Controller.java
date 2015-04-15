@@ -122,6 +122,9 @@ public class Controller {
 		 * Kopiera listan -> editera skiten ur den, spara
 		 * en referens om den var najs med minimering av distance
 		 */
+		if (jobs.size() == 1) {
+			return jobs;
+		}
 		ArrayList<Job> copyJobs = new ArrayList<Job>(jobs.size());
 		Job job;
 		int dist;
@@ -142,6 +145,7 @@ public class Controller {
 	}
 	
 	private int distanceJobs(ArrayList<Job> jobs, int eid) {
+		int distance = 0;
 		int position = elevators[eid].nextNode;
 		int target;
 		if (jobs.get(0).from > 0) {
@@ -156,7 +160,7 @@ public class Controller {
 		}
 		
 		int next = building.getNextNodeInPath(position, jobs.get(0).from);
-		
+		distance += building.getDistance(position, next);
 		while (next != target) {
 			/*
 			 * Kolla vad som ska göras vid next-noden,
@@ -170,9 +174,31 @@ public class Controller {
 					jobs.get(i).to = -1;
 				}
 			}
+			int tmp = next;
 			next = building.getNextNodeInPath(next, target);
+			distance += building.getDistance(tmp, next);
 		}
-		return 0;
+		ArrayList<Integer> indexes = new ArrayList<Integer>();
+		ArrayList<Job> remainingJobs = new ArrayList<Job>();
+		for (int i = 0; i < jobs.size(); i++) {
+			if (jobs.get(i).from < 0 && jobs.get(i).to < 0) {
+				continue;
+			}
+			indexes.add(i);
+			remainingJobs.add(new Job(jobs.get(i).from, jobs.get(i).to, jobs.get(i).id));
+		}
+		if (remainingJobs.size() > 0) {
+			remainingJobs = minimizeTravel(remainingJobs, eid);
+			// Copy in the remaining to the old list. so that it is good.. i guess.
+			// Delete the objects in the old list that the remaining jobs contain,
+			// and insert the remaining jobs objects in that order.
+			for (int i = 0; i < indexes.size(); i++) {
+				jobs.remove(indexes.get(i));
+				jobs.add(remainingJobs.get(i));
+			}
+		}
+		distance = distance + distanceJobs(remainingJobs, eid);
+		return distance;
 	}
 	
 }
