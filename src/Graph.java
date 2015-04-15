@@ -110,11 +110,6 @@ public class Graph {
 				}
 			}
 		}
-		
-		// Print
-		for(int[] i : shortestPath) {
-			System.out.println(Arrays.toString(i));
-		}
 	}
 	
 	private Integer[] dijkstra(int source, int to) {
