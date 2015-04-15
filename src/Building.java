@@ -217,6 +217,19 @@ public class Building {
 	}
 	
 	/*
+	 * Public method to see if a parameter is within
+	 * bounds for the nodes in the graph.
+	 * @param: int as node
+	 * @return: true if node exists, false if not.
+	 */
+	public boolean legalNode(int node) {
+		if (node >= 0 && node < graph.getNumNodes()) {
+			return true;
+		}
+		return false;
+	}
+	
+	/*
 	 * locks a node in the building.
 	 * An elevator has to lock a node that it
 	 * is traveling to, when it is close enough,
