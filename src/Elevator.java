@@ -79,10 +79,10 @@ public class Elevator {
 	 * Constructor for the elevator class.
 	 * @param: The number of nodes within the system
 	 */
-	public Elevator(int numDestinations, Building building, int id, double second) {
+	public Elevator(int startPos, Building building, int id, double second) {
 		this.id = id;
-		nextNode = -1;
-		prevNode = -1;
+		nextNode = startPos;
+		prevNode = startPos;
 		this.second = second;
 		step = setStep(this.second);
 		slowDown = 2;
