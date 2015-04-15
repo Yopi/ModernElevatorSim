@@ -36,7 +36,7 @@ public class Simulator {
 		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
-			elevators[i] = new Elevator(8, building, i, second);
+			elevators[i] = new Elevator(i, building, i, second);
 		}
 		
 		controller = new Controller(elevators, building);
@@ -79,7 +79,7 @@ public class Simulator {
 	 * Det är ju ett argument ja.. heh. nvm.
 	 */
 	private Graph createGraphOne() {
-		Graph graph = new Graph(4);
+		Graph graph = new Graph(11);
 		/* graph.addEdge(0, 1, 4);
 		graph.addEdge(1, 2, 4);
 		graph.addEdge(2, 3, 4);
@@ -89,12 +89,34 @@ public class Simulator {
 		graph.addEdge(6, 7, 4);
 		graph.addEdge(7, 0, 1); */
 		
-		graph.addEdge(0, 1, 1);
-		graph.addEdge(1, 2, 1);
-		graph.addEdge(2, 3, 1);
-		graph.addEdge(3, 4, 1);
-		
-		System.out.println("Heeeeej");
+		/* 
+		  _________________
+		 |                 |
+		 |   4       5     |
+		 |                 |
+		 |   3       6     |
+		 |                 |
+		 |   2   10  7     |
+		 |                 |
+		 |   1       8     |
+		 |                 |
+		 |   0       9     |
+		 |_________________|
+		 
+		 
+		*/
+		graph.addEdge(0, 1, 2);
+		graph.addEdge(1, 2, 2);
+		graph.addEdge(2, 3, 2);
+		graph.addEdge(3, 4, 2);
+		graph.addEdge(4, 5, 2);
+		graph.addEdge(5, 6, 2);
+		graph.addEdge(6, 7, 2);
+		graph.addEdge(7, 8, 2);
+		graph.addEdge(7, 10, 1);
+		graph.addEdge(10, 2, 1);
+		graph.addEdge(8, 9, 2);
+		graph.addEdge(9, 0, 2);
 
 		return graph;
 	}
