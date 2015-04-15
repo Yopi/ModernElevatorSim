@@ -116,20 +116,32 @@ public class Controller {
 		 * som är kvar av listan för att få det minimerat. Eller.. kanske om det fanns
 		 * en metod som bara ändrade ordningen i listan. Denna metod tänker jag returnerar sträckan
 		 * den färdas innan den är klar.
+		 * 
+		 * 
+		 * Jaaaa, det är för att bajset värmer benen.
+		 * Kopiera listan -> editera skiten ur den, spara
+		 * en referens om den var najs med minimering av distance
 		 */
-		//ArrayList copyJobs = new ArrayList(jobs);
-		double min = Double.MAX_VALUE;
+		ArrayList<Elevator.Job> copyJobs = new ArrayList<Elevator.Job>(jobs.size());
+		Elevator.Job job;
+		int min = Integer.MAX_VALUE;
 		ArrayList<Elevator.Job> minList;
 		for (int i = 0; i < jobs.size(); i++) {
-			Elevator.Job job = (Elevator.Job)jobs.remove(i);
-			jobs.add(0, job);
+			for (int j = 0; j < copyJobs.size(); j++) {
+				job = new Elevator.Job(jobs.get(j).from, jobs.get(j).to, jobs.get(j).id);
+				copyJobs.add(i, job);
+			}
+			Elevator.Job tmpJob = (Elevator.Job)jobs.remove(i);
+			copyJobs.add(0, tmpJob);
 			
 		}
+		
+		return null;
 	}
 	
 	private int distanceJobs(ArrayList<Elevator.Job> jobs, int eid) {
 		int position = elevators[eid].nextNode;
-		// If (from > 0)
+		// if (from > 0)
 		//	target = from;
 		//	else
 		//	target = to
