@@ -106,7 +106,7 @@ public class Building {
 		persons.get(pid).elevatoring = -1;
 		persons.get(pid).distance = distance;
 		// Hur tänker vi att distance ska fungera? Ska den kontinuerligt växa eller nolställas emellanåt?
-		kompileringsfel, lol. Se kommentaren ^
+		// DIrrrekt efter statistics så kan vi nollställa den. Det blir bäst då.
 	}
 	
 	
