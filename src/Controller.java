@@ -84,7 +84,7 @@ public class Controller {
 		}
 		// We now have the elevator with the smallest distance to the caller.
 		// Add it to its jobs.
-		ArrayList<Elevator.Job> jobs = elevators[mindex].getJobs();
+		ArrayList<Job> jobs = elevators[mindex].getJobs();
 	}
 	
 	/*
@@ -92,7 +92,7 @@ public class Controller {
 	 * @param: ArrayList with the jobs.
 	 * @returns: The rearanged arraylist.
 	 */
-	public ArrayList minimizeTravel(ArrayList<Elevator.Job> jobs, int eid) {
+	public ArrayList minimizeTravel(ArrayList<Job> jobs, int eid) {
 		/*
 		 * Det som gäller är inte att testa alla ordningar av element,
 		 * utan det kritiska är egentligen att testa låta alla vara först.
@@ -122,16 +122,16 @@ public class Controller {
 		 * Kopiera listan -> editera skiten ur den, spara
 		 * en referens om den var najs med minimering av distance
 		 */
-		ArrayList<Elevator.Job> copyJobs = new ArrayList<Elevator.Job>(jobs.size());
-		Elevator.Job job;
+		ArrayList<Job> copyJobs = new ArrayList<Job>(jobs.size());
+		Job job;
 		int min = Integer.MAX_VALUE;
-		ArrayList<Elevator.Job> minList;
+		ArrayList<Job> minList;
 		for (int i = 0; i < jobs.size(); i++) {
 			for (int j = 0; j < copyJobs.size(); j++) {
-				job = new Elevator.Job(jobs.get(j).from, jobs.get(j).to, jobs.get(j).id);
+				job = new Job(jobs.get(j).from, jobs.get(j).to, jobs.get(j).id);
 				copyJobs.add(i, job);
 			}
-			Elevator.Job tmpJob = (Elevator.Job)jobs.remove(i);
+			Job tmpJob = (Job)jobs.remove(i);
 			copyJobs.add(0, tmpJob);
 			
 		}
@@ -139,7 +139,7 @@ public class Controller {
 		return null;
 	}
 	
-	private int distanceJobs(ArrayList<Elevator.Job> jobs, int eid) {
+	private int distanceJobs(ArrayList<Job> jobs, int eid) {
 		int position = elevators[eid].nextNode;
 		// if (from > 0)
 		//	target = from;
