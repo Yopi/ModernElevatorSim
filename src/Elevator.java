@@ -98,7 +98,7 @@ public class Elevator {
 		this.building = building;
 	}
 	
-	private class Job {
+	public class Job {
 		
 		public int from;	// From what node the job origins
 		public int to;		// To what node the job is finished.

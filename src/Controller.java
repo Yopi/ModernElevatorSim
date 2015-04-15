@@ -105,7 +105,24 @@ public class Controller {
 		 * 		de som är kvar, låt dem turas om att vara först
 		 * 
 		 * blir typ rekursivt. Koolt!
+		 * 
+		 * Så.. rekursera?
+		 * 
+		 * Kan börja skriva grundkoden. Hur avgör jag distance med en given lista.
+		 * 
+		 * Just nu går tanken såhär: Skicka iväg listan från en for med element i som först,
+		 * och på stället den skickar det till går den igenom hela färden för element i och
+		 * kollar vad som försvinnerpå vägen, när den är klar kallar den på den här med det
+		 * som är kvar av listan för att få det minimerat. Eller.. kanske om det fanns
+		 * en metod som bara ändrade ordningen i listan. Denna metod tänker jag returnerar sträckan
+		 * den färdas innan den är klar.
 		 */
+		ArrayList copyJobs = new ArrayList(jobs);
+		for (int i = 0; i < copyJobs.size(); i++) {
+			java.lang.Object job = copyJobs.remove(i);
+		}
 	}
+	
+	
 	
 }
