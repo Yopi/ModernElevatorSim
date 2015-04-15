@@ -84,7 +84,7 @@ public class Controller {
 		}
 		// We now have the elevator with the smallest distance to the caller.
 		// Add it to its jobs.
-		ArrayList jobs = elevators[mindex].getJobs();
+		ArrayList<Elevator.Job> jobs = elevators[mindex].getJobs();
 	}
 	
 	/*
@@ -92,7 +92,7 @@ public class Controller {
 	 * @param: ArrayList with the jobs.
 	 * @returns: The rearanged arraylist.
 	 */
-	public ArrayList minimizeTravel(ArrayList jobs) {
+	public ArrayList minimizeTravel(ArrayList<Elevator.Job> jobs, int eid) {
 		/*
 		 * Det som gäller är inte att testa alla ordningar av element,
 		 * utan det kritiska är egentligen att testa låta alla vara först.
@@ -117,12 +117,32 @@ public class Controller {
 		 * en metod som bara ändrade ordningen i listan. Denna metod tänker jag returnerar sträckan
 		 * den färdas innan den är klar.
 		 */
-		ArrayList copyJobs = new ArrayList(jobs);
-		for (int i = 0; i < copyJobs.size(); i++) {
-			java.lang.Object job = copyJobs.remove(i);
+		//ArrayList copyJobs = new ArrayList(jobs);
+		double min = Double.MAX_VALUE;
+		ArrayList<Elevator.Job> minList;
+		for (int i = 0; i < jobs.size(); i++) {
+			Elevator.Job job = (Elevator.Job)jobs.remove(i);
+			jobs.add(0, job);
+			
 		}
 	}
 	
-	
+	private int distanceJobs(ArrayList<Elevator.Job> jobs, int eid) {
+		int position = elevators[eid].nextNode;
+		// If (from > 0)
+		//	target = from;
+		//	else
+		//	target = to
+		int next = building.getNextNodeInPath(position, jobs.get(0).from);
+		
+		while (next != target) {
+			/*
+			 * Kolla vad som ska göras vid next-noden,
+			 * modifiera ev. jobb i listan (Juste, därför jag kopierade den. Kan jag lösa detta på annat vis?)
+			 * kör vidare, vad är nästa nod på vägen.
+			 */
+		}
+		return 0;
+	}
 	
 }
