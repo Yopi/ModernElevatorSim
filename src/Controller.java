@@ -87,4 +87,25 @@ public class Controller {
 		ArrayList jobs = elevators[mindex].getJobs();
 	}
 	
+	/*
+	 * Minimizes the travel distance by rearanging the jobs for the elevator.
+	 * @param: ArrayList with the jobs.
+	 * @returns: The rearanged arraylist.
+	 */
+	public ArrayList minimizeTravel(ArrayList jobs) {
+		/*
+		 * Det som gäller är inte att testa alla ordningar av element,
+		 * utan det kritiska är egentligen att testa låta alla vara först.
+		 * Det första elementet är det som hissen kommer ta fart mot och bestämma
+		 * sin rutt, men på vägen så kommer den vid varje besökt nod att ta reda
+		 * på om det finns jobb där att göra, vilket gör att om den första
+		 * är den mest omfattande arbetet så kommer de andra att lösa sig på vägen.
+		 * Så totalsökningen kan se ut som följer:
+		 * Testa med alla först ->
+		 * 		de som är kvar, låt dem turas om att vara först
+		 * 
+		 * blir typ rekursivt. Koolt!
+		 */
+	}
+	
 }
