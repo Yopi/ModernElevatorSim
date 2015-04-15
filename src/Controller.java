@@ -124,6 +124,7 @@ public class Controller {
 		 */
 		ArrayList<Job> copyJobs = new ArrayList<Job>(jobs.size());
 		Job job;
+		int dist;
 		int min = Integer.MAX_VALUE;
 		ArrayList<Job> minList;
 		for (int i = 0; i < jobs.size(); i++) {
@@ -131,9 +132,10 @@ public class Controller {
 				job = new Job(jobs.get(j).from, jobs.get(j).to, jobs.get(j).id);
 				copyJobs.add(i, job);
 			}
-			Job tmpJob = (Job)jobs.remove(i);
+			// copyJobs now have a copy of jobs.
+			Job tmpJob = (Job)copyJobs.remove(i);
 			copyJobs.add(0, tmpJob);
-			
+			dist = distanceJobs(copyJobs, eid);
 		}
 		
 		return null;
@@ -141,10 +143,13 @@ public class Controller {
 	
 	private int distanceJobs(ArrayList<Job> jobs, int eid) {
 		int position = elevators[eid].nextNode;
-		// if (from > 0)
-		//	target = from;
-		//	else
-		//	target = to
+		int target;
+		if (jobs.get(0).from > 0) {
+			target = jobs.get(0).from;
+		} else {
+			target = jobs.get(0).to;
+		}
+		
 		int next = building.getNextNodeInPath(position, jobs.get(0).from);
 		
 		while (next != target) {
