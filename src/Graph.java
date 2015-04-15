@@ -97,14 +97,12 @@ public class Graph {
 	 * Calculate the shortest path from/to each node and fill shortestPath matrix.
 	 */
 	public void calculateShortestPath() {
-
-		System.out.println(getNumNodes());
 		for(int i = 0; i < getNumNodes(); i++) {
 			for(int j = 0; j < getNumNodes(); j++) {
 				if(i != j) {
 					System.out.println("From: " + i + " to " + j);
 					Integer[] p = dijkstra(i, j);
-					if(p.length > 0) {
+					if(p != null) {
 						shortestPath[i][j] = p[0];
 					} else {
 						shortestPath[i][j] = -1;
@@ -118,37 +116,7 @@ public class Graph {
 			System.out.println(Arrays.toString(i));
 		}
 	}
-	/**
-  function Dijkstra(Graph, source):
-
-      dist[source] ← 0                       // Distance from source to source
-      prev[source] ← undefined               // Previous node in optimal path initialization
-
-      for each vertex v in Graph:  // Initialization
-          if v ≠ source            // Where v has not yet been removed from Q (unvisited nodes)
-              dist[v] ← infinity             // Unknown distance function from source to v
-              prev[v] ← undefined            // Previous node in optimal path from source
-          end if 
-          add v to Q                     // All nodes initially in Q (unvisited nodes)
-      end for
-      
-      while Q is not empty:
-          u ← vertex in Q with min dist[u]  // Source node in first case
-          remove u from Q 
-          
-          for each neighbor v of u:           // where v is still in Q.
-              alt ← dist[u] + length(u, v)
-              if alt < dist[v]:               // A shorter path to v has been found
-                  dist[v] ← alt 
-                  prev[v] ← u 
-              end if
-          end for
-      end while
-
-      return dist[], prev[]
-
-  end function
-	 */
+	
 	private Integer[] dijkstra(int source, int to) {
 		//ArrayList<Integer> dist = new ArrayList<Integer>();
 		//ArrayList<Integer> prev = new ArrayList<Integer>();
@@ -159,33 +127,46 @@ public class Graph {
 		for(Node v_n : graph) {
 			int v = v_n.getID();
 			if(v != source) {
-				dist[source] = Integer.MAX_VALUE;
-				prev[source] = null;
+				dist[v] = Integer.MAX_VALUE - 1;
+				prev[v] = null;
 			}
 			
 			Q.add(v_n);
 		}
+		dist[source] = 0;
 
-		Node u = null;
+		Node v_n = null;
 		while(!Q.isEmpty()) {
-			u = getLowestValue(Q, dist);
-			Q.remove(u);
-						
-			int counter = 0;
-			if(u == null) break;
-			for(Node v : u.getNeighbours()) {
-				int alt = dist[u.getID()] + graph[u.getID()].getWeight(v);
-				if (alt < dist[v.getID()]) {
-					dist[v.getID()] = alt;
-					prev[v.getID()] = u;
+			
+			int v = -1;
+			int min = Integer.MAX_VALUE - 1;
+			for(Node vert : Q) {
+				v = vert.getID();
+				if(dist[v] < min) {
+					v_n = vert;
+					min = dist[v];
+				}
+			}
+			
+			v = v_n.getID();
+			if(v == to) break;
+			Q.remove(v_n);
+
+			for(Node node : v_n.getNeighbours().keySet()) {
+				int newDist = dist[v] + graph[v].getWeight(node);
+				if (newDist < dist[node.getID()]) {
+					dist[node.getID()] = newDist;
+					prev[node.getID()] = v_n;
 				}
 			}
 		}
 				
 		ArrayList<Integer> S = new ArrayList<Integer>();
-		while(prev[u.getID()] != null) {
-			S.add(u.getID());
-			u = prev[u.getID()];
+		int v = to;
+		while(prev[v] != null) {
+			S.add(v);
+			v_n = prev[v];
+			v = v_n.getID();
 		}
 		Collections.reverse(S);
 		return S.toArray(new Integer[S.size()]);
@@ -227,6 +208,10 @@ public class Graph {
 		
 		public int getWeight(Node n) {
 			return neighbours.get(n);
+		}
+		
+		public String toString() {
+			return "" + id;
 		}
 	}
 }
