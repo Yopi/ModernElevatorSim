@@ -110,6 +110,7 @@ public class Building {
 	
 	/*
 	 * Returns the distance between two floors in the graph.
+	 * Returns -1 if there is no edge between these nodes.
 	 */
 	public int getDistance(int from, int to) {
 		int dist = graph.getEdgeWeight(from, to);

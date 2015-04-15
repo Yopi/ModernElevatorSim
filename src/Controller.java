@@ -54,4 +54,13 @@ public class Controller {
 		return true;
 	}
 	
+	/*
+	 * The nearest car heurestic.
+	 * When a new request arises, it simply checks for 
+	 * the nearest car and adds the job to that elevator.
+	 */
+	private void nearestCar(int from, int to, int id) {
+		
+	}
+	
 }
