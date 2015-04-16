@@ -13,6 +13,7 @@
  * @version 2015-03-26
  */
 import java.util.ArrayList;
+import java.util.HashMap;
 
 
 public class Building {
@@ -67,6 +68,10 @@ public class Building {
 		return elevators[eid].position;
 	}
 	
+	public ArrayList<Integer> getNodeNeighbours(int node) {
+		return graph.getNodeNeighbours(node);
+	}
+	
 	public void updatePersonPosition(int personId, int position) {
 		
 	}
@@ -80,9 +85,9 @@ public class Building {
 	 */
 	public boolean isInElevator(int pid) {
 		if (persons.get(pid).elevatoring >= 0){
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	}
 	
 	
@@ -130,6 +135,10 @@ public class Building {
 	 */
 	public void pickUpPerson(int pid) {
 		persons.get(pid).elevatoring = 1;
+	}
+	
+	public int getPersonDistance(int pid) {
+		return (int)Math.ceil(persons.get(pid).distance);
 	}
 	
 	/*

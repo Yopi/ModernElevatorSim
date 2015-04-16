@@ -167,18 +167,14 @@ public class Graph {
 		return S.toArray(new Integer[S.size()]);
 	}
 	
-	private Node getLowestValue(ArrayList<Node> Q, int[] dist) {
-		int minDist = Integer.MAX_VALUE;
-		Node u = null;
-
-		for(Node i : Q) {
-			if(dist[i.getID()] < minDist) {
-				minDist = dist[i.getID()];
-				u = i;
-			}
+	public ArrayList<Integer> getNodeNeighbours(int node) {
+		Set<Node> nodes = graph[node].getNeighbours().keySet();
+		ArrayList<Integer> nodeList = new ArrayList<Integer>();
+		for(Node n : nodes) {
+			nodeList.add(n.getID());
 		}
 		
-		return u;
+		return nodeList;
 	}
 	
 	private class Node {
