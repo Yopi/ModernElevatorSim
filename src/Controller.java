@@ -127,6 +127,7 @@ public class Controller {
 		}
 		ArrayList<Job> copyJobs = new ArrayList<Job>(jobs.size());
 		Job job;
+		ArrayList<Job> minJobs;
 		int dist;
 		int min = Integer.MAX_VALUE;
 		ArrayList<Job> minList;
@@ -139,7 +140,11 @@ public class Controller {
 			Job tmpJob = (Job)copyJobs.remove(i);
 			copyJobs.add(0, tmpJob);
 			dist = distanceJobs(copyJobs, eid);
-		}
+			if (min > dist) {
+				min = dist;
+				minJobs = copyJobs;
+			}
+		} 
 		
 		return null;
 	}
