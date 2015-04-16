@@ -20,8 +20,9 @@ public class Statistics {
 		try {	
 			db.open(true);
 			if(newDB) {
+				System.out.println("Creating new DB");
 				db.exec("BEGIN TRANSACTION");
-				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INTEGER, type VARCHAR(255), duration REAL, distance INTEGER)");
+				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, person_id INTEGER, type VARCHAR(255), duration REAL, distance INTEGER, from_node INTEGER, to_node INTEGER)");
 				db.exec("COMMIT");
 			}
 		} catch(SQLiteException e) {
@@ -44,13 +45,16 @@ public class Statistics {
 		}
 	}
 	
-	public void addTravelTime(int personID, int ticksDuration, int distance) {
+	public void addTravelTime(int personID, int ticksDuration, int distance, int from, int to) {
 		SQLiteStatement st = null;
 		try {
-			st = db.prepare("INSERT INTO statistics (person_id, type, duration, distance) VALUES (?, ?, ?, ?)");
+			st = db.prepare("INSERT INTO statistics (person_id, type, duration, distance, from_node, to_node) VALUES (?, ?, ?, ?, ?, ?)");
 			st.bind(1, personID);
 			st.bind(2, "travel");
 			st.bind(3, ticksDuration * second);
+			st.bind(4, distance);
+			st.bind(5, from);
+			st.bind(6, to);
 			st.step();
 		} catch (SQLiteException e) {
 			e.printStackTrace();

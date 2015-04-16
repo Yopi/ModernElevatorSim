@@ -64,13 +64,13 @@ public class Simulator {
 				//Thread.sleep(30);
 			} catch (Exception e) {}
 		}
+		stats.db.dispose();
 	}
 	
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
 			new Simulator(args[0], 100, 2);
-			
 			//try {
 			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 			//} catch (Exception e) {

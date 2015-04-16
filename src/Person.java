@@ -88,7 +88,7 @@ public class Person {
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
-				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id));
+				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
 				currentFloor = nextFloor;
 				status = STATUS_IDLE;
 			}
