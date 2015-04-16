@@ -154,7 +154,7 @@ public class Building {
 			if (owner == eid) {
 				return true;
 			} else {
-				move(owner);
+				move(owner, eid);
 				return false;
 			}
 		}
@@ -163,7 +163,7 @@ public class Building {
 				// This elevator is on the same edge
 				if (elevators[i].position < position + 2.1) {
 					// This elevator is is the way of the checking elevator.
-					move(i);
+					move(i, eid);
 					return false;
 				}
 			}
@@ -171,37 +171,44 @@ public class Building {
 		return true;
 	}
 	
-	/*
-	 * Resets the moving field in the elevator
-	 * class by setting it to false.
-	 * Appropriate to do when the elevator
-	 * has responded to a move request.
-	 * @param: id for elevator
-	 * @returns: void
+	/**
+	 * Resets the moving field in the elevator class by setting it to false.
+	 * Appropriate to do when the elevator has responded to a move request.
+	 *
+	 * @param eid	elevator id
 	 */
 	public void ResetMove(int eid) {
-		elevators[eid].move = false;
+		elevators[eid].move = -1;
 	}
 	
-	/*
-	 * Checks whether or not an elevator has been
-	 * asked to move.
-	 * @param: elevator id
-	 * @returns: whether or not it is true that it should.
+	/**
+	 * Checks whether or not an elevator has been asked to move.
+	 * 
+	 * @param eid	elevator id
+	 * @returns: whether or not it is true that it should move.
 	 */
 	public boolean shouldIMove(int eid) {
+		return (elevators[eid].move >= 0);
+	}
+	
+	/**
+	 * 
+	 * @param eid	elevator id
+	 * @return
+	 */
+	public int elevatorMovedBy(int eid) {
 		return elevators[eid].move;
 	}
 	
-	/*
+	/**
 	 * Returns a list with information on what elevators that should move.
-	 * @param: none
-	 * @returns: ArrayList of the integers of elevator-ids
+	 * 
+	 * @return		the list with elevators
 	 */
 	public ArrayList<Integer> getShouldMoves() {
 		ArrayList<Integer> list = new ArrayList<Integer>();
 		for (int i = 0; i < elevators.length; i++) {
-			if (elevators[i].move) {
+			if (elevators[i].move >= 0) {
 				list.add(i);
 				ResetMove(elevators[i].id);
 			}
@@ -209,30 +216,31 @@ public class Building {
 		return list;
 	}
 	
-	/*
+	/**
 	 * Returns the next node for an elevator
 	 * given its target and current node.
-	 * @param: Current node and target node
-	 * @returns: The next node in the path.
+	 * @param currentNode	the ID of the current node
+	 * @param targetNode	the id of the target node
+	 * @return				The next node in the path.
 	 */
 	public int getNextNodeInPath(int currentNode, int targetNode) {
 		return graph.shortestPath[currentNode][targetNode];
 	}
 	
-	/*
-	 * Tells the elevator with the specific id to move.
-	 * @þaram: id
-	 * @returns: void
+	/**
+	 * 
+	 * @param eid	the elevator that should move
+	 * @param ecid	the elevator that wants it to move
 	 */
-	private void move(int eid) {
-		elevators[eid].move = true;
+	private void move(int eid, int ecid) {
+		elevators[eid].move = ecid;
 	}
 	
-	/*
+	/**
 	 * Public method to see if a parameter is within
 	 * bounds for the nodes in the graph.
-	 * @param: int as node
-	 * @return: true if node exists, false if not.
+	 * @param node	node ID
+	 * @return		true if node exists, false if not.
 	 */
 	public boolean legalNode(int node) {
 		if (node >= 0 && node < graph.getNumNodes()) {
@@ -279,10 +287,10 @@ public class Building {
 		public int id;
 		public int nextNode;
 		public int prevNode;
-		public boolean move;
+		public int move;
 		
 		public Elevator(double position, int id) {
-			move = false;
+			move = -1;
 			nextNode = -1;
 			prevNode = -1;
 			this.position = position;
