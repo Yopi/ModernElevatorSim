@@ -1,4 +1,6 @@
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 /*
  * Class to control the elevators and give the person class
  * an API to call for an elevator.
@@ -32,6 +34,7 @@ import java.util.ArrayList;
  * Date: 2015-03-30
  */
 public class Controller {
+	public static boolean DEBUG = true;
 	
 	Elevator[] elevators;
 	Building building;
@@ -49,7 +52,13 @@ public class Controller {
 	 */
 	public boolean requestElevator(int from, int to, int id) {
 		if (!(building.legalNode(from) && building.legalNode(to))) {
+			System.err.println("Illegal nodes from person "+ id);
 			return false;
+		}
+		if(DEBUG) {
+			System.out.println("===============");
+			System.out.println("Adding JOB: " + from + " -> " + to);
+			System.out.println("===============");
 		}
 		nearestCar(from, to, id);
 		return true;
@@ -127,126 +136,175 @@ public class Controller {
 		}
 		// We now have the elevator with the smallest distance to the caller.
 		// Add it to its jobs.
-		ArrayList<Job> jobs = elevators[mindex].getJobs();
+		elevators[mindex].addJob(from, to, id);
+
+		// If there are multiple jobs, sort them
+		if (elevators[mindex].getJobs().size() > 1) {
+			if (DEBUG) {
+				System.out.println("Old jobs:");
+				printJobList(elevators[mindex].getJobs());
+			}
+			ArrayList<Job> minJobs = minimizeTravel(elevators[mindex].getJobs(), null, mindex, 0);
+			elevators[mindex].setJobs(minJobs);
+			if (DEBUG) {
+				System.out.println("New (sorted) jobs:");
+				printJobList(minJobs);
+			}
+			//elevators[mindex].addJob(from, to, id);
+			//ArrayList<Job> jobs = elevators[mindex].getJobs();
+		}
 	}
 	
 	/*
 	 * Minimizes the travel distance by rearanging the jobs for the elevator.
 	 * @param: ArrayList with the jobs.
 	 * @returns: The rearanged arraylist.
+	 * TODO OPTIMIZE
 	 */
-	public ArrayList<Job> minimizeTravel(ArrayList<Job> jobs, int eid) {
-		/*
-		 * Det som gäller är inte att testa alla ordningar av element,
-		 * utan det kritiska är egentligen att testa låta alla vara först.
-		 * Det första elementet är det som hissen kommer ta fart mot och bestämma
-		 * sin rutt, men på vägen så kommer den vid varje besökt nod att ta reda
-		 * på om det finns jobb där att göra, vilket gör att om den första
-		 * är den mest omfattande arbetet så kommer de andra att lösa sig på vägen.
-		 * Så totalsökningen kan se ut som följer:
-		 * Testa med alla först ->
-		 * 		de som är kvar, låt dem turas om att vara först
-		 * 
-		 * blir typ rekursivt. Koolt!
-		 * 
-		 * Så.. rekursera?
-		 * 
-		 * Kan börja skriva grundkoden. Hur avgör jag distance med en given lista.
-		 * 
-		 * Just nu går tanken såhär: Skicka iväg listan från en for med element i som först,
-		 * och på stället den skickar det till går den igenom hela färden för element i och
-		 * kollar vad som försvinnerpå vägen, när den är klar kallar den på den här med det
-		 * som är kvar av listan för att få det minimerat. Eller.. kanske om det fanns
-		 * en metod som bara ändrade ordningen i listan. Denna metod tänker jag returnerar sträckan
-		 * den färdas innan den är klar.
-		 * 
-		 * 
-		 * Jaaaa, det är för att bajset värmer benen.
-		 * Kopiera listan -> editera skiten ur den, spara
-		 * en referens om den var najs med minimering av distance
-		 */
-		if (jobs.size() == 1) {
+	public ArrayList<Job> minimizeTravel(ArrayList<Job> jobs, int[][] sortedJobs, int eid, int nextIndex) {
+		//System.out.println("---");
+		//System.out.println("minimize travel");
+		//System.out.println("---");
+		// Base case 1
+		if(jobs.size() == 0) {
 			return jobs;
 		}
-		ArrayList<Job> copyJobs = new ArrayList<Job>(jobs.size());
-		Job job;
-		ArrayList<Job> minJobs;
-		int dist;
-		int min = Integer.MAX_VALUE;
-		ArrayList<Job> minList;
-		for (int i = 0; i < jobs.size(); i++) {
-			for (int j = 0; j < copyJobs.size(); j++) {
-				job = new Job(jobs.get(j).from, jobs.get(j).to, jobs.get(j).id);
-				copyJobs.add(i, job);
-			}
-			// copyJobs now have a copy of jobs.
-			Job tmpJob = (Job)copyJobs.remove(i);
-			copyJobs.add(0, tmpJob);
-			dist = distanceJobs(copyJobs, eid);
-			if (min > dist) {
-				min = dist;
-				minJobs = copyJobs;
-			}
-		} 
 		
-		return null;
-	}
-	
-	private int distanceJobs(ArrayList<Job> jobs, int eid) {
-		int distance = 0;
-		int position = elevators[eid].nextNode;
-		int target;
-		if (jobs.get(0).from > 0) {
-			target = jobs.get(0).from;
-		} else if (jobs.get(0).to > 0){
-			target = jobs.get(0).to;
-		} else {
-			// Illegal job, should be deleted
-			// neeee händer aldrig.
-			target = 0;
-			System.out.println("Woow, slow down there satan.");
-		}
-		
-		int next = building.getNextNodeInPath(position, jobs.get(0).from);
-		distance += building.getDistance(position, next);
-		while (next != target) {
-			/*
-			 * Kolla vad som ska göras vid next-noden,
-			 * modifiera ev. jobb i listan (Juste, därför jag kopierade den. Kan jag lösa detta på annat vis?)
-			 * kör vidare, vad är nästa nod på vägen.
-			 */
-			for (int i = 0; i < jobs.size(); i++) {
-				if (next == jobs.get(i).from) {
-					jobs.get(i).from = -1;
-				} else if (next == jobs.get(i).to && jobs.get(i).from < 0) {
-					jobs.get(i).to = -1;
+		// Base case
+		if(nextIndex >= jobs.size() - 1) {
+			// Sortera
+			for(int i = 0; i < sortedJobs.length; i++) {
+				int id = sortedJobs[i][0];
+				
+				for(int j = 0; j < jobs.size(); j++) {
+					Job job = jobs.get(j);
+					if (job.id == id) {
+						jobs.remove(job);
+						jobs.add(i, job);
+					}
 				}
 			}
-			int tmp = next;
-			next = building.getNextNodeInPath(next, target);
-			distance += building.getDistance(tmp, next);
+			return jobs;
 		}
-		ArrayList<Integer> indexes = new ArrayList<Integer>();
-		ArrayList<Job> remainingJobs = new ArrayList<Job>();
+		
+		// Recursive case
+		int[][] minJobs = new int[0][0];
+		int dist;
+		int min = Integer.MAX_VALUE;
 		for (int i = 0; i < jobs.size(); i++) {
-			if (jobs.get(i).from < 0 && jobs.get(i).to < 0) {
-				continue;
-			}
-			indexes.add(i);
-			remainingJobs.add(new Job(jobs.get(i).from, jobs.get(i).to, jobs.get(i).id));
-		}
-		if (remainingJobs.size() > 0) {
-			remainingJobs = minimizeTravel(remainingJobs, eid);
-			// Copy in the remaining to the old list. so that it is good.. i guess.
-			// Delete the objects in the old list that the remaining jobs contain,
-			// and insert the remaining jobs objects in that order.
-			for (int i = 0; i < indexes.size(); i++) {
-				jobs.remove(indexes.get(i));
-				jobs.add(remainingJobs.get(i));
+			int[][] jobMatrix = copyJobs(jobs);
+
+			int[] tmpJob = jobMatrix[i];
+			jobMatrix[i] = jobMatrix[nextIndex];
+			jobMatrix[nextIndex] = tmpJob;
+
+			dist = distanceJobs(jobMatrix, eid);
+			printJobList(jobs);
+			if (min > dist) {
+				min = dist;
+				minJobs = jobMatrix;
 			}
 		}
-		distance = distance + distanceJobs(remainingJobs, eid);
-		return distance;
+
+		for(int i = nextIndex; i < minJobs.length; i++) {
+			nextIndex = i;
+			if(minJobs[i][1] >= 0 || minJobs[i][2] >= 0) { 
+				break;
+			} 
+		}
+
+		return minimizeTravel(jobs, minJobs, eid, nextIndex);
 	}
 	
+	private int distanceJobs(int[][] jobs, int position) {
+		//System.out.println("---");
+		//System.out.println("Distance jobs");
+		//System.out.println("---");
+		//try { Thread.sleep(100); } catch (Exception e) {}
+		int distance = 0;
+		int counter = 0;
+		int currentJob = 0;
+		for(int[] j : jobs) {
+			if(j[1] < 0 && j[2] < 0) { // Both to and from = -1
+				counter++;
+			} else {
+				break;
+			}
+			
+			currentJob++;
+		}
+		
+		// Base case
+		if(counter == jobs.length) {
+			return 0;
+		}
+		
+		// Recursive case
+		while(jobs[currentJob][1] >= 0 || jobs[currentJob][2] >= 0) {
+			int target = (jobs[currentJob][1] >= 0) ? jobs[currentJob][1] : jobs[currentJob][2];
+			boolean arrived = false;
+			while(position != target || !arrived) {
+				for(int[] j : jobs) {
+					// If position is at one of the elevators from
+					if(j[1] == position) {
+						j[1] = -1;
+					}
+					
+					// If position is at one of the elevators to, and the passenger is picked up
+					if(j[2] == position && j[1] == -1) {
+						j[2] = -1;
+					}
+				}
+				
+				if(position == target) arrived = true;
+				int nextNode = building.getNextNodeInPath(position, target);
+				distance += building.getDistance(position, nextNode);
+				position = nextNode;
+			}
+		}
+
+		/*
+		System.out.println("===");
+		for(int[] j : jobs) {
+			System.out.println(Arrays.toString(j));
+		}
+		System.out.println("===");
+		*/
+		return distance + distanceJobs(jobs, position);
+	}
+	
+	private int[][] copyJobs(ArrayList<Job> jobs) {
+		int[][] copy = new int[jobs.size()][3];
+		for (int j = 0; j < jobs.size(); j++) {
+			copy[j][0] = jobs.get(j).id;
+			copy[j][1] = jobs.get(j).from;
+			copy[j][2] = jobs.get(j).to;
+		}
+
+		return copy;
+	}
+	
+	private ArrayList<Job> matrixToJobs(int[][] jobs) {
+		ArrayList<Job> copy = new ArrayList<Job>();
+		for (int[] j : jobs) {
+			Job job = new Job(j[1], j[2], j[0]);
+			copy.add(job);
+		}
+
+		return copy;
+	}
+	
+	/*
+	 * Prints an array of jobs, to be able to see what happens.
+	 */
+	private void printJobList(ArrayList<Job> jobs) {
+		System.out.println("Jobs:");
+		for (int i = 0; i < jobs.size(); i++) {
+			System.out.println("==");
+			System.out.println("from: " + jobs.get(i).from);
+			System.out.println("to: " + jobs.get(i).to);
+			System.out.println("id: " + jobs.get(i).id);
+			System.out.println("==");
+		}
+	}
 }
