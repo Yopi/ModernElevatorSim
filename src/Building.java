@@ -16,6 +16,7 @@ public class Building {
 	Graph graph;
 	Elevator[] elevators;
 	ArrayList<Person> persons;
+	ArrayList<ArrayList<Integer>> lockQueue;
 	int[] nodes;
 	
 	public Building(Graph graph, int numPersons, int numElevators) {
@@ -23,6 +24,10 @@ public class Building {
 		nodes = new int[this.graph.getNumNodes()];
 		for (int i = 0; i < nodes.length; i++) {
 			nodes[i] = -1;
+		}
+		lockQueue = new ArrayList<ArrayList<Integer>>();
+		for (int i = 0; i < graph.getNumNodes(); i++) {
+			lockQueue.add(new ArrayList<Integer>());
 		}
 		elevators = new Elevator[numElevators];
 		for(int i = 0; i < numElevators; i++) {
@@ -34,6 +39,7 @@ public class Building {
 		for(int i = 0; i < numPersons; i++) {
 			addPerson(i);
 		}
+		
 	}
 	
 	/*
@@ -160,15 +166,7 @@ public class Building {
 		if(DEBUG) System.err.println("from: " + from +", to: " + to + ", position: " + position);
 		if(from == to && position < 0.01) return -1d;
 		
-		if (graph.getEdgeWeight(from, to) - position <= 2.0) {
-			int owner = lockNode(to, eid);
-			if (owner == eid) {
-				return -1d;
-			} else {
-				move(owner, eid);
-				return graph.getEdgeWeight(from, to) - position;
-			}
-		}
+		// First check if there is any other elevator ahead
 		for (int i = 0; i < elevators.length; i++) {
 			if (i == eid) continue;
 			if (elevators[i].nextNode == to && elevators[i].prevNode == from) {
@@ -177,14 +175,23 @@ public class Building {
 				}
 				// This elevator is on the same edge
 				if (elevators[i].position < (position + 2.1) && elevators[i].position > position) {
-					// Bug, hissarna ställer sig på varandra.
-					// Jag vet vad buggen är.
 					if (DEBUG)
 						System.out.println("There was an elevator less than 2.1 distance ahead");
 					// This elevator is is the way of the checking elevator.
 					move(i, eid);
 					return elevators[i].position - position;
 				}
+			}
+		}
+		// If there is no elevator ahead, and if it is close enough to the node,
+		// try to lock it. A queue should be implemented here.
+		if (graph.getEdgeWeight(from, to) - position <= 2.0) {
+			int owner = lockNode(to, eid);
+			if (owner == eid) {
+				return -1d;
+			} else {
+				move(owner, eid);
+				return graph.getEdgeWeight(from, to) - position;
 			}
 		}
 		return -1;
@@ -275,16 +282,41 @@ public class Building {
 	 * is traveling to, when it is close enough,
 	 * to avoid mutual exclusion from them, in other
 	 * words to avoid crashes.
+	 * If it was unable to lock, it puts itself in a queue,
+	 * and the queue is respected.
 	 * @param: the node and the elevators id
 	 * @return: id of elevator that locked it, own id.
 	 */
 	private int lockNode(int node, int eid) {
+		// Checking if the node is locked
 		if (nodes[node] < 0) {
-			nodes[node] = eid;
+			// The node is not locked!
+			if (lockQueue.get(node).size() > 0) {
+				// But the queue was populated
+				if (lockQueue.get(node).get(0) == eid) {
+					// And this elevator was first in line.
+					nodes[node] = eid;
+				} else {
+					// And this elevator was not first in line.
+					if (!lockQueue.get(node).contains(eid)) {
+						// If not already in queue, add to queue.
+						lockQueue.get(node).add(eid);	
+					}
+					// Return next owner of queue. This will trigger a move request that
+					// should Immediately be dropped since it is not idle. Have this in minde.
+					return lockQueue.get(node).get(0); // The next owner of the node.
+				}
+			} else {
+				// And the queue was not populated
+				nodes[node] = eid;
+			}
 			if (DEBUG) System.out.println("Locking node " + node + " for elevator " + eid);
 			return eid;
 		}
 		if (DEBUG) System.out.println("Failed to lock node " + node + " for elevator " + eid);
+		if (!lockQueue.get(node).contains(eid)) {
+			lockQueue.get(node).add(eid);
+		}
 		return nodes[node];
 	}
 	
@@ -298,6 +330,12 @@ public class Building {
 	private void unlockNode(int node, int eid) {
 		if (DEBUG) System.out.println("Unlocking node " + node + " for elevator " + eid);
 		if (nodes[node] == eid) {
+			// This check on lockQueue could probably be easier since it will always
+			// be the first element. Can i count on that? Probably.
+			// TODO: Evaluate that.
+			if (lockQueue.get(node).contains(eid)) {
+				lockQueue.get(node).remove((Integer)eid); // Remove the object, not the index. Hopefully.
+			}
 			nodes[node] = -1;
 		} else {
 			// No unlocks for you.
