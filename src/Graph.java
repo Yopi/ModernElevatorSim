@@ -144,7 +144,6 @@ public class Graph {
 
 		Node v_n = null;
 		while(!Q.isEmpty()) {
-			
 			int v = -1;
 			int min = Integer.MAX_VALUE - 1;
 			for(Node vert : Q) {

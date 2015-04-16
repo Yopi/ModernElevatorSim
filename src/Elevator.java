@@ -49,7 +49,7 @@ public class Elevator {
 	
 	final int MAX_PASSENGERS = 7;	// Maximum number of passengers
 	
-	static final boolean DEBUG = true;
+	static final boolean DEBUG = false;
 	
 	// Private fields
 	int id;		// Id for the elevator
@@ -129,7 +129,8 @@ public class Elevator {
 			// by a blocking cabin.
 			moving = true;
 			idle = false;
-			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
+			double distanceToImpact = building.checkEmptyAhead(prevNode, nextNode, position, id);
+			if (distanceToImpact < 0 || distanceToImpact > step * 2) {
 				if (DEBUG) {
 					System.out.println("The path was clear ahead for elevator " + id);
 				}
@@ -156,9 +157,7 @@ public class Elevator {
 							if (persons.size() < MAX_PASSENGERS) {
 								job.from = -1;
 								building.pickUpPerson(job.id);
-								if (DEBUG) {
-									System.out.println("Elevator " + id + " picked up person " + job.id);
-								}
+								System.out.println("Elevator " + id + " picked up person " + job.id);
 								persons.put(job.id, distance);
 								openDoors();
 								moving = false;
@@ -176,9 +175,7 @@ public class Elevator {
 							}
 							
 							building.dropOfPerson(job.id, (distance - persons.get(job.id)));
-							if (DEBUG) {
-								System.out.println("Elevator " + id + " droppped of person "  +job.id);
-							}
+							System.out.println("Elevator " + id + " droppped of person "  +job.id);
 							persons.remove((Integer)job.id);	// Removes the person as an object.
 							jobbi.remove();
 							openDoors();
@@ -219,15 +216,10 @@ public class Elevator {
 					System.out.println("The path for elevator " + id + " was not clear, stopping.");
 				}
 				moving = false;
+				/*
+				 * Hur hussen butur sug vud fullut utt dut ur nuguntung ubugung
+				 */
 				
-				/* This was to simulate slowdown.
-				increaseSlowDown();
-				if (slowDown < 8) {
-					distance = distance + (step / slowDown);
-					position = position + (step / slowDown);
-				} else {
-					// The elevator stops.
-				}*/
 			}
 			building.updateElevatorPosition(id, position, nextNode, prevNode);
 		} else {

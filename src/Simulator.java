@@ -53,13 +53,15 @@ public class Simulator {
 		time = (int)(8 * hour) - 1; 
 		for (; time < limit; time++) {
 			System.out.println("The time is: " + (int)(time/hour) + ":" + (int)(time/hour * 60 % 60) + ":" + (int)(time/hour * 3600 % 60));
-			//controller.tick(time);
+			controller.tick(time);
 			
 			for(Elevator e : elevators) { e.tick(time); }
 			for(Person p : persons) { p.tick(time); }
+			
+			System.out.println("");
 
 			try {
-				Thread.sleep(100);
+				//Thread.sleep(30);
 			} catch (Exception e) {}
 		}
 	}
@@ -67,7 +69,7 @@ public class Simulator {
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
-			new Simulator(args[0], 2, 1);
+			new Simulator(args[0], 100, 2);
 			
 			//try {
 			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
@@ -86,7 +88,7 @@ public class Simulator {
 	 * Det är ju ett argument ja.. heh. nvm.
 	 */
 	private Graph createGraphOne() {
-		Graph graph = new Graph(3);
+		Graph graph = new Graph(8);
 		/* 
 		graph.addEdge(0, 1, 2);
 		graph.addEdge(1, 2, 2);
@@ -116,11 +118,17 @@ public class Simulator {
 		 
 		 
 		*/
-		
 		graph.addEdge(0, 1, 3);
-		graph.addEdge(1, 0, 3);
 		graph.addEdge(1, 2, 3);
-		graph.addEdge(2, 1, 3);
+		graph.addEdge(2, 3, 3);
+		graph.addEdge(2, 5, 2);
+		graph.addEdge(3, 4, 2);
+		graph.addEdge(4, 5, 3);
+		graph.addEdge(5, 6, 3);
+		graph.addEdge(6, 7, 3);
+		graph.addEdge(6, 1, 2);
+		graph.addEdge(7, 0, 2);
+
 		
 		return graph;
 	}

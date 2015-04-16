@@ -79,10 +79,16 @@ public class Controller {
 		for (int i = 0; i < elevators.length; i++) {
 			if (!elevators[i].idle) {
 				// The elevator is working on stuff. Let it do so.
+				moving = building.elevatorMovedBy(elevators[i].id);
+				if (moving >= 0 && elevators[moving].getJobs().size() == 0) {
+					building.resetMove(elevators[i].id);
+				}
 				continue;
 			}
+			
 			moving = building.elevatorMovedBy(elevators[i].id);
 			if (moving >= 0) {
+				System.out.println("elevator " + elevators[i].id + " asked to move by elevator " + moving);
 				neighbors = building.getNodeNeighbours(elevators[i].getNextNode());
 				for (int j = 0; j < neighbors.size(); j++) {
 					if (elevators[moving].getJobs().get(0).from >= 0) {
@@ -100,10 +106,12 @@ public class Controller {
 				if (moveTo < 0) {
 					moveTo = neighbors.get(0);
 				}
+				// Move the elevator to moveTo
+				ArrayList<Job> jobs = elevators[i].getJobs();
+				jobs.add(new Job(-1, moveTo, -1));
+				building.resetMove(elevators[i].id);
+
 			}
-			// Move the elevator to moveTo
-			ArrayList<Job> jobs = elevators[i].getJobs();
-			jobs.add(new Job(-1, moveTo, -1));
 		}
 	}
 	

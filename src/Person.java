@@ -15,7 +15,7 @@ public class Person {
 	static final int STATUS_IDLE = 0;
 	static final int STATUS_WAITING = 1;
 	static final int STATUS_ELEVATORING = 2;
-	static final boolean DEBUG = true;
+	static final boolean DEBUG = false;
 	
 	Building building;
 	Controller controller;
@@ -46,11 +46,11 @@ public class Person {
 		this.stats = stats;
 		this.second = second;
 		
-		beginWork = (int)(hour * 8); //(int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
-		endWork = (int)(hour * 8) + 80; //(int)((hour * 17) + rand.nextGaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
-		lunchTime = (int)(hour * 8) + 30; //(int)((hour * 12) + (rand.nextGaussian() * hour));			// Random time for lunch, +- 1 hour.
-		backFromLunch = lunchTime + 25; // (int)(2700 * second); // 45 minutes lunch
-		workFloor = id+1; //rand.nextInt(building.graph.getNumNodes());
+		beginWork = (int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+		endWork = (int)((hour * 17) + rand.nextGaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
+		lunchTime = (int)((hour * 12) + (rand.nextGaussian() * hour));			// Random time for lunch, +- 1 hour.
+		backFromLunch = (int)(lunchTime + 2700 * second); // 45 minutes lunch
+		workFloor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 		
 		/*Meeting[] meetings = new Meeting[maxMeetings];
@@ -74,10 +74,17 @@ public class Person {
 	 */
 	public void tick(int time) {
 		if (status == STATUS_WAITING) {
+			// try { Thread.sleep(5000); } catch (Exception e){}
+			
 			if(building.isInElevator(id)) {
 				stats.addWaitingTime(id, (time - startTime));
 				startTime = time;
 				status = STATUS_ELEVATORING;
+			} else {
+				if(currentFloor == nextFloor) {
+					status = STATUS_IDLE;
+					System.err.println("Trying to go to same floor");
+				}
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
@@ -92,18 +99,22 @@ public class Person {
 				System.out.println("time: " + time + " == " + beginWork);
 			
 			if (time == beginWork) {
+				System.out.println("PERSON ("+ id +") ARRIVES AT WORK");
 				startElevator(time);
 				controller.requestElevator(currentFloor, workFloor, id);
 				nextFloor = workFloor;
 			} else if(time == endWork) {
+				System.out.println("PERSON ("+ id +") GOES HOME");
 				startElevator(time);
 				controller.requestElevator(currentFloor, 0, id);
 				nextFloor = 0;
 			} else if(time == lunchTime) {
+				System.out.println("PERSON ("+ id +") GOES TO LUNCH");
 				startElevator(time);
 				controller.requestElevator(currentFloor, 0, id);
 				nextFloor = 0;
 			} else if(time == backFromLunch) {
+				System.out.println("PERSON ("+ id +") IS BACK FROM LUNCH");
 				startElevator(time);
 				controller.requestElevator(currentFloor, workFloor, id);
 				nextFloor = workFloor;
@@ -111,7 +122,7 @@ public class Person {
 		}
 		
 		if(DEBUG) {
-			System.out.println("Person: status:" + status + ", current floor:" + currentFloor);
+			System.out.print("PERSON ("+id+") [s|cf|wf] : [" + status + "|" + currentFloor + "|" + workFloor + "]    ");
 		}
 	}
 

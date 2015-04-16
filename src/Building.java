@@ -15,7 +15,7 @@
 import java.util.ArrayList;
 
 public class Building {
-	final static boolean DEBUG = true;
+	final static boolean DEBUG = false;
 	
 	Graph graph;
 	Elevator[] elevators;
@@ -24,16 +24,20 @@ public class Building {
 	
 	public Building(Graph graph, int numPersons, int numElevators) {
 		this.graph = graph;
+		nodes = new int[this.graph.getNumNodes()];
+		for (int i = 0; i < nodes.length; i++) {
+			nodes[i] = -1;
+		}
 		elevators = new Elevator[numElevators];
 		for(int i = 0; i < numElevators; i++) {
 			addElevator(i, 0d);
+			lockNode(i, i);
 		}
 		
 		persons = new ArrayList<Person>(numPersons);
 		for(int i = 0; i < numPersons; i++) {
 			addPerson(i);
 		}
-		nodes = new int[this.graph.getNumNodes()];
 	}
 	
 	/*
@@ -152,47 +156,50 @@ public class Building {
 	 * has to slow down not to crash with another one.
 	 * Also tells the next elevator to move if it is idle.
 	 * @param: nodes from and to, and position between them.
-	 * @returns: true if the elevator can continue, false if it should slow down.
+	 * @returns: -1 if the elevator can continue, distance to impact if it should slow down.
 	 */
-	public boolean checkEmptyAhead(int from, int to, double position, int eid) {
+	public double checkEmptyAhead(int from, int to, double position, int eid) {
+		// Returnera boolean med avstånd till hinder. Elevator tar hänsyn till det genom
+		// att ta beslut om nör det är nödvändigt att stanna.
 		if(DEBUG) System.err.println("from: " + from +", to: " + to + ", position: " + position);
-		if(from == to && position < 0.01) return true;
+		if(from == to && position < 0.01) return -1d;
 		
-		if (graph.getEdgeWeight(from, to) - position <= 1.0) {
+		if (graph.getEdgeWeight(from, to) - position <= 2.0) {
 			int owner = lockNode(to, eid);
 			if (owner == eid) {
-				return true;
+				return -1d;
 			} else {
 				move(owner, eid);
-				return false;
+				return graph.getEdgeWeight(from, to) - position;
 			}
 		}
 		for (int i = 0; i < elevators.length; i++) {
 			if (i == eid) continue;
 			if (elevators[i].nextNode == to && elevators[i].prevNode == from) {
 				if (DEBUG) {
-					System.out.println("There was an elevator on the same edge");
+					System.out.println("There was an elevator on the same edge, elevator " + i);
 				}
 				// This elevator is on the same edge
-				if (elevators[i].position < position + 2.1) {
+				if (elevators[i].position < (position + 2.1) && elevators[i].position > position) {
 					if (DEBUG)
 						System.out.println("There was an elevator less than 2.1 distance ahead");
 					// This elevator is is the way of the checking elevator.
 					move(i, eid);
-					return false;
+					return elevators[i].position - position;
 				}
 			}
 		}
-		return true;
+		return -1;
 	}
 	
 	/**
-	 * Resets the moving field in the elevator class by setting it to false.
+	 * Resets the moving field in the elevator class by setting it to -1.
 	 * Appropriate to do when the elevator has responded to a move request.
 	 *
 	 * @param eid	elevator id
 	 */
-	public void ResetMove(int eid) {
+	public void resetMove(int eid) {
+		System.out.println("RESET MOVE PLZ " + eid);
 		elevators[eid].move = -1;
 	}
 	
@@ -225,7 +232,7 @@ public class Building {
 		for (int i = 0; i < elevators.length; i++) {
 			if (elevators[i].move >= 0) {
 				list.add(i);
-				ResetMove(elevators[i].id);
+				resetMove(elevators[i].id);
 			}
 		}
 		return list;
@@ -274,11 +281,12 @@ public class Building {
 	 * @return: id of elevator that locked it, own id.
 	 */
 	private int lockNode(int node, int eid) {
-		if (DEBUG) System.out.println("Locking node " + node + " for elevator " + eid);
 		if (nodes[node] < 0) {
 			nodes[node] = eid;
+			if (DEBUG) System.out.println("Locking node " + node + " for elevator " + eid);
 			return eid;
 		}
+		if (DEBUG) System.out.println("Failed to lock node " + node + " for elevator " + eid);
 		return nodes[node];
 	}
 	
