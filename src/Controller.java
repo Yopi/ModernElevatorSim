@@ -56,6 +56,18 @@ public class Controller {
 	}
 	
 	/*
+	 * Tick method for the controller.
+	 * This is needed because the controller needs to run some
+	 * code independently, in order to take care of
+	 * cabins that have been asked to move by another cabin.
+	 * @param: time variable, not sure if it is needed though.
+	 * @returns: void
+	 */
+	public void tick(int time) {
+		
+	}
+	
+	/*
 	 * The nearest car heurestic.
 	 * When a new request arises, it simply checks for 
 	 * the nearest car and adds the job to that elevator.
@@ -92,7 +104,7 @@ public class Controller {
 	 * @param: ArrayList with the jobs.
 	 * @returns: The rearanged arraylist.
 	 */
-	public ArrayList minimizeTravel(ArrayList<Job> jobs, int eid) {
+	public ArrayList<Job> minimizeTravel(ArrayList<Job> jobs, int eid) {
 		/*
 		 * Det som gäller är inte att testa alla ordningar av element,
 		 * utan det kritiska är egentligen att testa låta alla vara först.
@@ -127,6 +139,7 @@ public class Controller {
 		}
 		ArrayList<Job> copyJobs = new ArrayList<Job>(jobs.size());
 		Job job;
+		ArrayList<Job> minJobs;
 		int dist;
 		int min = Integer.MAX_VALUE;
 		ArrayList<Job> minList;
@@ -139,7 +152,11 @@ public class Controller {
 			Job tmpJob = (Job)copyJobs.remove(i);
 			copyJobs.add(0, tmpJob);
 			dist = distanceJobs(copyJobs, eid);
-		}
+			if (min > dist) {
+				min = dist;
+				minJobs = copyJobs;
+			}
+		} 
 		
 		return null;
 	}
