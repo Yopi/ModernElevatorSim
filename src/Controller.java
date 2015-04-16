@@ -64,7 +64,36 @@ public class Controller {
 	 * @returns: void
 	 */
 	public void tick(int time) {
-		
+		int moving;
+		ArrayList<Integer> neighbors;
+		int moveTo = -1;
+		for (int i = 0; i < elevators.length; i++) {
+			if (!elevators[i].idle) {
+				// The elevator is working on stuff. Let it do so.
+				continue;
+			}
+			moving = building.elevatorMovedBy(elevators[i].id);
+			if (moving >= 0) {
+				neighbors = building.getNodeNeighbours(elevators[i].getNextNode());
+				for (int j = 0; j < neighbors.size(); j++) {
+					if (elevators[moving].getJobs().get(0).from >= 0) {
+						if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).from) != neighbors.get(j)) {
+							moveTo = neighbors.get(j);
+						}
+					} else {
+						if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).to) != neighbors.get(j)) {
+							moveTo = neighbors.get(j);
+						}
+					}
+				}
+				if (moveTo < 0) {
+					moveTo = neighbors.get(0);
+				}
+			}
+			// Move the elevator to moveTo
+			ArrayList<Job> jobs = elevators[i].getJobs();
+			jobs.add(new Job(-1, moveTo, -1));
+		}
 	}
 	
 	/*
