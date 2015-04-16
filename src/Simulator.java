@@ -42,7 +42,7 @@ public class Simulator {
 		controller = new Controller(elevators, building);
 		persons = new Person[numPersons];
 		for (int i = 0; i < persons.length; i++) {
-			persons[i] = new Person(i, building, stats, rand, second);		
+			persons[i] = new Person(i, building, controller, stats, rand, second);		
 		}
 		
 		building.graph.calculateShortestPath();

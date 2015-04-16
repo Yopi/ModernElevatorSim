@@ -17,6 +17,7 @@ public class Person {
 	static final int STATUS_ELEVATORING = 2;
 	
 	Building building;
+	Controller controller;
 	Statistics stats;
 	int id;
 	double second;
@@ -35,10 +36,11 @@ public class Person {
 	int status;
 	int startTime;
 	
-	public Person(int id, Building building, Statistics stats, Random rand, double second) {
+	public Person(int id, Building building, Controller controller, Statistics stats, Random rand, double second) {
 		double hour = 3600 * second;
 		this.id = id;
 		this.building = building;
+		this.controller = controller;
 		this.stats = stats;
 		this.second = second;
 		
@@ -77,7 +79,7 @@ public class Person {
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
-				stats.addTravelTime(id, (time - startTime), 0);
+				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id));
 				status = STATUS_IDLE;
 			}
 		}
@@ -85,13 +87,16 @@ public class Person {
 		if (status == STATUS_IDLE) {
 			if (time == beginWork) {
 				startElevator(time);
-				// Call for elevator
+				controller.requestElevator(currentFloor, workFloor, id);
 			} else if(time == endWork) {
 				startElevator(time);
+				controller.requestElevator(currentFloor, 0, id);
 			} else if(time == lunchTime) {
 				startElevator(time);
+				controller.requestElevator(currentFloor, 0, id);
 			} else if(time == backFromLunch) {
 				startElevator(time);
+				controller.requestElevator(currentFloor, workFloor, id);
 			}
 		}
 	}
