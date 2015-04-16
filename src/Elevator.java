@@ -12,6 +12,7 @@
  */
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 
 /*
@@ -147,37 +148,39 @@ public class Elevator {
 					
 					// Is there any job here for the elevator?
 					// Loop through the jobs.
-					for (int i = 0; i < jobs.size(); i++) {
-						if (jobs.get(i).from == nextNode) {
+					Iterator<Job> jobbi = jobs.iterator();
+					while(jobbi.hasNext()) {
+						Job job = jobbi.next();
+						if (job.from == nextNode) {
 							// Pick up a person!
 							if (persons.size() < MAX_PASSENGERS) {
-								jobs.get(i).from = -1;
-								building.pickUpPerson(jobs.get(i).id);
+								job.from = -1;
+								building.pickUpPerson(job.id);
 								if (DEBUG) {
-									System.out.println("Elevator " + id + " picked up person " + jobs.get(i).id);
+									System.out.println("Elevator " + id + " picked up person " + job.id);
 								}
-								persons.put(jobs.get(i).id, distance);
+								persons.put(job.id, distance);
 								openDoors();
 								moving = false;
 							} else {
 								// Sorry brah
 							}
-						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
+						} else if (job.to == nextNode && job.from < 0) {
 							// Drop of a person!
 							moving = false;
-							if (jobs.get(i).id < 0) {
+							if (job.id < 0) {
 								// This was a job added by controller to get the elevator to move.
 								// The elevator is empty.
-								jobs.remove(i);
+								jobbi.remove();
 								continue;
 							}
 							
-							building.dropOfPerson(jobs.get(i).id, (distance - persons.get(jobs.get(i).id)));
+							building.dropOfPerson(job.id, (distance - persons.get(job.id)));
 							if (DEBUG) {
-								System.out.println("Elevator " + id + " droppped of person "  +jobs.get(i).id);
+								System.out.println("Elevator " + id + " droppped of person "  +job.id);
 							}
-							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
-							jobs.remove(i);
+							persons.remove((Integer)job.id);	// Removes the person as an object.
+							jobbi.remove();
 							openDoors();
 						}
 					}
