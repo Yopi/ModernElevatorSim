@@ -79,10 +79,12 @@ public class Controller {
 					if (elevators[moving].getJobs().get(0).from >= 0) {
 						if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).from) != neighbors.get(j)) {
 							moveTo = neighbors.get(j);
+							break;
 						}
 					} else {
 						if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).to) != neighbors.get(j)) {
 							moveTo = neighbors.get(j);
+							break;
 						}
 					}
 				}
