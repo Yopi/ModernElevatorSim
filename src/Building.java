@@ -3,11 +3,7 @@
  * Is updated with all the elevators and persons positions.
  * 
  * TODO: 
- * 1. check - Elevator picking up person
- * 2. check - Person read how far they have traveled
- * 3. check - Tell elevator to MOVE
- * 4. check - Fix the adding of elevators, what information is needed.
- * 
+ * 1. HISSAR KROCKAR MED VARANDRA VAD HÄNDER
  * 
  * @author Viktor Björkholm & Jesper Bränn
  * @version 2015-03-26
@@ -181,6 +177,7 @@ public class Building {
 				}
 				// This elevator is on the same edge
 				if (elevators[i].position < (position + 2.1) && elevators[i].position > position) {
+					// Bug, hissarna ställer sig på varandra.
 					if (DEBUG)
 						System.out.println("There was an elevator less than 2.1 distance ahead");
 					// This elevator is is the way of the checking elevator.

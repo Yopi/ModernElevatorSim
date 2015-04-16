@@ -26,7 +26,7 @@ public class Simulator {
 	double hour = 3600 * second;
 	int time;
 	int hours = 0;
-	int days = 1;
+	int days = 10;
 
 	public Simulator(String filename, int numPersons, int numElevators) {
 		rand = new Random();
@@ -52,13 +52,12 @@ public class Simulator {
 		int limit = ((int)hour * hours) + ((int)hour * 24 * days);
 		time = (int)(8 * hour) - 1; 
 		for (; time < limit; time++) {
-			System.out.println("The time is: " + (int)(time/hour) + ":" + (int)(time/hour * 60 % 60) + ":" + (int)(time/hour * 3600 % 60));
-			controller.tick(time);
+			int localTime = time % (int)(hour * 24);
+			// System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
+			controller.tick(localTime);
 			
-			for(Elevator e : elevators) { e.tick(time); }
-			for(Person p : persons) { p.tick(time); }
-			
-			System.out.println("");
+			for(Elevator e : elevators) { e.tick(localTime); }
+			for(Person p : persons) { p.tick(localTime); }
 
 			try {
 				//Thread.sleep(30);
@@ -70,7 +69,7 @@ public class Simulator {
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
-			new Simulator(args[0], 100, 4);
+			new Simulator(args[0], 1, 8);
 			//try {
 			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 			//} catch (Exception e) {

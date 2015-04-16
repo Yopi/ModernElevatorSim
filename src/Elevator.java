@@ -49,7 +49,7 @@ public class Elevator {
 	
 	final int MAX_PASSENGERS = 7;	// Maximum number of passengers
 	
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	
 	// Private fields
 	int id;		// Id for the elevator
