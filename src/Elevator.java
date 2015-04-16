@@ -48,6 +48,8 @@ public class Elevator {
 	
 	final int MAX_PASSENGERS = 7;	// Maximum number of passengers
 	
+	static final boolean DEBUG = true;
+	
 	// Private fields
 	int id;		// Id for the elevator
 	int nextNode;	// The next node that the elevator will reach.
@@ -108,8 +110,16 @@ public class Elevator {
 		// Lets do this.
 		// Since the MES is single-directed, the elevator always has to travel to the next node.
 		// So if it is in between nodes, travel!
+		
+		if (DEBUG) {
+			System.out.println("Tick method for elevator " + id);
+		}
+		
 		if (doorsOpen()) {
 			// The doors are open, the elevator shouldn't do anything.
+			if (DEBUG) {
+				System.out.println("The doors are open for elevator " + id);
+			}
 			return;
 		}
 		
@@ -120,6 +130,9 @@ public class Elevator {
 			moving = true;
 			idle = false;
 			if (building.checkEmptyAhead(prevNode, nextNode, position, id)) {
+				if (DEBUG) {
+					System.out.println("The path was clear ahead for elevator " + id);
+				}
 				// Clear ahead, proceed with movings.
 				// resetSlowDown();	// In case there was a slowdown before.
 				if (((double)building.getDistance(prevNode, nextNode) - (position + step)) <= 0 ) {
@@ -129,6 +142,10 @@ public class Elevator {
 					position = 0d; // reset position, it is now relatively 0 to the nextNode.
 					prevNode = nextNode;	// The previous node is now the next node.
 					
+					if (DEBUG) {
+						System.out.println("The elevator " + id + " is at the next node, " + nextNode);
+					}
+					
 					// Is there any job here for the elevator?
 					// Loop through the jobs.
 					for (int i = 0; i < jobs.size(); i++) {
@@ -137,6 +154,9 @@ public class Elevator {
 							if (persons.size() < MAX_PASSENGERS) {
 								jobs.get(i).from = -1;
 								building.pickUpPerson(jobs.get(i).id);
+								if (DEBUG) {
+									System.out.println("Elevator " + id + " picked up person " + jobs.get(i).id);
+								}
 								persons.put(jobs.get(i).id, distance);
 								openDoors();
 								moving = false;
@@ -153,6 +173,9 @@ public class Elevator {
 								continue;
 							}
 							building.dropOfPerson(jobs.get(i).id, (distance - persons.get(jobs.get(i).id)));
+							if (DEBUG) {
+								System.out.println("Elevator " + id + " droppped of person "  +jobs.get(i).id);
+							}
 							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
 							openDoors();
 						}
@@ -161,6 +184,9 @@ public class Elevator {
 					// Set the next target.
 					if (jobs.size() > 0) {
 						// More jobs available!
+						if (DEBUG) {
+							System.out.println("Time for the next job for elevator " + id);
+						}
 						if (jobs.get(0).from >= 0) {
 							nextNode = building.getNextNodeInPath(nextNode, jobs.get(0).from);
 						} else {
@@ -168,17 +194,26 @@ public class Elevator {
 						}
 					} else {
 						// The elevator is now idle.
+						if (DEBUG) {
+							System.out.println("There was no more jobs for elevator " + id + " it is now idle.");
+						}
 						idle = true;
 					}
 					
 				} else {
 					// Next node is more than a step away from the elevator.
+					if (DEBUG) {
+						System.out.println("Elevator " + id + " took a step.");
+					}
 					// Just keep moving.
 					distance = distance + step;
 					position = position + step;
 				}
 			} else {
 				// The path ahead was not clear.
+				if (DEBUG) {
+					System.out.println("The path for elevator " + id + " was not clear, stopping.");
+				}
 				moving = false;
 				
 				/* This was to simulate slowdown.
@@ -194,8 +229,14 @@ public class Elevator {
 		} else {
 			// The elevator is idle or just closed doors.
 			// Same procedure either way, check for most urgen job and continue.
+			if (DEBUG) {
+				System.out.println("Elevator " + id + " is idle or just closed its doors.");
+			}
 			if (jobs.size() > 0) {
 				// There are available jobs for the elevator.
+				if (DEBUG) {
+					System.out.println("And now elevator " + id + " starts working with a job.");
+				}
 				if (jobs.get(0).from < 0) {
 					nextNode = building.getNextNodeInPath(prevNode, jobs.get(0).to);
 				} else {
@@ -205,11 +246,17 @@ public class Elevator {
 				moving = true;
 			} else {
 				idle = true;
+				if (DEBUG) {
+					System.out.println("Elevator " + id + " is idle");
+				}
 				// No available jobs, just sitting here.
 				// I think that the checking wether to move or not should be handled
 				// By the controller in the largest extent. This is otherwise where
 				// that would have been implemented
 			}
+		}
+		if (DEBUG) {
+			System.out.println("Elevator " + id + ": prev: " + prevNode + ", next: " + nextNode + ", position: " + position);
 		}
 	}
 	
