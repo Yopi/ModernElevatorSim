@@ -12,7 +12,6 @@
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-26
  */
-import java.security.Security;
 import java.util.Random;
 
 public class Simulator {
@@ -32,7 +31,7 @@ public class Simulator {
 	public Simulator(String filename, int numPersons, int numElevators) {
 		rand = new Random();
 		graph = createGraphOne(); //new Graph(8);
-		stats = new Statistics("/tmp/database.db", second);
+		stats = new Statistics("database.db", second);
 		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
@@ -51,22 +50,30 @@ public class Simulator {
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
 		int limit = ((int)hour * hours) + ((int)hour * 24 * days);
-		
-		for (time = 0; time < limit; time++) {
-			// Here is where the ticks will be made.
-			// To consider: The time ticks during the night will be useless and that
-			// should perhaps be dealt with to get a faster simulation.
+		time = (int)(8 * hour) - 1; 
+		for (; time < limit; time++) {
+			System.out.println("The time is: " + (int)(time/hour) + ":" + (int)(time/hour * 60 % 60) + ":" + (int)(time/hour * 3600 % 60));
+			//controller.tick(time);
+			
+			for(Elevator e : elevators) { e.tick(time); }
+			for(Person p : persons) { p.tick(time); }
+
+			try {
+				Thread.sleep(100);
+			} catch (Exception e) {}
 		}
 	}
 	
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
+			new Simulator(args[0], 2, 1);
+			
 			//try {
-				new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-			/*} catch (Exception e) {
-				System.err.println("Simulation failed to start, error: " + e);
-			}*/
+			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
+			//} catch (Exception e) {
+			//	System.err.println("Simulation failed to start, error: " + e);
+			//}
 		} else {
 			System.err.println("Bad parameters, correct use: java Simulator filename_graph number_elevators number_persons");
 		}
@@ -79,17 +86,21 @@ public class Simulator {
 	 * Det är ju ett argument ja.. heh. nvm.
 	 */
 	private Graph createGraphOne() {
-		Graph graph = new Graph(11);
-		/* graph.addEdge(0, 1, 4);
-		graph.addEdge(1, 2, 4);
-		graph.addEdge(2, 3, 4);
-		graph.addEdge(3, 4, 1);
-		graph.addEdge(4, 5, 4);
-		graph.addEdge(5, 6, 4);
-		graph.addEdge(6, 7, 4);
-		graph.addEdge(7, 0, 1); */
-		
+		Graph graph = new Graph(3);
 		/* 
+		graph.addEdge(0, 1, 2);
+		graph.addEdge(1, 2, 2);
+		graph.addEdge(2, 3, 2);
+		graph.addEdge(3, 4, 2);
+		graph.addEdge(4, 5, 2);
+		graph.addEdge(5, 6, 2);
+		graph.addEdge(6, 7, 2);
+		graph.addEdge(7, 8, 2);
+		graph.addEdge(7, 10, 1);
+		graph.addEdge(10, 2, 1);
+		graph.addEdge(8, 9, 2);
+		graph.addEdge(9, 0, 2);
+
 		  _________________
 		 |                 |
 		 |   4       5     |
@@ -105,19 +116,12 @@ public class Simulator {
 		 
 		 
 		*/
-		graph.addEdge(0, 1, 2);
-		graph.addEdge(1, 2, 2);
-		graph.addEdge(2, 3, 2);
-		graph.addEdge(3, 4, 2);
-		graph.addEdge(4, 5, 2);
-		graph.addEdge(5, 6, 2);
-		graph.addEdge(6, 7, 2);
-		graph.addEdge(7, 8, 2);
-		graph.addEdge(7, 10, 1);
-		graph.addEdge(10, 2, 1);
-		graph.addEdge(8, 9, 2);
-		graph.addEdge(9, 0, 2);
-
+		
+		graph.addEdge(0, 1, 3);
+		graph.addEdge(1, 0, 3);
+		graph.addEdge(1, 2, 3);
+		graph.addEdge(2, 1, 3);
+		
 		return graph;
 	}
 

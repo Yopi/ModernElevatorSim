@@ -93,7 +93,6 @@ public class Elevator {
 		passengers = 0;
 		moving = false;
 		idle = true;
-		this.numDestinations = numDestinations;
 		jobs = new ArrayList<Job>();
 		persons = new HashMap<Integer, Double>();
 		distance = 0d;
@@ -166,17 +165,19 @@ public class Elevator {
 						} else if (jobs.get(i).to == nextNode && jobs.get(i).from < 0) {
 							// Drop of a person!
 							moving = false;
-							jobs.remove(i);
 							if (jobs.get(i).id < 0) {
 								// This was a job added by controller to get the elevator to move.
 								// The elevator is empty.
+								jobs.remove(i);
 								continue;
 							}
+							
 							building.dropOfPerson(jobs.get(i).id, (distance - persons.get(jobs.get(i).id)));
 							if (DEBUG) {
 								System.out.println("Elevator " + id + " droppped of person "  +jobs.get(i).id);
 							}
 							persons.remove((Integer)jobs.get(i).id);	// Removes the person as an object.
+							jobs.remove(i);
 							openDoors();
 						}
 					}
@@ -325,10 +326,12 @@ public class Elevator {
 	 * @returns: true or false depending on if the add was successful.
 	 */
 	public boolean addJob(int from, int to, int id) {
-		if (!(validTarget(to))) {
+		if (!(building.legalNode(to))) {
+			System.err.println("Not a valid target: " + to);
 			return false;
 		}
 		if (from == to) {
+			System.err.println("Already there!");
 			return true;	// Already there!
 		}
 		jobs.add(new Job(from, to, id));
@@ -431,17 +434,6 @@ public class Elevator {
 			step = step - 0.2;
 		}
 		return step;
-	}
-	
-	/*
-	 * Checks if the target is valid within the graph.
-	 */
-	private boolean validTarget(int target) {
-		if (target < numDestinations && target > 0) {
-			return true;
-		} else {
-			return false;
-		}
 	}
 	
 }

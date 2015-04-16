@@ -15,6 +15,7 @@ public class Person {
 	static final int STATUS_IDLE = 0;
 	static final int STATUS_WAITING = 1;
 	static final int STATUS_ELEVATORING = 2;
+	static final boolean DEBUG = true;
 	
 	Building building;
 	Controller controller;
@@ -31,6 +32,7 @@ public class Person {
 	
 	int currentFloor;	// The position of the person.
 	int workFloor; // The floor that the person works on.
+	int nextFloor;
 	
 	int maxMeetings = 5;
 	int status;
@@ -44,11 +46,11 @@ public class Person {
 		this.stats = stats;
 		this.second = second;
 		
-		beginWork = (int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
-		endWork = (int)((hour * 17) + rand.nextGaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
-		lunchTime = (int)((hour * 12) + (rand.nextGaussian() * hour));			// Random time for lunch, +- 1 hour.
-		backFromLunch = lunchTime + (int)(2700 * second); // 45 minutes lunch
-		workFloor = rand.nextInt(building.graph.getNumNodes());
+		beginWork = (int)(hour * 8); //(int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+		endWork = (int)(hour * 8) + 80; //(int)((hour * 17) + rand.nextGaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
+		lunchTime = (int)(hour * 8) + 30; //(int)((hour * 12) + (rand.nextGaussian() * hour));			// Random time for lunch, +- 1 hour.
+		backFromLunch = lunchTime + 25; // (int)(2700 * second); // 45 minutes lunch
+		workFloor = id+1; //rand.nextInt(building.graph.getNumNodes());
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 		
 		/*Meeting[] meetings = new Meeting[maxMeetings];
@@ -80,24 +82,36 @@ public class Person {
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
 				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id));
+				currentFloor = nextFloor;
 				status = STATUS_IDLE;
 			}
 		}
 		
 		if (status == STATUS_IDLE) {
+			if(DEBUG)
+				System.out.println("time: " + time + " == " + beginWork);
+			
 			if (time == beginWork) {
 				startElevator(time);
 				controller.requestElevator(currentFloor, workFloor, id);
+				nextFloor = workFloor;
 			} else if(time == endWork) {
 				startElevator(time);
 				controller.requestElevator(currentFloor, 0, id);
+				nextFloor = 0;
 			} else if(time == lunchTime) {
 				startElevator(time);
 				controller.requestElevator(currentFloor, 0, id);
+				nextFloor = 0;
 			} else if(time == backFromLunch) {
 				startElevator(time);
 				controller.requestElevator(currentFloor, workFloor, id);
+				nextFloor = workFloor;
 			}
+		}
+		
+		if(DEBUG) {
+			System.out.println("Person: status:" + status + ", current floor:" + currentFloor);
 		}
 	}
 

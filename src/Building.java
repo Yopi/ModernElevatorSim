@@ -13,10 +13,9 @@
  * @version 2015-03-26
  */
 import java.util.ArrayList;
-import java.util.HashMap;
-
 
 public class Building {
+	final static boolean DEBUG = true;
 	
 	Graph graph;
 	Elevator[] elevators;
@@ -26,7 +25,14 @@ public class Building {
 	public Building(Graph graph, int numPersons, int numElevators) {
 		this.graph = graph;
 		elevators = new Elevator[numElevators];
+		for(int i = 0; i < numElevators; i++) {
+			addElevator(i, 0d);
+		}
+		
 		persons = new ArrayList<Person>(numPersons);
+		for(int i = 0; i < numPersons; i++) {
+			addPerson(i);
+		}
 		nodes = new int[this.graph.getNumNodes()];
 	}
 	
@@ -149,6 +155,9 @@ public class Building {
 	 * @returns: true if the elevator can continue, false if it should slow down.
 	 */
 	public boolean checkEmptyAhead(int from, int to, double position, int eid) {
+		if(DEBUG) System.err.println("from: " + from +", to: " + to + ", position: " + position);
+		if(from == to && position < 0.01) return true;
+		
 		if (graph.getEdgeWeight(from, to) - position <= 1.0) {
 			int owner = lockNode(to, eid);
 			if (owner == eid) {
@@ -159,9 +168,15 @@ public class Building {
 			}
 		}
 		for (int i = 0; i < elevators.length; i++) {
+			if (i == eid) continue;
 			if (elevators[i].nextNode == to && elevators[i].prevNode == from) {
+				if (DEBUG) {
+					System.out.println("There was an elevator on the same edge");
+				}
 				// This elevator is on the same edge
 				if (elevators[i].position < position + 2.1) {
+					if (DEBUG)
+						System.out.println("There was an elevator less than 2.1 distance ahead");
 					// This elevator is is the way of the checking elevator.
 					move(i, eid);
 					return false;
@@ -259,6 +274,7 @@ public class Building {
 	 * @return: id of elevator that locked it, own id.
 	 */
 	private int lockNode(int node, int eid) {
+		if (DEBUG) System.out.println("Locking node " + node + " for elevator " + eid);
 		if (nodes[node] < 0) {
 			nodes[node] = eid;
 			return eid;
@@ -274,6 +290,7 @@ public class Building {
 	 * @return: void
 	 */
 	private void unlockNode(int node, int eid) {
+		if (DEBUG) System.out.println("Unlocking node " + node + " for elevator " + eid);
 		if (nodes[node] == eid) {
 			nodes[node] = -1;
 		} else {

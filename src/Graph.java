@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Set;
 
+
 /*
  * Class to represent a single directed graph with weighted edges to simulate length.
  * 
@@ -13,6 +14,7 @@ import java.util.Set;
 
 
 public class Graph {
+	public static boolean DEBUG = true;
 	
 	int numNodes;
 	int numEdges;
@@ -61,6 +63,8 @@ public class Graph {
 	 * @returns: the weight of the edge or zero in the case of no edge.
 	 */
 	public int getEdgeWeight(int from, int to) {
+		if(from == to) return 0;
+		
 		if (checkIndexes(from, to))
 			return graph[from].getWeight(graph[to]);
 		else
@@ -107,7 +111,15 @@ public class Graph {
 					} else {
 						shortestPath[i][j] = -1;
 					}
+				} else {
+					shortestPath[i][j] = i;
 				}
+			}
+		}
+		
+		if(DEBUG) {
+			for(int i = 0; i < getNumNodes(); i++) {
+				System.out.println(i + ": " + Arrays.toString(shortestPath[i]));
 			}
 		}
 	}
