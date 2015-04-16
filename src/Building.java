@@ -178,6 +178,7 @@ public class Building {
 				// This elevator is on the same edge
 				if (elevators[i].position < (position + 2.1) && elevators[i].position > position) {
 					// Bug, hissarna ställer sig på varandra.
+					// Jag vet vad buggen är.
 					if (DEBUG)
 						System.out.println("There was an elevator less than 2.1 distance ahead");
 					// This elevator is is the way of the checking elevator.

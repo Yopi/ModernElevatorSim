@@ -130,6 +130,7 @@ public class Elevator {
 			moving = true;
 			idle = false;
 			double distanceToImpact = building.checkEmptyAhead(prevNode, nextNode, position, id);
+			System.out.println("The distance to impact for elevator " + id + " was " + distanceToImpact);
 			if (distanceToImpact < 0 || distanceToImpact > step * 2) {
 				if (DEBUG) {
 					System.out.println("The path was clear ahead for elevator " + id);

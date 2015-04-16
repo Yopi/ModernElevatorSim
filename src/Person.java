@@ -74,7 +74,7 @@ public class Person {
 	 */
 	public void tick(int time) {
 		if (status == STATUS_WAITING) {
-			// try { Thread.sleep(5000); } catch (Exception e){}
+			try { Thread.sleep(5000); } catch (Exception e){}
 			
 			if(building.isInElevator(id)) {
 				stats.addWaitingTime(id, (time - startTime));
