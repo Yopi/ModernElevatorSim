@@ -88,7 +88,7 @@ public class Controller {
 			
 			moving = building.elevatorMovedBy(elevators[i].id);
 			if (moving >= 0) {
-				System.out.println("elevator " + elevators[i].id + " asked to move by elevator " + moving);
+				System.out.println("elevator " + elevators[i].id + " was asked to move by elevator " + moving);
 				neighbors = building.getNodeNeighbours(elevators[i].getNextNode());
 				for (int j = 0; j < neighbors.size(); j++) {
 					if (elevators[moving].getJobs().get(0).from >= 0) {

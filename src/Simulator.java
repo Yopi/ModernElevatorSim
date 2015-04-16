@@ -70,7 +70,7 @@ public class Simulator {
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 3) {
-			new Simulator(args[0], 100, 2);
+			new Simulator(args[0], 100, 4);
 			//try {
 			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 			//} catch (Exception e) {
