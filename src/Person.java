@@ -37,6 +37,7 @@ public class Person {
 	int maxMeetings = 5;
 	int status;
 	int startTime;
+	Random rand;
 	
 	public Person(int id, Building building, Controller controller, Statistics stats, Random rand, double second) {
 		double hour = 3600 * second;
@@ -45,10 +46,11 @@ public class Person {
 		this.controller = controller;
 		this.stats = stats;
 		this.second = second;
+		this.rand = rand;
 		
-		beginWork = (int)((hour * 8) + (rand.nextGaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
-		endWork = (int)((hour * 17) + rand.nextGaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
-		lunchTime = (int)((hour * 12) + (rand.nextGaussian() * hour));			// Random time for lunch, +- 1 hour.
+		beginWork = (int)((hour * 8) + (gaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+		endWork = (int)((hour * 17) + gaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
+		lunchTime = (int)((hour * 12) + (gaussian() * hour));			// Random time for lunch, +- 1 hour.
 		backFromLunch = (int)(lunchTime + 2700 * second); // 45 minutes lunch
 		workFloor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
@@ -65,6 +67,14 @@ public class Person {
 		}*/
 		
 		status = STATUS_IDLE;
+	}
+	
+	private double gaussian() {
+		double g = rand.nextGaussian();
+		if(g > 2) g = 2 + rand.nextDouble()*0.5;
+		if(g < -2) g = -(2 + rand.nextDouble()*0.5);
+		
+		return g;
 	}
 	
 	/*
@@ -88,8 +98,10 @@ public class Person {
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
-				try { Thread.sleep(5000); } catch (Exception e) {}
+				try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
 				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
+				System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
+
 				currentFloor = nextFloor;
 				status = STATUS_IDLE;
 			}

@@ -26,7 +26,7 @@ public class Simulator {
 	double hour = 3600 * second;
 	int time;
 	int hours = 0;
-	int days = 10;
+	static int days = 10;
 
 	public Simulator(String filename, int numPersons, int numElevators) {
 		rand = new Random();
@@ -49,19 +49,21 @@ public class Simulator {
 		/*
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
-		int limit = ((int)hour * hours) + ((int)hour * 24 * days);
-		time = (int)(8 * hour) - 1; 
+		int limit = ((int)hour * hours) + ((int)hour * 24);
+		time = (int)(6 * hour) - 1; 
 		for (; time < limit; time++) {
 			int localTime = time % (int)(hour * 24);
-			// System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
+			System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
 			controller.tick(localTime);
 			
 			for(Elevator e : elevators) { e.tick(localTime); }
 			for(Person p : persons) { p.tick(localTime); }
 
+			/*
 			try {
-				//Thread.sleep(30);
+				Thread.sleep(1);
 			} catch (Exception e) {}
+			*/
 		}
 		stats.db.dispose();
 	}
@@ -69,7 +71,10 @@ public class Simulator {
 	public static void main(String[] args) {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 0) {
-			new Simulator("args[0]", 1, 8);
+			for(int i = 0; i < days; i++) {
+				new Simulator("args[0]", 1, 8);
+			}
+			
 			//try {
 			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 			//} catch (Exception e) {

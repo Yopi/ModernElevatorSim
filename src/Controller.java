@@ -80,7 +80,7 @@ public class Controller {
 			if (!elevators[i].idle) {
 				// The elevator is working on stuff. Let it do so.
 				moving = building.elevatorMovedBy(elevators[i].id);
-				if (moving >= 0 && elevators[moving].getJobs().size() == 0) {
+				if (moving >= 0) {
 					building.resetMove(elevators[i].id);
 				}
 				continue;

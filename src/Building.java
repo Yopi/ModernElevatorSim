@@ -11,7 +11,7 @@
 import java.util.ArrayList;
 
 public class Building {
-	final static boolean DEBUG = false;
+	final static boolean DEBUG = true;
 	
 	Graph graph;
 	Elevator[] elevators;
@@ -163,22 +163,20 @@ public class Building {
 	public double checkEmptyAhead(int from, int to, double position, int eid) {
 		// Returnera boolean med avstånd till hinder. Elevator tar hänsyn till det genom
 		// att ta beslut om nör det är nödvändigt att stanna.
-		if(DEBUG) System.err.println("from: " + from +", to: " + to + ", position: " + position);
+		//if(DEBUG) System.err.println("from: " + from +", to: " + to + ", position: " + position);
 		if(from == to && position < 0.01) return -1d;
 		
 		// First check if there is any other elevator ahead
 		for (int i = 0; i < elevators.length; i++) {
 			if (i == eid) continue;
 			if (elevators[i].nextNode == to && elevators[i].prevNode == from) {
-				if (DEBUG) {
-					System.out.println("There was an elevator on the same edge, elevator " + i);
-				}
+				//if (DEBUG) System.out.println("There was an elevator on the same edge, elevator " + i);
 				// This elevator is on the same edge
 				if (elevators[i].position < (position + 2.1) && elevators[i].position > position) {
-					if (DEBUG)
-						System.out.println("There was an elevator less than 2.1 distance ahead");
+					//if (DEBUG) System.out.println("There was an elevator less than 2.1 distance ahead");
 					// This elevator is is the way of the checking elevator.
-					move(i, eid);
+					move(elevators[i].id, eid); 
+					if (DEBUG) System.out.println("Elevator "+eid+" asked elevator "+elevators[i].id+" to move because distance.");
 					return elevators[i].position - position;
 				}
 			}
@@ -191,6 +189,7 @@ public class Building {
 				return -1d;
 			} else {
 				move(owner, eid);
+				if (DEBUG) System.out.println("Elevator "+eid+" asked elevator "+owner+" to move because node.");
 				return graph.getEdgeWeight(from, to) - position;
 			}
 		}
@@ -204,7 +203,7 @@ public class Building {
 	 * @param eid	elevator id
 	 */
 	public void resetMove(int eid) {
-		System.out.println("RESET MOVE PLZ " + eid);
+		System.out.println("Elevator "+eid+" reset move request from elevator " + elevators[eid].move);
 		elevators[eid].move = -1;
 	}
 	
@@ -310,10 +309,10 @@ public class Building {
 				// And the queue was not populated
 				nodes[node] = eid;
 			}
-			if (DEBUG) System.out.println("Locking node " + node + " for elevator " + eid);
+			if (DEBUG) System.out.println("Elevator " + eid + " locked node " + node);
 			return eid;
 		}
-		if (DEBUG) System.out.println("Failed to lock node " + node + " for elevator " + eid);
+		if (DEBUG) System.out.println("Elevator " + eid + " Failed to lock node " + node);
 		if (!lockQueue.get(node).contains(eid)) {
 			lockQueue.get(node).add(eid);
 		}
@@ -328,7 +327,7 @@ public class Building {
 	 * @return: void
 	 */
 	private void unlockNode(int node, int eid) {
-		if (DEBUG) System.out.println("Unlocking node " + node + " for elevator " + eid);
+		
 		if (nodes[node] == eid) {
 			// This check on lockQueue could probably be easier since it will always
 			// be the first element. Can i count on that? Probably.
@@ -337,6 +336,7 @@ public class Building {
 				lockQueue.get(node).remove((Integer)eid); // Remove the object, not the index. Hopefully.
 			}
 			nodes[node] = -1;
+			if (DEBUG) System.out.println("Elevator " + eid + " unlocked node " + node);
 		} else {
 			// No unlocks for you.
 		}
