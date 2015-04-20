@@ -36,6 +36,10 @@ import java.util.Iterator;
 public class Controller {
 	public static boolean DEBUG = true;
 	private int ACTIVE_ALGORITHM = 1;
+	static final int ALGORITHM_NC = 1;
+	static final int ALGORITHM_ZONE = 2;
+	static final int ALGORITHM_SEARCH = 3;	
+
 	
 	Elevator[] elevators;
 	Building building;
@@ -75,6 +79,14 @@ public class Controller {
 	 * @returns: void
 	 */
 	public void tick(int time) {
+		if(ACTIVE_ALGORITHM == ALGORITHM_NC) {
+			nearestCarTick(time);
+		} else if(ACTIVE_ALGORITHM == ALGORITHM_ZONE) {
+			zoneTick(time);
+		} else if(ACTIVE_ALGORITHM == ALGORITHM_SEARCH) {
+			searchTick(time);
+		}
+		
 		int moving;
 		ArrayList<Integer> neighbors;
 		int moveTo = -1;
@@ -122,6 +134,10 @@ public class Controller {
 		}
 	}
 	
+	private void nearestCarTick(int time) {}
+	private void searchTick(int time) {}
+	private void zoneTick(int time) {}
+	
 	
 	/**
 	 * Search based heuristic.
@@ -136,6 +152,9 @@ public class Controller {
 		
 	}
 	
+	
+	int[][] assignedLoops = new int[][];
+	
 	/**
 	 * Zone based heuristic.
 	 * Divides the elevators into different zones in the graph and only 
@@ -147,7 +166,7 @@ public class Controller {
 	 * @param id
 	 */
 	private void zoneBased(int from, int to, int id) {
-		
+
 	}
 	
 	/*

@@ -71,6 +71,10 @@ public class Graph {
 			return -1;
 	}
 	
+	public void addLoop(int[] nodes) {
+				
+	}
+	
 	/*
 	 * Method to get the number of nodes in the graph.
 	 * @param: None

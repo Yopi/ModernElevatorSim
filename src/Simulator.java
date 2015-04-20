@@ -112,15 +112,13 @@ public class Simulator {
 
 		  _________________
 		 |                 |
-		 |   4       5     |
-		 |                 |
-		 |   3       6     |
-		 |                 |
-		 |   2   10  7     |
-		 |                 |
-		 |   1       8     |
-		 |                 |
-		 |   0       9     |
+		 |   3 > 4         |
+		 |   ^   v         |
+		 |   2 > 5         |
+		 |   ^   v         |
+		 |   1 < 6 		   |
+		 |   ^   v         |
+		 |   0 > 7         |
 		 |_________________|
 		 
 		 
@@ -135,6 +133,10 @@ public class Simulator {
 		graph.addEdge(6, 7, 3);
 		graph.addEdge(6, 1, 2);
 		graph.addEdge(7, 0, 2);
+		
+		graph.addLoop(new int[]{0, 1, 2, 5, 6, 7});
+		graph.addLoop(new int[]{1, 2, 3, 4, 5, 6});
+		graph.addLoop(new int[]{1, 2, 5, 6});
 
 		
 		return graph;
