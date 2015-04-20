@@ -35,7 +35,7 @@ import java.util.Iterator;
  */
 public class Controller {
 	public static boolean DEBUG = true;
-	private int ACTIVE_ALGORITHM = 1;
+	private int ACTIVE_ALGORITHM = -1;
 	static final int ALGORITHM_NC = 1;
 	static final int ALGORITHM_ZONE = 2;
 	static final int ALGORITHM_SEARCH = 3;	
@@ -66,7 +66,13 @@ public class Controller {
 			System.out.println("Adding JOB: " + from + " -> " + to);
 			System.out.println("===============");
 		}
-		nearestCar(from, to, id);
+		if (ACTIVE_ALGORITHM == ALGORITHM_NC) {
+			System.out.println("Nearest car heuristic.");
+			nearestCar(from, to, id);
+		} else if (ACTIVE_ALGORITHM == ALGORITHM_SEARCH) {
+			if (DEBUG) System.out.println("Search based heuristic.");
+			searchBased(from, to, id);
+		}
 		return true;
 	}
 	
@@ -137,10 +143,10 @@ public class Controller {
 	private void nearestCarTick(int time) {}
 	private void searchTick(int time) {}
 
-	int[][] assignedLoops = new int[][];
+	//int[][] assignedLoops = new int[][];
 	private void zoneTick(int time) {
 		// Verify that all elevators have zones and are within those zones
-		for (int i = 0; i < elevators.length; i++) {
+		/*for (int i = 0; i < elevators.length; i++) {
 			Elevator e = elevators[i];
 			int next = e.getNextNode();
 			if(assignedLoops[e.id] == null) {
@@ -158,8 +164,10 @@ public class Controller {
 			if(!inLoop) {
 				// Give them a new loop
 			}
-		}
+		}*/
 	}
+	
+	
 	
 	
 	/**
@@ -172,6 +180,10 @@ public class Controller {
 	 * @param id
 	 */
 	private void searchBased(int from, int to, int id) {
+		searchBased(from, to, id, elevators);
+	}
+	
+	private void searchBased(int from, int to, int id, Elevator[] elevators) {
 		/*
 		 * Look for the difference in distance for all elevators
 		 * for their jobs if they get the new job. 
@@ -210,10 +222,12 @@ public class Controller {
 				// The elevator has active jobs.
 				int[][] jobsMatrix = copyJobsToMatrix(jobs);
 				int preDist = distanceJobs(jobsMatrix, elevators[i].getNextNode());
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" distance to perform current work: " + preDist);
 				jobs.add(job);
 				jobsMatrix = copyJobsToMatrix(jobs);
 				jobs = minimizeTravel(jobs, null, elevators[i].id, 0);
 				int postDist = distanceJobs(jobsMatrix, elevators[i].getNextNode());
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" distance to perform added work: " + postDist);
 				int penalty = 0;
 				int next = elevators[i].getNextNode();
 				while (next != to) {
@@ -228,6 +242,8 @@ public class Controller {
 						}
 					}
 				}
+
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" penalty for stopping: " + penalty);
 				if (minDist > (postDist - preDist) + penalty) {
 					minDist = (postDist - preDist) + penalty;
 					mindex = i;
@@ -242,6 +258,7 @@ public class Controller {
 					next = building.getNextNodeInPath(next, target);
 					dist += building.getDistance(tmp, next);
 				}
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" is idle, distance to 'from': " + dist);
 				// Distance is the distance for the elevator to travel to 'from'
 				if (minDist > dist) {
 					minDist = dist;
@@ -267,7 +284,7 @@ public class Controller {
 	 */
 	private void zoneBased(int from, int to, int id) {
 		// Find out if person wants to go from/to one single zone
-		boolean halfInZone = false;
+		/*boolean halfInZone = false;
 		ArrayList<Integer> fullyInZone = new ArrayList<Integer>();
 		for(int i = 0; i < building.graph.getLoops().size(); i++) {
 			halfInZone = false;
@@ -306,11 +323,24 @@ public class Controller {
 		}
 		
 		// Check which elevators are assigned to the zones
+		// elevatorInZone[zoneID] = elevatorID
 		for(int i : fullyInZone) {
+			int elevatorIndex = -1;
+			for (int j = 0; j < elevators.length; j++) {
+				if (elevators[j].id == elevatorInZone[i]) {
+					elevatorIndex = elevators[j].id;
+					break;
+				}
+			}
+			if (elevators[elevatorIndex].getJobs().size() > 0) {
+				// It has jobs.
+				
+			}
 			if(elevatorInZone[i]) {
 				// Check if they have a job
+				
 			}
-		}
+		}*/
 	}
 	
 	/*
@@ -372,7 +402,7 @@ public class Controller {
 		//System.out.println("minimize travel");
 		//System.out.println("---");
 		// Base case 1
-		if(jobs.size() == 0) {
+		if(jobs.size() <= 1) {
 			return jobs;
 		}
 		

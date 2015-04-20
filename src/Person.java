@@ -47,12 +47,26 @@ public class Person {
 		this.stats = stats;
 		this.second = second;
 		this.rand = rand;
+		if (id == 0)
+			currentFloor = id; // TODO: remove
+		else
+			currentFloor = 7;
 		
 		beginWork = (int)((hour * 8) + (gaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
+		if (id == 0) { // TODO: remove
+			beginWork = (int)((hour * 8) + 5);
+		} else {
+			beginWork = (int)((hour * 8) + 0);
+		}
 		endWork = (int)((hour * 17) + gaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
 		lunchTime = (int)((hour * 12) + (gaussian() * hour));			// Random time for lunch, +- 1 hour.
 		backFromLunch = (int)(lunchTime + 2700 * second); // 45 minutes lunch
 		workFloor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		if (id == 0) { // TODO: remove
+			workFloor = 5;
+		} else {
+			workFloor = 4;
+		}
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 		
 		/*Meeting[] meetings = new Meeting[maxMeetings];
@@ -84,7 +98,7 @@ public class Person {
 	 */
 	public void tick(int time) {
 		if (status == STATUS_WAITING) {
-			try { Thread.sleep(5000); } catch (Exception e){}
+			//try { Thread.sleep(5000); } catch (Exception e){}
 			
 			if(building.isInElevator(id)) {
 				stats.addWaitingTime(id, (time - startTime));
@@ -98,7 +112,7 @@ public class Person {
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
-				try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
+				//try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
 				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
 				System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
 
