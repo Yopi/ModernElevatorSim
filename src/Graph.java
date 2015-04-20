@@ -14,7 +14,7 @@ import java.util.Set;
 
 
 public class Graph {
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 	
 	int numNodes;
 	int numEdges;
@@ -114,7 +114,7 @@ public class Graph {
 		for(int i = 0; i < getNumNodes(); i++) {
 			for(int j = 0; j < getNumNodes(); j++) {
 				if(i != j) {
-					System.out.println("From: " + i + " to " + j);
+					if(DEBUG) System.out.println("From: " + i + " to " + j);
 					Integer[] p = dijkstra(i, j);
 					if(p != null) {
 						shortestPath[i][j] = p[0];

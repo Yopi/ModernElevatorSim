@@ -11,7 +11,7 @@
 import java.util.ArrayList;
 
 public class Building {
-	final static boolean DEBUG = true;
+	final static boolean DEBUG = false;
 	
 	Graph graph;
 	Elevator[] elevators;
@@ -203,7 +203,7 @@ public class Building {
 	 * @param eid	elevator id
 	 */
 	public void resetMove(int eid) {
-		System.out.println("Elevator "+eid+" reset move request from elevator " + elevators[eid].move);
+		if(DEBUG) System.out.println("Elevator "+eid+" reset move request from elevator " + elevators[eid].move);
 		elevators[eid].move = -1;
 	}
 	

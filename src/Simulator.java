@@ -60,7 +60,7 @@ public class Simulator {
 		time = (int)(8 * hour) - 30; 
 		for (; time < limit; time++) {
 			int localTime = time % (int)(hour * 24);
-			System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
+			//System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
 			controller.tick(localTime);
 			
 			for(Elevator e : elevators) { e.tick(localTime); }

@@ -38,7 +38,7 @@ import java.util.Map;
  * Date: 2015-03-30
  */
 public class Controller {
-	public static boolean DEBUG = true;
+	public static boolean DEBUG = false;
 	private int ACTIVE_ALGORITHM = -1;
 	static final int ALGORITHM_NC = 1;
 	static final int ALGORITHM_ZONE = 2;
@@ -117,7 +117,7 @@ public class Controller {
 			
 			moving = building.elevatorMovedBy(elevators[i].id);
 			if (moving >= 0) {
-				System.out.println("elevator " + elevators[i].id + " was asked to move by elevator " + moving);
+				if(DEBUG) System.out.println("elevator " + elevators[i].id + " was asked to move by elevator " + moving);
 				neighbors = building.getNodeNeighbours(elevators[i].getNextNode());
 				if (elevators[moving].getJobs().size() == 0) {
 					building.resetMove(elevators[i].id);
@@ -591,6 +591,7 @@ public class Controller {
 	 * Prints an array of jobs, to be able to see what happens.
 	 */
 	private void printJobList(ArrayList<Job> jobs) {
+		if(!DEBUG) return;
 		System.out.println("Jobs:");
 		for (int i = 0; i < jobs.size(); i++) {
 			System.out.println("==");
