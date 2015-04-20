@@ -35,13 +35,15 @@ import java.util.Iterator;
  */
 public class Controller {
 	public static boolean DEBUG = true;
+	private int ACTIVE_ALGORITHM = 1;
 	
 	Elevator[] elevators;
 	Building building;
 	
-	public Controller(Elevator[] elevators, Building building) {
+	public Controller(Elevator[] elevators, Building building, int algorithm) {
 		this.elevators = elevators;
 		this.building = building;
+		ACTIVE_ALGORITHM = algorithm;
 	}
 	
 	/*

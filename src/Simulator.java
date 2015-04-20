@@ -28,17 +28,20 @@ public class Simulator {
 	int hours = 0;
 	static int days = 10;
 
-	public Simulator(String filename, int numPersons, int numElevators) {
+	static final int ALGORITHM_NC = 1;
+	static final int ALGORITHM_ZONE = 2;
+	static final int ALGORITHM_SEARCH = 3;	
+	public Simulator(String filename, int numPersons, int numElevators, int algorithm) {
 		rand = new Random();
 		graph = createGraphOne(); //new Graph(8);
-		stats = new Statistics("database.db", second);
+		stats = new Statistics("database.db", second, algorithm);
 		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
 			elevators[i] = new Elevator(i, building, i, second);
 		}
 		
-		controller = new Controller(elevators, building);
+		controller = new Controller(elevators, building, algorithm);
 		persons = new Person[numPersons];
 		for (int i = 0; i < persons.length; i++) {
 			persons[i] = new Person(i, building, controller, stats, rand, second);		
@@ -72,7 +75,7 @@ public class Simulator {
 		// Sanitize input and then start the simulation.
 		if (args.length >= 0) {
 			for(int i = 0; i < days; i++) {
-				new Simulator("args[0]", 1, 8);
+				new Simulator("args[0]", 1, 8, ALGORITHM_NC);
 			}
 			
 			//try {
