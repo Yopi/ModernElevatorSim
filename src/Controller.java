@@ -288,6 +288,7 @@ public class Controller {
 							}
 						}
 					}
+					next = building.getNextNodeInPath(next, to);
 				}
 
 				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" penalty for stopping: " + penalty);
