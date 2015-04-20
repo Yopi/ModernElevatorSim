@@ -114,7 +114,7 @@ public class Person {
 			if(!building.isInElevator(id)) {
 				//try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
 				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
-				System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
+				if(DEBUG) System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
 
 				currentFloor = nextFloor;
 				status = STATUS_IDLE;
@@ -126,22 +126,22 @@ public class Person {
 				System.out.println("time: " + time + " == " + beginWork);
 			
 			if (time == beginWork) {
-				System.out.println("PERSON ("+ id +") ARRIVES AT WORK");
+				if(DEBUG) System.out.println("PERSON ("+ id +") ARRIVES AT WORK");
 				startElevator(time);
 				controller.requestElevator(currentFloor, workFloor, id);
 				nextFloor = workFloor;
 			} else if(time == endWork) {
-				System.out.println("PERSON ("+ id +") GOES HOME");
+				if(DEBUG) System.out.println("PERSON ("+ id +") GOES HOME");
 				startElevator(time);
 				controller.requestElevator(currentFloor, 0, id);
 				nextFloor = 0;
 			} else if(time == lunchTime) {
-				System.out.println("PERSON ("+ id +") GOES TO LUNCH");
+				if(DEBUG) System.out.println("PERSON ("+ id +") GOES TO LUNCH");
 				startElevator(time);
 				controller.requestElevator(currentFloor, 0, id);
 				nextFloor = 0;
 			} else if(time == backFromLunch) {
-				System.out.println("PERSON ("+ id +") IS BACK FROM LUNCH");
+				if(DEBUG) System.out.println("PERSON ("+ id +") IS BACK FROM LUNCH");
 				startElevator(time);
 				controller.requestElevator(currentFloor, workFloor, id);
 				nextFloor = workFloor;
