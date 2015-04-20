@@ -68,7 +68,7 @@ public class Simulator {
 
 			
 			try {
-				Thread.sleep(900);
+				//Thread.sleep(900);
 			} catch (Exception e) {}
 			
 		}
