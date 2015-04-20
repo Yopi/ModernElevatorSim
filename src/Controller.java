@@ -216,6 +216,20 @@ public class Controller {
 		elevators[mindex].setJobs(jobs);
 	}
 	
+	/**
+	 * Zone based heuristic.
+	 * Divides the elevators into different zones in the graph and only 
+	 * lets them accept jobs from within the zones. If they leave the zone
+	 * another elevator should take its place, if possible.
+	 * 
+	 * @param from
+	 * @param to
+	 * @param id
+	 */
+	private void zoneBased(int from, int to, int id) {
+		
+	}
+	
 	/*
 	 * The nearest car heurestic.
 	 * When a new request arises, it simply checks for 
