@@ -136,7 +136,30 @@ public class Controller {
 	
 	private void nearestCarTick(int time) {}
 	private void searchTick(int time) {}
-	private void zoneTick(int time) {}
+
+	int[][] assignedLoops = new int[][];
+	private void zoneTick(int time) {
+		// Verify that all elevators have zones and are within those zones
+		for (int i = 0; i < elevators.length; i++) {
+			Elevator e = elevators[i];
+			int next = e.getNextNode();
+			if(assignedLoops[e.id] == null) {
+				// Assign a loop to the elevator
+			}
+			
+			// Make sure elevator is in their loop
+			boolean inLoop = false;
+			for(int n : assignedLoops[e.id]) {
+				if(next == n) {
+					inLoop = true;
+				}
+			}
+			
+			if(!inLoop) {
+				// Give them a new loop
+			}
+		}
+	}
 	
 	
 	/**
@@ -232,9 +255,6 @@ public class Controller {
 		elevators[mindex].setJobs(jobs);
 	}
 	
-	
-	int[][] assignedLoops = new int[][];
-	
 	/**
 	 * Zone based heuristic.
 	 * Divides the elevators into different zones in the graph and only 
@@ -246,7 +266,51 @@ public class Controller {
 	 * @param id
 	 */
 	private void zoneBased(int from, int to, int id) {
+		// Find out if person wants to go from/to one single zone
+		boolean halfInZone = false;
+		ArrayList<Integer> fullyInZone = new ArrayList<Integer>();
+		for(int i = 0; i < building.graph.getLoops().size(); i++) {
+			halfInZone = false;
+			int[] zone = building.graph.getLoops().get(i);
+			for(int z : zone) {
+				if((z == from || z == to) && halfInZone) {
+					fullyInZone.add(i);
+					break;
+				}
 
+				if(z == from) {
+					halfInZone = true;
+				} else if(z == to) {
+					halfInZone = true;
+				}
+			}
+		}
+		
+		// If not, get the zone they're going from
+		if(fullyInZone.isEmpty()) {
+			for(int i = 0; i < building.graph.getLoops().size(); i++) {
+				int[] zone = building.graph.getLoops().get(i);
+				for(int z : zone) {
+					if(z == from) {
+						fullyInZone.add(i);
+						break;
+					}
+				}
+			}
+		}
+		
+		if(fullyInZone.isEmpty()) {
+			for(Elevator e : elevators) {
+				fullyInZone.add(e.id);
+			}
+		}
+		
+		// Check which elevators are assigned to the zones
+		for(int i : fullyInZone) {
+			if(elevatorInZone[i]) {
+				// Check if they have a job
+			}
+		}
 	}
 	
 	/*

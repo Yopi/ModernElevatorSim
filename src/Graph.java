@@ -20,6 +20,7 @@ public class Graph {
 	int numEdges;
 	Node[] graph;
 	int[][] shortestPath;
+	ArrayList<int[]> loops;
 	
 	
 	/*
@@ -28,7 +29,8 @@ public class Graph {
 	public Graph(int numNodes) {
 		this.numNodes = numNodes;
 		shortestPath = new int[this.numNodes][this.numNodes]; // [From][To]
-
+		loops = new ArrayList<int[]>();
+		
 		graph = new Node[this.numNodes];
 		for(int i = 0; i < numNodes; i++) {
 			graph[i] = new Node(i);
@@ -72,7 +74,11 @@ public class Graph {
 	}
 	
 	public void addLoop(int[] nodes) {
-				
+		loops.add(nodes);
+	}
+	
+	public ArrayList<int[]> getLoops() {
+		return loops;
 	}
 	
 	/*
