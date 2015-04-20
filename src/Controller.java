@@ -332,7 +332,9 @@ public class Controller {
 	 */
 	private void zoneBased(int from, int to, int id) {
 		// Find out if person wants to go from/to one single zone
-		/*boolean halfInZone = false;
+		
+		// Approach 1 : Not hard coding zones.
+		boolean halfInZone = false;
 		ArrayList<Integer> fullyInZone = new ArrayList<Integer>();
 		for(int i = 0; i < building.graph.getLoops().size(); i++) {
 			halfInZone = false;
@@ -365,30 +367,24 @@ public class Controller {
 		}
 		
 		if(fullyInZone.isEmpty()) {
-			for(Elevator e : elevators) {
-				fullyInZone.add(e.id);
+			for(int i = 0; i < building.graph.getLoops().size(); i++) {
+				fullyInZone.add(i);
 			}
 		}
 		
 		// Check which elevators are assigned to the zones
-		// elevatorInZone[zoneID] = elevatorID
+		// elevatorInZone[elevator ID] = zone ID
+		int elevatorID = -1;
+		ArrayList<Elevator> elevatorToUse = new ArrayList<Elevator>();
 		for(int i : fullyInZone) {
-			int elevatorIndex = -1;
-			for (int j = 0; j < elevators.length; j++) {
-				if (elevators[j].id == elevatorInZone[i]) {
-					elevatorIndex = elevators[j].id;
-					break;
+			for(int z = 0; z < elevatorInZone.length; z++) {
+				if(elevatorInZone[z] == i) {
+					elevatorToUse.add(elevators[z]);
 				}
 			}
-			if (elevators[elevatorIndex].getJobs().size() > 0) {
-				// It has jobs.
-				
-			}
-			if(elevatorInZone[i]) {
-				// Check if they have a job
-				
-			}
-		}*/
+		}
+
+		searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()])) ;
 	}
 	
 	/*
