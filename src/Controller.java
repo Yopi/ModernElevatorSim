@@ -122,6 +122,20 @@ public class Controller {
 		}
 	}
 	
+	
+	/**
+	 * Search based heuristic.
+	 * It aims to minimize the waiting times for the persons
+	 * by minimizing travel distances and parallelising the 
+	 * jobs.
+	 * @param from
+	 * @param to
+	 * @param id
+	 */
+	private void searchBased(int from, int to, int id) {
+		
+	}
+	
 	/*
 	 * The nearest car heurestic.
 	 * When a new request arises, it simply checks for 

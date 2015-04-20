@@ -379,6 +379,7 @@ public class Elevator {
 	 * @returns: void
 	 */
 	private void openDoors() {
+		// TODO: Increment when this is called on, to increase and decrease time for doors open.
 		doorOpening = (int)(second * 5);
 	}
 	
