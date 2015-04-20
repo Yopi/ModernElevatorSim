@@ -540,9 +540,14 @@ public class Controller {
 					}
 				}
 				
-				if(position == target) arrived = true;
+				if(position == target) {
+					arrived = true;
+					continue;
+				}
 				int nextNode = building.getNextNodeInPath(position, target);
+				//if (DEBUG) System.out.println("j[0][1]: " + jobs[0][1] + " j[0][2]: " + jobs[0][2] + "position: "+position+ " preDist: "+ distance);
 				distance += building.getDistance(position, nextNode);
+				//if (DEBUG) System.out.println("j[0][1]: " + jobs[0][1] + " j[0][2]: " + jobs[0][2] + "position: "+position+ " postDist: "+ distance);
 				position = nextNode;
 			}
 		}
