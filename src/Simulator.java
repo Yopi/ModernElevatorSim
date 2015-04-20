@@ -68,7 +68,7 @@ public class Simulator {
 
 			
 			try {
-				Thread.sleep(900);
+				//Thread.sleep(900);
 			} catch (Exception e) {}
 			
 		}
@@ -76,20 +76,12 @@ public class Simulator {
 	}
 	
 	public static void main(String[] args) {
-		// Sanitize input and then start the simulation.
-		if (args.length >= 0) {
-			for(int i = 0; i < days; i++) {
-				new Simulator("args[0]", 2, 2, ALGORITHM_SEARCH);
-			}
-			
-			//try {
-			//new Simulator(args[0], Integer.parseInt(args[1]), Integer.parseInt(args[2]));
-			//} catch (Exception e) {
-			//	System.err.println("Simulation failed to start, error: " + e);
-			//}
-		} else {
-			System.err.println("Bad parameters, correct use: java Simulator filename_graph number_elevators number_persons");
+		long startTime = System.currentTimeMillis();
+		for(int i = 0; i < days; i++) {
+			new Simulator("args[0]", 2, 2, ALGORITHM_SEARCH);
 		}
+		long endTime = System.currentTimeMillis();
+		System.out.println((endTime - startTime) + "ms");
 	}
 	
 	/*
