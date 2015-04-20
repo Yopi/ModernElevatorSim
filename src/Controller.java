@@ -76,7 +76,7 @@ public class Controller {
 			System.out.println("===============");
 		}
 		if (ACTIVE_ALGORITHM == ALGORITHM_NC) {
-			System.out.println("Nearest car heuristic.");
+			if(DEBUG) System.out.println("Nearest car heuristic.");
 			nearestCar(from, to, id);
 		} else if (ACTIVE_ALGORITHM == ALGORITHM_SEARCH) {
 			if (DEBUG) System.out.println("Search based heuristic.");
