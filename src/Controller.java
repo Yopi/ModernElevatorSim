@@ -210,6 +210,10 @@ public class Controller {
 				}
 			}
 		}
+		ArrayList<Job> jobs = elevators[mindex].getJobs();
+		jobs.add(job);
+		jobs = minimizeTravel(jobs, null, elevators[mindex].id, 0);
+		elevators[mindex].setJobs(jobs);
 	}
 	
 	/*
