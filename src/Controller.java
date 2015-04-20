@@ -149,7 +149,87 @@ public class Controller {
 	 * @param id
 	 */
 	private void searchBased(int from, int to, int id) {
-		
+		/*
+		 * Look for the difference in distance for all elevators
+		 * for their jobs if they get the new job. 
+		 * Den prioriteringne ligger iofs i att minimera rörelse.
+		 * Bättre borde ju vara att ge det till hissen som med
+		 * lite arbete kan ta sig till platsen, och sedan utföra
+		 * det ganska så fort, för att minimera arbetet för åkaren.
+		 * Samtidigt så kan ju närmaste hissen bli fett keff
+		 * om den har massa jobb köade så att personen behöver
+		 * vänta vid våningar på omvägar.
+		 * 
+		 * Så...
+		 * (Ta hänsyn till min. distance att utföra jobbet)
+		 * Om jobb -> Se hur distance påverkas av att lägga till
+		 * extra jobbet.
+		 * Om inget jobb -> Se vad distance är för att hämta upp personen
+		 * och ge det en positiv fördel för att utföra det, eftersom
+		 * det paralelliserar processen och inte låter andra vänta.
+		 * Ingen positiv vikt nu, det är bättre om ett existerande
+		 * jobb gör saker eftersom det annars kan riskera att det köas
+		 * upp hissar vilket kan ge dumma väntetider när dörrar är öppna.
+		 * 
+		 * Diskussion: Rätt svårt att avgöra däremot hur det kommer
+		 * leda till köer i hissystemet. Det går att avgöra just nu hur
+		 * det kan se ut, att däremot i ett rörande system göra det
+		 * skulle innebära att låta ticks gå och förutse vad varje
+		 * hiss ska göra (görbart) men ja, då närmar vi oss någon slags total-
+		 * sökning.
+		 */
+		Job job = new Job(from, to, id);
+		int minDist = Integer.MAX_VALUE;
+		int mindex = 0;
+		for (int i = 0; i < elevators.length; i++) {
+			ArrayList<Job> jobs = copyJobs(elevators[i].getJobs());
+			if (jobs.size() > 0) {
+				// The elevator has active jobs.
+				int[][] jobsMatrix = copyJobsToMatrix(jobs);
+				int preDist = distanceJobs(jobsMatrix, elevators[i].getNextNode());
+				jobs.add(job);
+				jobsMatrix = copyJobsToMatrix(jobs);
+				jobs = minimizeTravel(jobs, null, elevators[i].id, 0);
+				int postDist = distanceJobs(jobsMatrix, elevators[i].getNextNode());
+				int penalty = 0;
+				int next = elevators[i].getNextNode();
+				while (next != to) {
+					int pen = penalty;
+					for (int j = 0; j < jobs.size(); j++) {
+						if (jobs.get(j).from == next || jobs.get(j).to == next) {
+							if (pen < penalty) {
+								penalty++;
+							} else {
+								penalty += 3;
+							}
+						}
+					}
+				}
+				if (minDist > (postDist - preDist) + penalty) {
+					minDist = (postDist - preDist) + penalty;
+					mindex = i;
+				}
+			} else {
+				// The elevator has no active jobs.
+				int dist = 0;
+				int next = elevators[i].getNextNode();
+				int target = from;
+				while (next != target) {
+					int tmp = next;
+					next = building.getNextNodeInPath(next, target);
+					dist += building.getDistance(tmp, next);
+				}
+				// Distance is the distance for the elevator to travel to 'from'
+				if (minDist > dist) {
+					minDist = dist;
+					mindex = i;
+				}
+			}
+		}
+		ArrayList<Job> jobs = elevators[mindex].getJobs();
+		jobs.add(job);
+		jobs = minimizeTravel(jobs, null, elevators[mindex].id, 0);
+		elevators[mindex].setJobs(jobs);
 	}
 	
 	
@@ -254,7 +334,7 @@ public class Controller {
 		int dist;
 		int min = Integer.MAX_VALUE;
 		for (int i = 0; i < jobs.size(); i++) {
-			int[][] jobMatrix = copyJobs(jobs);
+			int[][] jobMatrix = copyJobsToMatrix(jobs);
 
 			int[] tmpJob = jobMatrix[i];
 			jobMatrix[i] = jobMatrix[nextIndex];
@@ -335,7 +415,15 @@ public class Controller {
 		return distance + distanceJobs(jobs, position);
 	}
 	
-	private int[][] copyJobs(ArrayList<Job> jobs) {
+	private ArrayList<Job> copyJobs(ArrayList<Job> jobs) {
+		ArrayList<Job> list = new ArrayList<Job>();
+		for (int i = 0; i < jobs.size(); i++) {
+			list.add(new Job(jobs.get(i).from, jobs.get(i).to, jobs.get(i).id));
+		}
+		return list;
+	}
+	
+	private int[][] copyJobsToMatrix(ArrayList<Job> jobs) {
 		int[][] copy = new int[jobs.size()][3];
 		for (int j = 0; j < jobs.size(); j++) {
 			copy[j][0] = jobs.get(j).id;
