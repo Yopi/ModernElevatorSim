@@ -40,10 +40,6 @@ public class Simulator {
 		for (int i = 0; i < elevators.length; i++) {
 			elevators[i] = new Elevator(i, building, i, second);
 		}
-		elevators[0].addJob(-1, 6, -1);
-		elevators[1].addJob(-1, 7, -1);
-		//elevators[0] = new Elevator(6, building, 0, second);
-		//elevators[1] = new Elevator(7, building, 1, second);
 		
 		controller = new Controller(elevators, building, algorithm);
 		persons = new Person[numPersons];
@@ -57,7 +53,7 @@ public class Simulator {
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
 		int limit = ((int)hour * hours) + ((int)hour * 24);
-		time = (int)(8 * hour) - 30; 
+		time = (int)(6 * hour); 
 		for (; time < limit; time++) {
 			int localTime = time % (int)(hour * 24);
 			//System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
@@ -78,7 +74,7 @@ public class Simulator {
 	public static void main(String[] args) {
 		long startTime = System.currentTimeMillis();
 		for(int i = 0; i < days; i++) {
-			new Simulator("args[0]", 2, 2, ALGORITHM_SEARCH);
+			new Simulator("args[0]", 100, 2, ALGORITHM_NC);
 		}
 		long endTime = System.currentTimeMillis();
 		System.out.println((endTime - startTime) + "ms");

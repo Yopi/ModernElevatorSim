@@ -47,26 +47,12 @@ public class Person {
 		this.stats = stats;
 		this.second = second;
 		this.rand = rand;
-		if (id == 0)
-			currentFloor = id; // TODO: remove
-		else
-			currentFloor = 7;
 		
 		beginWork = (int)((hour * 8) + (gaussian() * (900 * second)));	// Random time for arrival at work, +- 15 minutes, 900 seconds.
-		if (id == 0) { // TODO: remove
-			beginWork = (int)((hour * 8) + 5);
-		} else {
-			beginWork = (int)((hour * 8) + 0);
-		}
 		endWork = (int)((hour * 17) + gaussian() * (900 * second));	// Random time for leaving work, +- 15 minutes.
 		lunchTime = (int)((hour * 12) + (gaussian() * hour));			// Random time for lunch, +- 1 hour.
 		backFromLunch = (int)(lunchTime + 2700 * second); // 45 minutes lunch
 		workFloor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
-		if (id == 0) { // TODO: remove
-			workFloor = 5;
-		} else {
-			workFloor = 4;
-		}
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 		
 		/*Meeting[] meetings = new Meeting[maxMeetings];
@@ -107,6 +93,7 @@ public class Person {
 			} else {
 				if(currentFloor == nextFloor) {
 					status = STATUS_IDLE;
+
 					System.err.println("Trying to go to same floor");
 				}
 			}
