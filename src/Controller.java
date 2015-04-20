@@ -1,6 +1,10 @@
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 /*
  * Class to control the elevators and give the person class
  * an API to call for an elevator.
@@ -43,11 +47,16 @@ public class Controller {
 	
 	Elevator[] elevators;
 	Building building;
+	int[] elevatorInZone;
+	ArrayList<Integer> originalZones = new ArrayList<Integer>();
 	
 	public Controller(Elevator[] elevators, Building building, int algorithm) {
 		this.elevators = elevators;
 		this.building = building;
 		ACTIVE_ALGORITHM = algorithm;
+		elevatorInZone = new int[building.graph.getLoops().size()];
+		for(int i = 0; i < elevatorInZone.length; i++) { elevatorInZone[i] = -1;  }
+		for(int i = 0; i < building.graph.getLoops().size(); i++) { originalZones.add(i); }
 	}
 	
 	/*
@@ -143,26 +152,64 @@ public class Controller {
 	private void nearestCarTick(int time) {}
 	private void searchTick(int time) {}
 
-	//int[][] assignedLoops = new int[][];
+	// elevatorInZone[elevator ID] = zone ID
 	private void zoneTick(int time) {
 		// Verify that all elevators have zones and are within those zones
-		/*for (int i = 0; i < elevators.length; i++) {
+		
+		// Find out which zones are not take
+		ArrayList<Integer> freeZones = originalZones;
+		for(int z : elevatorInZone) {
+			if(z >= 0) {
+				freeZones.remove((Integer)z);
+			}
+		}
+		
+		for (int i = 0; i < elevators.length; i++) {
 			Elevator e = elevators[i];
 			int next = e.getNextNode();
-			if(assignedLoops[e.id] == null) {
-				// Assign a loop to the elevator
+			if(elevatorInZone[e.id] == -1) {
+				if(freeZones.isEmpty()) {
+					// This should not happen :-P
+					System.err.println("You have too many elevators for ye zones"); 
+					break; 
+				}
+
+				// We must get them a zone
+				if(e.getJobs().size() == 0) {
+					// Assign the first free zone to them
+					elevatorInZone[e.id] = freeZones.get(0);
+					freeZones.remove(0);
+				}
 			}
 			
-			// Make sure elevator is in their loop
+			
+			// Make sure elevator is in their zone
 			boolean inLoop = false;
-			for(int n : assignedLoops[e.id]) {
+			for(int n : building.graph.getLoops().get(elevatorInZone[e.id])) {
 				if(next == n) {
 					inLoop = true;
 				}
 			}
 			
 			if(!inLoop) {
-				// Give them a new loop
+				// Find out closest node in zone
+				HashMap<Integer, Integer> nodeFreq = new HashMap<Integer, Integer>();
+				for(int z : building.graph.getLoops().get(elevatorInZone[e.id])) {
+					int nextPath = building.getNextNodeInPath(e.nextNode, z);
+					int freq = nodeFreq.get(nextPath);
+					nodeFreq.put(nextPath, freq + 1);
+				}
+				Comparator<Map.Entry<Integer, Integer>> comparator =
+					new Comparator<Map.Entry<Integer, Integer>>() {
+						public int compare(
+							Map.Entry<Integer, Integer> e1, Map.Entry<Integer, Integer> e2) {
+					      return e1.getValue().compareTo(e2.getValue());
+					    }
+					};
+				int goTo = Collections.max(nodeFreq.entrySet(), comparator).getKey();
+				
+				// Go there
+				e.addJob(-1, goTo, -1);
 			}
 		}*/
 	}
