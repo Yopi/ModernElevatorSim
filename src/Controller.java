@@ -211,7 +211,7 @@ public class Controller {
 				// Go there
 				e.addJob(-1, goTo, -1);
 			}
-		}*/
+		}
 	}
 	
 	
