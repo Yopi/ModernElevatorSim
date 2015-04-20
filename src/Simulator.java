@@ -68,6 +68,10 @@ public class Simulator {
 			} catch (Exception e) {}
 			
 		}
+
+		try {
+			stats.db.exec("COMMIT");
+		} catch (Exception e) {}
 		stats.db.dispose();
 	}
 	

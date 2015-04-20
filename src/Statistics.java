@@ -27,6 +27,8 @@ public class Statistics {
 				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, algorithm_id INTEGER, person_id INTEGER, type VARCHAR(255), duration REAL, distance INTEGER, from_node INTEGER, to_node INTEGER)");
 				db.exec("COMMIT");
 			}
+
+			db.exec("BEGIN");
 		} catch(SQLiteException e) {
 			System.err.println("Could not connect to the database");
 		}
@@ -40,7 +42,7 @@ public class Statistics {
 			st.bind(2, algorithmID);
 			st.bind(3, "wait");
 			st.bind(4, ticksDuration * second);
-			st.step();
+			st.stepThrough();
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
@@ -59,7 +61,7 @@ public class Statistics {
 			st.bind(5, distance);
 			st.bind(6, from);
 			st.bind(7, to);
-			st.step();
+			st.stepThrough();
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
