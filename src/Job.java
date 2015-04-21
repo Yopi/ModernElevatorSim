@@ -13,10 +13,11 @@ public class Job {
 		
 					// The job does not store path since this might change
 					// during the job if new jobs are added.
-				
-		public Job(int from, int to, int id) {
+		public int time;
+		public Job(int from, int to, int id, int time) {
 			this.from = from;
 			this.to = to;
 			this.id = id;
+			this.time = time;
 		}
 	}
