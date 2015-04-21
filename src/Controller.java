@@ -65,7 +65,7 @@ public class Controller {
 	 * @param: source and destination for the traveller
 	 * @returns: true if the parameters are good and false if the parameters are out of bounds.
 	 */
-	public boolean requestElevator(int from, int to, int id) {
+	public boolean requestElevator(int from, int to, int id, int time) {
 		if (!(building.legalNode(from) && building.legalNode(to))) {
 			System.err.println("Illegal nodes from person "+ id);
 			return false;
@@ -77,10 +77,13 @@ public class Controller {
 		}
 		if (ACTIVE_ALGORITHM == ALGORITHM_NC) {
 			if(DEBUG) System.out.println("Nearest car heuristic.");
-			nearestCar(from, to, id);
+			nearestCar(from, to, id, time);
 		} else if (ACTIVE_ALGORITHM == ALGORITHM_SEARCH) {
 			if (DEBUG) System.out.println("Search based heuristic.");
-			searchBased(from, to, id);
+			searchBased(from, to, id, time);
+		} else if (ACTIVE_ALGORITHM == ALGORITHM_ZONE) {
+			if (DEBUG) System.out.println("Xone based MOheuristic.");
+			zoneBased(from, to, id, time);
 		}
 		return true;
 	}
@@ -142,7 +145,7 @@ public class Controller {
 				}
 				// Move the elevator to moveTo
 				ArrayList<Job> jobs = elevators[i].getJobs();
-				jobs.add(new Job(-1, moveTo, -1));
+				jobs.add(new Job(-1, moveTo, -1, time));
 				building.resetMove(elevators[i].id);
 
 			}
@@ -209,7 +212,7 @@ public class Controller {
 				int goTo = Collections.max(nodeFreq.entrySet(), comparator).getKey();
 				
 				// Go there
-				e.addJob(-1, goTo, -1);
+				e.addJob(-1, goTo, -1, time);
 			}
 		}
 	}
@@ -226,11 +229,11 @@ public class Controller {
 	 * @param to
 	 * @param id
 	 */
-	private void searchBased(int from, int to, int id) {
-		searchBased(from, to, id, elevators);
+	private void searchBased(int from, int to, int id, int time) {
+		searchBased(from, to, id, elevators, time);
 	}
 	
-	private void searchBased(int from, int to, int id, Elevator[] elevators) {
+	private void searchBased(int from, int to, int id, Elevator[] elevators, int time) {
 		/*
 		 * Look for the difference in distance for all elevators
 		 * for their jobs if they get the new job. 
@@ -260,7 +263,7 @@ public class Controller {
 		 * hiss ska göra (görbart) men ja, då närmar vi oss någon slags total-
 		 * sökning.
 		 */
-		Job job = new Job(from, to, id);
+		Job job = new Job(from, to, id, time);
 		int minDist = Integer.MAX_VALUE;
 		int mindex = 0;
 		for (int i = 0; i < elevators.length; i++) {
@@ -277,10 +280,24 @@ public class Controller {
 				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" distance to perform added work: " + postDist);
 				int penalty = 0;
 				int next = elevators[i].getNextNode();
+				int persons = elevators[i].persons.size();
 				while (next != to) {
 					int pen = penalty;
 					for (int j = 0; j < jobs.size(); j++) {
 						if (jobs.get(j).from == next || jobs.get(j).to == next) {
+							
+							if (from == next && persons >= elevators[i].MAX_PASSENGERS) {
+								penalty += building.nodes.length;
+							}
+							
+							if (jobs.get(j).from == next) {
+								if (persons < elevators[i].MAX_PASSENGERS) {
+									persons++;
+								}
+							} else {
+								persons--;
+							}
+							
 							if (pen < penalty) {
 								penalty++;
 							} else {
@@ -330,7 +347,7 @@ public class Controller {
 	 * @param to
 	 * @param id
 	 */
-	private void zoneBased(int from, int to, int id) {
+	private void zoneBased(int from, int to, int id, int time) {
 		// Find out if person wants to go from/to one single zone
 		
 		// Approach 1 : Not hard coding zones.
@@ -384,7 +401,7 @@ public class Controller {
 			}
 		}
 
-		searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()])) ;
+		searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()]), time) ;
 	}
 	
 	/*
@@ -392,7 +409,71 @@ public class Controller {
 	 * When a new request arises, it simply checks for 
 	 * the nearest car and adds the job to that elevator.
 	 */
-	private void nearestCar(int from, int to, int id) {
+	private void nearestCar(int from, int to, int id, int time) {
+		
+		Job job = new Job(from, to, id, time);
+		int minDist = Integer.MAX_VALUE;
+		int mindex = 0;
+		for (int i = 0; i < elevators.length; i++) {
+			ArrayList<Job> jobs = copyJobs(elevators[i].getJobs());
+			if (jobs.size() > 0) {
+				// The elevator has active jobs.
+				int[][] jobsMatrix = copyJobsToMatrix(jobs);
+				int preDist = distanceJobs(jobsMatrix, elevators[i].getNextNode());
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" distance to perform current work: " + preDist);
+				jobs.add(job);
+				jobsMatrix = copyJobsToMatrix(jobs);
+				jobs = minimizeTravel(jobs, null, elevators[i].id, 0);
+				int postDist = distanceJobs(jobsMatrix, elevators[i].getNextNode());
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" distance to perform added work: " + postDist);
+				int penalty = 0;
+				int next = elevators[i].getNextNode();
+				/*while (next != to) {
+					int pen = penalty;
+					for (int j = 0; j < jobs.size(); j++) {
+						if (jobs.get(j).from == next || jobs.get(j).to == next) {
+							if (pen < penalty) {
+								penalty++;
+							} else {
+								penalty += 3;
+							}
+						}
+					}
+					next = building.getNextNodeInPath(next, to);
+				}*/
+
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" penalty for stopping: " + penalty);
+				if (minDist > (postDist - preDist)) {
+					minDist = (postDist - preDist);
+					mindex = i;
+				}
+			} else {
+				// The elevator has no active jobs.
+				int dist = 0;
+				int next = elevators[i].getNextNode();
+				int target = from;
+				while (next != target) {
+					int tmp = next;
+					next = building.getNextNodeInPath(next, target);
+					dist += building.getDistance(tmp, next);
+				}
+				if (DEBUG) System.out.println("Elevator "+elevators[i].id+" is idle, distance to 'from': " + dist);
+				// Distance is the distance for the elevator to travel to 'from'
+				if (minDist > dist) {
+					minDist = dist;
+					mindex = i;
+				}
+			}
+		}
+		ArrayList<Job> jobs = elevators[mindex].getJobs();
+		jobs.add(job);
+		jobs = minimizeTravel(jobs, null, elevators[mindex].id, 0);
+		elevators[mindex].setJobs(jobs);
+		
+		/*
+		 * ==================================
+		 */
+		/*
 		double min = Double.MAX_VALUE;
 		int mindex = 0;
 		// Find the elevator with the lowest distance to the caller.
@@ -433,6 +514,7 @@ public class Controller {
 			//elevators[mindex].addJob(from, to, id);
 			//ArrayList<Job> jobs = elevators[mindex].getJobs();
 		}
+		*/
 	}
 	
 	/*
@@ -556,17 +638,18 @@ public class Controller {
 	private ArrayList<Job> copyJobs(ArrayList<Job> jobs) {
 		ArrayList<Job> list = new ArrayList<Job>();
 		for (int i = 0; i < jobs.size(); i++) {
-			list.add(new Job(jobs.get(i).from, jobs.get(i).to, jobs.get(i).id));
+			list.add(new Job(jobs.get(i).from, jobs.get(i).to, jobs.get(i).id, jobs.get(i).time));
 		}
 		return list;
 	}
 	
 	private int[][] copyJobsToMatrix(ArrayList<Job> jobs) {
-		int[][] copy = new int[jobs.size()][3];
+		int[][] copy = new int[jobs.size()][4];
 		for (int j = 0; j < jobs.size(); j++) {
 			copy[j][0] = jobs.get(j).id;
 			copy[j][1] = jobs.get(j).from;
 			copy[j][2] = jobs.get(j).to;
+			copy[j][3] = jobs.get(j).time;
 		}
 
 		return copy;
@@ -575,7 +658,7 @@ public class Controller {
 	private ArrayList<Job> matrixToJobs(int[][] jobs) {
 		ArrayList<Job> copy = new ArrayList<Job>();
 		for (int[] j : jobs) {
-			Job job = new Job(j[1], j[2], j[0]);
+			Job job = new Job(j[1], j[2], j[0], j[3]);
 			copy.add(job);
 		}
 
@@ -593,6 +676,7 @@ public class Controller {
 			System.out.println("from: " + jobs.get(i).from);
 			System.out.println("to: " + jobs.get(i).to);
 			System.out.println("id: " + jobs.get(i).id);
+			System.out.println("time: " + jobs.get(i).time);
 			System.out.println("==");
 		}
 	}

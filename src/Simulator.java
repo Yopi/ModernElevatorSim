@@ -26,15 +26,15 @@ public class Simulator {
 	double hour = 3600 * second;
 	int time;
 	int hours = 0;
-	static int days = 10;
+	static int days = 365;
 
 	static final int ALGORITHM_NC = 1;
 	static final int ALGORITHM_ZONE = 2;
 	static final int ALGORITHM_SEARCH = 3;	
 	public Simulator(String filename, int numPersons, int numElevators, int algorithm) {
 		rand = new Random();
-		graph = createGraphOne(); //new Graph(8);
-		stats = new Statistics("database.db", second, algorithm);
+		graph = createGraphTwo(); //new Graph(8);
+		stats = new Statistics("database_graph2_days" + days + "_alg" + algorithm + "_persons" + numPersons + "_elevators" + numElevators + ".db", second, algorithm, numPersons, numElevators);
 		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
@@ -76,12 +76,16 @@ public class Simulator {
 	}
 	
 	public static void main(String[] args) {
-		long startTime = System.currentTimeMillis();
-		for(int i = 0; i < days; i++) {
-			new Simulator("args[0]", 100, 2, ALGORITHM_NC);
+		for(int e = 1; e < 16; e++) {
+			long startTime = System.currentTimeMillis();
+			for(int i = 0; i < days; i++) {
+				new Simulator("args[0]", 100, e, ALGORITHM_SEARCH);
+			}
+			long endTime = System.currentTimeMillis();
+			System.out.println((endTime - startTime) + "ms");
+			System.out.println("Nu är " + e + " DONE");
+			try { Thread.sleep(5000); } catch (Exception fail) {}
 		}
-		long endTime = System.currentTimeMillis();
-		System.out.println((endTime - startTime) + "ms");
 	}
 	
 	/*
@@ -91,21 +95,8 @@ public class Simulator {
 	 * Det är ju ett argument ja.. heh. nvm.
 	 */
 	private Graph createGraphOne() {
-		Graph graph = new Graph(8);
-		/* 
-		graph.addEdge(0, 1, 2);
-		graph.addEdge(1, 2, 2);
-		graph.addEdge(2, 3, 2);
-		graph.addEdge(3, 4, 2);
-		graph.addEdge(4, 5, 2);
-		graph.addEdge(5, 6, 2);
-		graph.addEdge(6, 7, 2);
-		graph.addEdge(7, 8, 2);
-		graph.addEdge(7, 10, 1);
-		graph.addEdge(10, 2, 1);
-		graph.addEdge(8, 9, 2);
-		graph.addEdge(9, 0, 2);
-
+		/* Simple ass graph */
+		/*
 		  _________________
 		 |                 |
 		 |   3 > 4         |
@@ -114,11 +105,14 @@ public class Simulator {
 		 |   ^   v         |
 		 |   1 < 6 		   |
 		 |   ^   v         |
-		 |   0 > 7         |
+		 |   0 < 7         |
 		 |_________________|
 		 
 		 
 		*/
+
+		Graph graph = new Graph(8);
+
 		graph.addEdge(0, 1, 3);
 		graph.addEdge(1, 2, 3);
 		graph.addEdge(2, 3, 3);
@@ -134,8 +128,64 @@ public class Simulator {
 		graph.addLoop(new int[]{1, 2, 3, 4, 5, 6});
 		graph.addLoop(new int[]{1, 2, 5, 6});
 
-		
 		return graph;
 	}
+	
+	private Graph createGraphTwo() {
+		/* Expressen graph */
+		/*_______________________
+		 | 23> 8 >9 >10 >11 > 12 |
+		 | ^   v  ^   v    ^   v | 
+		 | 22< 7 <17 <16 <15 <13 |
+		 | ^   v  ^   v    ^   v |
+		 | 21> 6> 18> 19> 20> 14 |
+		 | ^   v  ^   v    ^   v |
+		 | 5 < 4 < 3 < 2 < 1 < 0 |
+		 
+		*/
+		Graph graph = new Graph(24);
+		
+		graph.addEdge(0, 1, 3);
+		graph.addEdge(1, 2, 3);
+		graph.addEdge(2, 3, 3);
+		graph.addEdge(3, 4, 3);
+		graph.addEdge(4, 5, 3);
+		graph.addEdge(5, 21, 3);
+		graph.addEdge(21, 22, 3);
+		graph.addEdge(22, 23, 3);
+		graph.addEdge(23, 8, 3);
+		graph.addEdge(6, 4, 3);
+		graph.addEdge(7, 6, 3);
+		graph.addEdge(8, 7, 3);
+		graph.addEdge(8, 9, 3);
+		graph.addEdge(9, 10, 3);
+		graph.addEdge(10, 11, 3);
+		graph.addEdge(11, 12, 3);
+		graph.addEdge(12, 13, 3);
+		graph.addEdge(13, 14, 3);
+		graph.addEdge(14, 0, 3);
+		graph.addEdge(13, 15, 3);
+		graph.addEdge(15, 16, 3);
+		graph.addEdge(16, 17, 3);
+		graph.addEdge(17, 7, 3);
+		graph.addEdge(7, 22, 3);
+		graph.addEdge(21, 6, 3);
+		graph.addEdge(6, 18, 3);
+		graph.addEdge(18, 19, 3);
+		graph.addEdge(19, 20, 3);
+		graph.addEdge(20, 14, 3);
 
+		graph.addLoop(new int[]{0, 1, 20, 14});
+		graph.addLoop(new int[]{2, 3, 18, 19});
+		graph.addLoop(new int[]{4, 5, 21, 6});
+		graph.addLoop(new int[]{22, 23, 8, 7});
+		graph.addLoop(new int[]{9, 10, 16, 17});
+		graph.addLoop(new int[]{11, 12, 13, 15});
+		graph.addLoop(new int[]{7, 6, 18, 17});
+		graph.addLoop(new int[]{19, 20, 15, 16});
+		graph.addLoop(new int[]{6, 18, 17, 7});
+		graph.addLoop(new int[]{19, 20, 15, 16});
+
+		return graph;
+	}
 }

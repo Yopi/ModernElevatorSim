@@ -115,22 +115,22 @@ public class Person {
 			if (time == beginWork) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") ARRIVES AT WORK");
 				startElevator(time);
-				controller.requestElevator(currentFloor, workFloor, id);
+				controller.requestElevator(currentFloor, workFloor, id, time);
 				nextFloor = workFloor;
 			} else if(time == endWork) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") GOES HOME");
 				startElevator(time);
-				controller.requestElevator(currentFloor, 0, id);
+				controller.requestElevator(currentFloor, 0, id, time);
 				nextFloor = 0;
 			} else if(time == lunchTime) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") GOES TO LUNCH");
 				startElevator(time);
-				controller.requestElevator(currentFloor, 0, id);
+				controller.requestElevator(currentFloor, 0, id, time);
 				nextFloor = 0;
 			} else if(time == backFromLunch) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") IS BACK FROM LUNCH");
 				startElevator(time);
-				controller.requestElevator(currentFloor, workFloor, id);
+				controller.requestElevator(currentFloor, workFloor, id, time);
 				nextFloor = workFloor;
 			}
 		}

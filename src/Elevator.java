@@ -13,6 +13,7 @@
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.ListIterator;
 
 
 /*
@@ -57,7 +58,7 @@ public class Elevator {
 	int prevNode;	// The previous node that the elevator visited.
 	int target;		// The goal of the elevator, where it is traveling to.
 	int numDestinations; // The number of nodes. One node = 1 destination.
-	int passengers;	// Number of passengers in the elevator.
+	//int passengers;	// Number of passengers in the elevator.
 	int slowDown;	// Used to slowly slow down, and not just stop on the 5-öring -> ded.
 	
 	int doorOpening;
@@ -91,7 +92,7 @@ public class Elevator {
 		slowDown = 2;
 		position = 0;
 		target = -1;
-		passengers = 0;
+		//passengers = 0;
 		moving = false;
 		idle = true;
 		jobs = new ArrayList<Job>();
@@ -146,7 +147,7 @@ public class Elevator {
 					
 					// Is there any job here for the elevator?
 					// Loop through the jobs.
-					Iterator<Job> jobbi = jobs.iterator();
+					ListIterator<Job> jobbi = jobs.listIterator();
 					while(jobbi.hasNext()) {
 						Job job = jobbi.next();
 						if (job.from == nextNode) {
@@ -160,6 +161,9 @@ public class Elevator {
 								moving = false;
 							} else {
 								// Sorry brah
+								// Add job to the end to put it aside until we have more place
+								jobbi.remove();
+								jobbi.add(job);
 							}
 						} else if (job.to == nextNode && job.from < 0) {
 							// Drop of a person!
@@ -177,6 +181,7 @@ public class Elevator {
 							jobbi.remove();
 							openDoors();
 						}
+						
 					}
 					
 					// Set the next target.
@@ -312,7 +317,7 @@ public class Elevator {
 	 * @param: int from and to
 	 * @returns: true or false depending on if the add was successful.
 	 */
-	public boolean addJob(int from, int to, int id) {
+	public boolean addJob(int from, int to, int id, int time) {
 		if (!(building.legalNode(to))) {
 			System.err.println("Not a valid target: " + to);
 			return false;
@@ -321,7 +326,7 @@ public class Elevator {
 			System.err.println("Already there!");
 			return true;	// Already there!
 		}
-		jobs.add(new Job(from, to, id));
+		jobs.add(new Job(from, to, id, time));
 		return true;
 	}
 	
@@ -380,7 +385,12 @@ public class Elevator {
 	 */
 	private void openDoors() {
 		// TODO: Increment when this is called on, to increase and decrease time for doors open.
-		doorOpening = (int)(second * 5);
+		if (doorOpening == 0) {
+			doorOpening = (int)(second * 3);
+		} else {
+			doorOpening += (int)(second);
+		}
+		//doorOpening = (int)(second * 5);
 	}
 	
 	/*
