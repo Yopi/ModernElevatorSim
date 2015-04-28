@@ -17,7 +17,7 @@ public class Person {
 	static final int STATUS_IDLE = 0;
 	static final int STATUS_WAITING = 1;
 	static final int STATUS_ELEVATORING = 2;
-	static final boolean DEBUG = true;
+	static final boolean DEBUG = false;
 	
 	Building building;
 	Controller controller;
@@ -105,8 +105,6 @@ public class Person {
 		events[11].time = endWork;
 		events[11].floor = 0;
 		
-		events[0].time = (int)(hour * 8) + 2;
-		events[1].time = events[0].time + 20;
 		
 		/*
 		events[7].time = backFromLunch + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 

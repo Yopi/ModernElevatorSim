@@ -64,9 +64,7 @@ public class Simulator {
 			for(Person p : persons) { p.tick(localTime); }
 
 			
-			try {
-				Thread.sleep(1900);
-			} catch (Exception e) {}
+			//try { Thread.sleep(1900); } catch (Exception e) {}
 			
 		}
 
@@ -77,10 +75,10 @@ public class Simulator {
 	}
 	
 	public static void main(String[] args) {
-		for(int e = 1; e < 2; e++) {
+		for(int e = 1; e < 8; e++) {
 			long startTime = System.currentTimeMillis();
 			for(int i = 0; i < days; i++) {
-				new Simulator("args[0]", 1, e, ALGORITHM_SEARCH);
+				new Simulator("args[0]", 100, e, ALGORITHM_SEARCH);
 			}
 			long endTime = System.currentTimeMillis();
 			System.out.println((endTime - startTime) + "ms");
