@@ -173,8 +173,8 @@ public class Person {
 				currentFloor = nextFloor;
 				currentEvent++;
 				// Check to see if the next event has already passed.
-				if (events[currentEvent].time >= time) {
-					events[currentEvent].time = time + 2;	// Because why not two?
+				if (events[currentEvent].time <= time) {
+					events[currentEvent].time = time + 2;	// Because why not two? One should be enough though.
 				}
 				status = STATUS_IDLE;
 			}
