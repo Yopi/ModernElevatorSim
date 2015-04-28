@@ -17,7 +17,7 @@ public class Person {
 	static final int STATUS_IDLE = 0;
 	static final int STATUS_WAITING = 1;
 	static final int STATUS_ELEVATORING = 2;
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = true;
 	
 	Building building;
 	Controller controller;
@@ -67,6 +67,9 @@ public class Person {
 		
 		events = new Event[4+(numMeetings*2)];
 		currentEvent = 0;
+		for (int i = 0; i < events.length; i++) {
+			events[i] = new Event();
+		}
 		
 		// Begin work
 		events[0].time = beginWork;
@@ -74,7 +77,7 @@ public class Person {
 		
 		// Meetings
 		events[1].time = beginWork + (int)(rand.nextDouble() * hour * 2); 
-		events[1].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[1].floor = randomFloor(workFloor);//rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[2].time = events[1].time + (int)(0.25 * hour);
 		events[2].floor = workFloor;
 		events[3].time = beginWork + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
@@ -101,6 +104,9 @@ public class Person {
 		// End work
 		events[11].time = endWork;
 		events[11].floor = 0;
+		
+		events[0].time = (int)(hour * 8) + 2;
+		events[1].time = events[0].time + 20;
 		
 		/*
 		events[7].time = backFromLunch + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
@@ -174,20 +180,27 @@ public class Person {
 				currentEvent++;
 				// Check to see if the next event has already passed.
 				if (events[currentEvent].time <= time) {
+					if (DEBUG) {
+						System.out.println("Changing time of event " + currentEvent + " from " + events[currentEvent].time + " to " + (time+2));
+					}
 					events[currentEvent].time = time + 2;	// Because why not two? One should be enough though.
+				} else {
+					if (DEBUG) System.out.println("Person " + id + " currentEvent: " + currentEvent);
 				}
 				status = STATUS_IDLE;
 			}
 		}
 		
 		if (status == STATUS_IDLE) {
-			if(DEBUG) System.out.println("time: " + time + " == " + beginWork);
+			//if(DEBUG) System.out.println("time: " + time + " == " + beginWork);
 			
 			if (events[currentEvent].time == time) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") HAS EVENT " + currentEvent);
 				startElevator(time);
 				controller.requestElevator(currentFloor, events[currentEvent].floor, id, time);
 				nextFloor = events[currentEvent].floor;
+			} else {
+				if (DEBUG) System.out.println("time: " + time + " == " + events[currentEvent].time);
 			}
 			/*
 			if (time == beginWork) {
@@ -219,6 +232,14 @@ public class Person {
 		}
 	}
 
+	private int randomFloor(int workFloor) {
+		int floor = workFloor;
+		while (floor == workFloor) {
+			floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		}
+		return floor;
+	}
+	
 	private void startElevator(int time) {
 		status = STATUS_WAITING;
 		startTime = time;
