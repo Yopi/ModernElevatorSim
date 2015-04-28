@@ -32,6 +32,7 @@ public class Person {
 	
 	Meeting[] meetings;	// Meetings (movement in building)
 	Event[] events;
+	int currentEvent;
 	
 	int currentFloor;	// The position of the person.
 	int workFloor; // The floor that the person works on.
@@ -65,17 +66,18 @@ public class Person {
 		numMeetings = maxMeetings;						// TODO: Ändra denna till 2 eller 4 möten per person.
 		
 		events = new Event[4+(numMeetings*2)];
+		currentEvent = 0;
 		
 		// Begin work
 		events[0].time = beginWork;
 		events[0].floor = workFloor;
 		
 		// Meetings
-		events[1].time = beginWork + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
+		events[1].time = beginWork + (int)(rand.nextDouble() * hour * 2); 
 		events[1].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[2].time = events[1].time + (int)(0.25 * hour);
 		events[2].floor = workFloor;
-		events[3].time = beginWork + (int)(hour) + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
+		events[3].time = beginWork + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
 		events[3].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[4].time = events[3].time + (int)(0.25 * hour);
 		events[4].floor = workFloor;
@@ -87,11 +89,11 @@ public class Person {
 		events[6].floor = workFloor;
 		
 		// Meetings
-		events[7].time = backFromLunch + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
+		events[7].time = backFromLunch + (int)(rand.nextDouble() * hour * 2); 
 		events[7].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[8].time = events[7].time + (int)(0.25 * hour);
 		events[8].floor = workFloor;
-		events[9].time = backFromLunch + (int)(hour) + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
+		events[9].time = backFromLunch + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
 		events[9].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[10].time = events[9].time + (int)(0.25 * hour);
 		events[10].floor = workFloor;
@@ -169,6 +171,11 @@ public class Person {
 				if(DEBUG) System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
 
 				currentFloor = nextFloor;
+				currentEvent++;
+				// Check to see if the next event has already passed.
+				if (events[currentEvent].time >= time) {
+					events[currentEvent].time = time + 2;	// Because why not two?
+				}
 				status = STATUS_IDLE;
 			}
 		}
@@ -176,6 +183,13 @@ public class Person {
 		if (status == STATUS_IDLE) {
 			if(DEBUG) System.out.println("time: " + time + " == " + beginWork);
 			
+			if (events[currentEvent].time == time) {
+				if(DEBUG) System.out.println("PERSON ("+ id +") HAS EVENT " + currentEvent);
+				startElevator(time);
+				controller.requestElevator(currentFloor, events[currentEvent].floor, id, time);
+				nextFloor = events[currentEvent].floor;
+			}
+			/*
 			if (time == beginWork) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") ARRIVES AT WORK");
 				startElevator(time);
@@ -197,6 +211,7 @@ public class Person {
 				controller.requestElevator(currentFloor, workFloor, id, time);
 				nextFloor = workFloor;
 			}
+			*/
 		}
 		
 		if(DEBUG) {
