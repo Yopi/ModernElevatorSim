@@ -57,6 +57,7 @@ public class Controller {
 		elevatorInZone = new int[building.graph.getLoops().size()];
 		for(int i = 0; i < elevatorInZone.length; i++) { elevatorInZone[i] = -1;  }
 		for(int i = 0; i < building.graph.getLoops().size(); i++) { originalZones.add(i); }
+		if(DEBUG) System.out.println("Elevators: " + Arrays.toString(elevators));
 	}
 	
 	/*
@@ -82,7 +83,7 @@ public class Controller {
 			if (DEBUG) System.out.println("Search based heuristic.");
 			searchBased(from, to, id, time);
 		} else if (ACTIVE_ALGORITHM == ALGORITHM_ZONE) {
-			if (DEBUG) System.out.println("Xone based MOheuristic.");
+			if (DEBUG) System.out.println("Zone based heuristic.");
 			zoneBased(from, to, id, time);
 		}
 		return true;
@@ -166,7 +167,6 @@ public class Controller {
 				freeZones.remove((Integer)z);
 			}
 		}
-		
 		for (int i = 0; i < elevators.length; i++) {
 			Elevator e = elevators[i];
 			int next = e.getNextNode();
@@ -195,6 +195,7 @@ public class Controller {
 			}
 			
 			if(!inLoop) {
+				if(true) return;
 				// Find out closest node in zone
 				HashMap<Integer, Integer> nodeFreq = new HashMap<Integer, Integer>();
 				for(int z : building.graph.getLoops().get(elevatorInZone[e.id])) {
@@ -331,6 +332,7 @@ public class Controller {
 				}
 			}
 		}
+		System.out.println(Arrays.toString(elevators));
 		ArrayList<Job> jobs = elevators[mindex].getJobs();
 		jobs.add(job);
 		jobs = minimizeTravel(jobs, null, elevators[mindex].id, 0);
@@ -369,7 +371,7 @@ public class Controller {
 				}
 			}
 		}
-		
+
 		// If not, get the zone they're going from
 		if(fullyInZone.isEmpty()) {
 			for(int i = 0; i < building.graph.getLoops().size(); i++) {
@@ -385,15 +387,16 @@ public class Controller {
 		
 		if(fullyInZone.isEmpty()) {
 			for(int i = 0; i < building.graph.getLoops().size(); i++) {
+				System.out.println(i);
 				fullyInZone.add(i);
 			}
 		}
-		
+		System.out.println("- " + fullyInZone.toString());
 		// Check which elevators are assigned to the zones
 		// elevatorInZone[elevator ID] = zone ID
 		int elevatorID = -1;
 		ArrayList<Elevator> elevatorToUse = new ArrayList<Elevator>();
-		for(int i : fullyInZone) {
+		for(int i : fullyInZone) { // i == zone
 			for(int z = 0; z < elevatorInZone.length; z++) {
 				if(elevatorInZone[z] == i) {
 					elevatorToUse.add(elevators[z]);
@@ -401,6 +404,13 @@ public class Controller {
 			}
 		}
 
+		// If no elevator is in a good place
+		for(Elevator e : elevators) {
+			elevatorToUse.add(e);
+		}
+
+		System.out.println(elevatorToUse.toString());
+		System.out.println(Arrays.toString(elevatorInZone));
 		searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()]), time) ;
 	}
 	
