@@ -38,7 +38,7 @@ import java.util.Map;
  * Date: 2015-03-30
  */
 public class Controller {
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = Simulator.DEBUG.Controller;
 	private int ACTIVE_ALGORITHM = -1;
 	static final int ALGORITHM_NC = 1;
 	static final int ALGORITHM_ZONE = 2;

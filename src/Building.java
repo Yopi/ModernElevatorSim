@@ -11,7 +11,7 @@
 import java.util.ArrayList;
 
 public class Building {
-	final static boolean DEBUG = false;
+	final static boolean DEBUG = Simulator.DEBUG.Building;
 	
 	Graph graph;
 	Elevator[] elevators;

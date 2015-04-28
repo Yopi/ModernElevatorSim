@@ -17,7 +17,7 @@ public class Person {
 	static final int STATUS_IDLE = 0;
 	static final int STATUS_WAITING = 1;
 	static final int STATUS_ELEVATORING = 2;
-	static final boolean DEBUG = false;
+	static final boolean DEBUG = Simulator.DEBUG.Person;
 	
 	Building building;
 	Controller controller;

@@ -14,7 +14,7 @@ import java.util.Set;
 
 
 public class Graph {
-	public static boolean DEBUG = false;
+	public static boolean DEBUG = Simulator.DEBUG.Graph;
 	
 	int numNodes;
 	int numEdges;

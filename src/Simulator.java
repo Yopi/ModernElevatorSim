@@ -14,7 +14,18 @@
  */
 import java.util.Random;
 
+class Debug {
+	public boolean Building = false;
+	public boolean Controller = false;
+	public boolean Elevator = false;
+	public boolean Graph = false;
+	public boolean Meeting = false;
+	public boolean Person = false;
+}
+
 public class Simulator {
+	public static final Debug DEBUG = new Debug();
+
 	Statistics stats;
 	Elevator[] elevators;
 	Person[] persons;
