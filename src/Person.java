@@ -29,12 +29,13 @@ public class Person {
 	int backFromLunch;
 	
 	Meeting[] meetings;	// Meetings (movement in building)
+	int[] events;
 	
 	int currentFloor;	// The position of the person.
 	int workFloor; // The floor that the person works on.
 	int nextFloor;
 	
-	int maxMeetings = 5;
+	int maxMeetings = 4;
 	int status;
 	int startTime;
 	Random rand;
@@ -55,6 +56,9 @@ public class Person {
 		workFloor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
 		
+		events = new int[5+numMeetings];
+		events[0] = beginWork;
+		events[0];
 		/*Meeting[] meetings = new Meeting[maxMeetings];
 		int interval = ((int)hour * (17-8)) / maxMeetings;
 		int first = (int)(hour * 8) + interval / 2;
