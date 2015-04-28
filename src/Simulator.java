@@ -31,11 +31,19 @@ public class Simulator {
 	static final int ALGORITHM_NC = 1;
 	static final int ALGORITHM_ZONE = 2;
 	static final int ALGORITHM_SEARCH = 3;	
-	public Simulator(String filename, int numPersons, int numElevators, int algorithm) {
+	public Simulator(String filename, int numPersons, int numElevators, int algorithm, int graphNo) {
 		rand = new Random();
-		graph = createGraphOne();
-		//graph = createGraphTwo(); //new Graph(8);
-		stats = new Statistics("database_graph2_days" + days + "_alg" + algorithm + "_persons" + numPersons + "_elevators" + numElevators + ".db", second, algorithm, numPersons, numElevators);
+		switch(graphNo) {
+			case 1:
+				graph = createGraphOne();
+				break;
+			case 2:
+				graph = createGraphTwo();
+		}
+
+		String fileName = "database_graph" + graphNo + "_days" + days + "_alg" + algorithm + "_persons" + numPersons + "_elevators" + numElevators + ".db";
+		stats = new Statistics(fileName, second, algorithm, numPersons, numElevators);
+
 		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
