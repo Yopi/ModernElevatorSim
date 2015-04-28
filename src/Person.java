@@ -1,5 +1,7 @@
 import java.util.Random;
 
+import sun.swing.BakedArrayList;
+
 /*
  * Person class.
  * All you need to represent a person.
@@ -29,7 +31,7 @@ public class Person {
 	int backFromLunch;
 	
 	Meeting[] meetings;	// Meetings (movement in building)
-	int[] events;
+	Event[] events;
 	
 	int currentFloor;	// The position of the person.
 	int workFloor; // The floor that the person works on.
@@ -39,6 +41,11 @@ public class Person {
 	int status;
 	int startTime;
 	Random rand;
+	
+	private class Event {
+		public int time;
+		public int floor;
+	}
 	
 	public Person(int id, Building building, Controller controller, Statistics stats, Random rand, double second) {
 		double hour = 3600 * second;
@@ -55,10 +62,64 @@ public class Person {
 		backFromLunch = (int)(lunchTime + 2700 * second); // 45 minutes lunch
 		workFloor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		int numMeetings = rand.nextInt(maxMeetings);	// Random number of meetings for a worker.
+		numMeetings = maxMeetings;						// TODO: Ändra denna till 2 eller 4 möten per person.
 		
-		events = new int[5+numMeetings];
-		events[0] = beginWork;
-		events[0];
+		events = new Event[4+(numMeetings*2)];
+		
+		// Begin work
+		events[0].time = beginWork;
+		events[0].floor = workFloor;
+		
+		// Meetings
+		events[1].time = beginWork + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
+		events[1].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[2].time = events[1].time + (int)(0.25 * hour);
+		events[2].floor = workFloor;
+		events[3].time = beginWork + (int)(hour) + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
+		events[3].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[4].time = events[3].time + (int)(0.25 * hour);
+		events[4].floor = workFloor;
+		
+		// Lunch time
+		events[5].time = lunchTime;
+		events[5].floor = 0;
+		events[6].time = backFromLunch;
+		events[6].floor = workFloor;
+		
+		// Meetings
+		events[7].time = backFromLunch + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
+		events[7].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[8].time = events[7].time + (int)(0.25 * hour);
+		events[8].floor = workFloor;
+		events[9].time = backFromLunch + (int)(hour) + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
+		events[9].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[10].time = events[9].time + (int)(0.25 * hour);
+		events[10].floor = workFloor;
+		
+		// End work
+		events[11].time = endWork;
+		events[11].floor = 0;
+		
+		/*
+		events[7].time = backFromLunch + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
+		events[7].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[8].time = backFromLunch + (int)(hour) + (int)(rand.nextDouble() * hour * 4); // NEj, ingen gauss-feck.
+		events[8].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		*/
+		/*
+		if (numMeetings > 0) {
+			if (numMeetings > 1) {
+				// Fleer än två möten, två innan lunch.
+				events[1].time = beginWork + (int)(hour) + (int)(rand.nextDouble() * hour * 2); 
+				events[1].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+				events[2].time = beginWork + (int)(hour) + (int)(rand.nextDouble() * hour * 4); // NEj, ingen gauss-feck.
+				events[2].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+			} else {
+				events[1].time = beginWork + (int)(hour) + (int)(rand.nextDouble() * hour * 4); // NEj, ingen gauss-feck.
+				events[1].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+			}
+		}
+		*/
 		/*Meeting[] meetings = new Meeting[maxMeetings];
 		int interval = ((int)hour * (17-8)) / maxMeetings;
 		int first = (int)(hour * 8) + interval / 2;
@@ -113,8 +174,7 @@ public class Person {
 		}
 		
 		if (status == STATUS_IDLE) {
-			if(DEBUG)
-				System.out.println("time: " + time + " == " + beginWork);
+			if(DEBUG) System.out.println("time: " + time + " == " + beginWork);
 			
 			if (time == beginWork) {
 				if(DEBUG) System.out.println("PERSON ("+ id +") ARRIVES AT WORK");
