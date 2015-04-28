@@ -433,5 +433,8 @@ public class Elevator {
 		}
 		return step;
 	}
-	
+
+	public String toString() {
+		return "{eid: " + id + "}";
+	}
 }
