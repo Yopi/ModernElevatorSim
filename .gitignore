@@ -1,0 +1,12 @@
+
+*.class
+
+*.db
+
+*.db-journal
+
+*.xml
+
+*.iml
+
+.name
