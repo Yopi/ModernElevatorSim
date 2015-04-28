@@ -170,13 +170,14 @@ public class Person {
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
-				//try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
+				if(DEBUG) try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
 				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
 				if(DEBUG) System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
 
 				currentFloor = nextFloor;
 				currentEvent++;
-				if (currentEvent > events.length) {
+				// TODO: Det här är ett problem, om currentEvent = events.length så får vi nullpu~uro, men annars får vi ett jobb från 0->0.
+				if (currentEvent >= events.length) {
 					currentEvent = events.length - 1;
 				}
 				// Check to see if the next event has already passed.
