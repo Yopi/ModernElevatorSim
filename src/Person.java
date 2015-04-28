@@ -176,6 +176,9 @@ public class Person {
 
 				currentFloor = nextFloor;
 				currentEvent++;
+				if (currentEvent > events.length) {
+					currentEvent = events.length - 1;
+				}
 				// Check to see if the next event has already passed.
 				if (events[currentEvent].time <= time) {
 					if (DEBUG) {
