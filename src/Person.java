@@ -1,6 +1,6 @@
 import java.util.Random;
 
-import sun.swing.BakedArrayList;
+import java.util.ArrayList;
 
 /*
  * Person class.
