@@ -148,6 +148,11 @@ public class Controller {
 				// Move the elevator to moveTo
 				ArrayList<Job> jobs = elevators[i].getJobs();
 				jobs.add(new Job(-1, moveTo, -1, time));
+				/*
+				 * Här skulle vi kunna lägga in kod som ser till att den överger
+				 * sin zon om det är så att moveTo ligger utanför den.
+				 * TODO
+				 */
 				building.resetMove(elevators[i].id);
 
 			}
