@@ -81,7 +81,7 @@ public class Person {
 		events[2].time = events[1].time + (int)(0.25 * hour);
 		events[2].floor = workFloor;
 		events[3].time = beginWork + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
-		events[3].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[3].floor = randomFloor(workFloor); // rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[4].time = events[3].time + (int)(0.25 * hour);
 		events[4].floor = workFloor;
 		
@@ -93,11 +93,11 @@ public class Person {
 		
 		// Meetings
 		events[7].time = backFromLunch + (int)(rand.nextDouble() * hour * 2); 
-		events[7].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[7].floor = randomFloor(workFloor); // rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[8].time = events[7].time + (int)(0.25 * hour);
 		events[8].floor = workFloor;
 		events[9].time = backFromLunch + (int)((rand.nextDouble() * hour * 2) + 2 * hour);
-		events[9].floor = rand.nextInt(building.graph.getNumNodes() - 1) + 1;
+		events[9].floor = randomFloor(workFloor); // rand.nextInt(building.graph.getNumNodes() - 1) + 1;
 		events[10].time = events[9].time + (int)(0.25 * hour);
 		events[10].floor = workFloor;
 		
@@ -154,6 +154,10 @@ public class Person {
 	 * @returns: void.
 	 */
 	public void tick(int time) {
+		if (currentEvent >= events.length) {
+			return;
+		}
+		
 		if (status == STATUS_WAITING) {
 			//try { Thread.sleep(5000); } catch (Exception e){}
 			
@@ -170,24 +174,26 @@ public class Person {
 			}
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
-				if(DEBUG) try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
+				//if(DEBUG) try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
 				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
 				if(DEBUG) System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
 
 				currentFloor = nextFloor;
 				currentEvent++;
+				if (DEBUG) System.out.println("Person " + id + " currentEvent: " + currentEvent);
 				// TODO: Det här är ett problem, om currentEvent = events.length så får vi nullpu~uro, men annars får vi ett jobb från 0->0.
 				if (currentEvent >= events.length) {
 					currentEvent = events.length - 1;
-				}
-				// Check to see if the next event has already passed.
-				if (events[currentEvent].time <= time) {
-					if (DEBUG) {
-						System.out.println("Changing time of event " + currentEvent + " from " + events[currentEvent].time + " to " + (time+2));
-					}
-					events[currentEvent].time = time + 2;	// Because why not two? One should be enough though.
 				} else {
-					if (DEBUG) System.out.println("Person " + id + " currentEvent: " + currentEvent);
+					// Check to see if the next event has already passed.
+					if (events[currentEvent].time <= time) {
+						if (DEBUG) {
+							System.out.println("Changing time of event " + currentEvent + " from " + events[currentEvent].time + " to " + (time+2));
+						}
+						events[currentEvent].time = time + 2;	// Because why not two? One should be enough though.
+					} else {
+						if (DEBUG) System.out.println("Person " + id + " currentEvent: " + currentEvent);
+					}
 				}
 				status = STATUS_IDLE;
 			}
@@ -202,7 +208,7 @@ public class Person {
 				controller.requestElevator(currentFloor, events[currentEvent].floor, id, time);
 				nextFloor = events[currentEvent].floor;
 			} else {
-				if (DEBUG) System.out.println("time: " + time + " == " + events[currentEvent].time);
+				if (DEBUG && currentEvent < events.length-1) System.out.println("time: " + time + " == " + events[currentEvent].time);
 			}
 			/*
 			if (time == beginWork) {
@@ -230,7 +236,7 @@ public class Person {
 		}
 		
 		if(DEBUG) {
-			System.out.print("PERSON ("+id+") [s|cf|wf] : [" + status + "|" + currentFloor + "|" + workFloor + "]    ");
+			//System.out.println("PERSON ("+id+") [s|cf|wf] : [" + status + "|" + currentFloor + "|" + workFloor + "]    ");
 		}
 	}
 

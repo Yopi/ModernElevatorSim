@@ -84,6 +84,7 @@ public class Controller {
 			searchBased(from, to, id, time);
 		} else if (ACTIVE_ALGORITHM == ALGORITHM_ZONE) {
 			if (DEBUG) System.out.println("Zone based heuristic.");
+			if (DEBUG) System.out.println("Current zone assignment: " + Arrays.toString(elevatorInZone));
 			zoneBased(from, to, id, time);
 		}
 		return true;
@@ -157,68 +158,53 @@ public class Controller {
 	private void searchTick(int time) {}
 
 	// elevatorInZone[elevator ID] = zone ID
+	// The tick method will assign elevators to zones, make sure no zones are empty 
+	// ZONE SURVEILANCE -- WOOPOP WOOOP ITS THE SOUND OF THE POLICE
 	private void zoneTick(int time) {
 		// Verify that all elevators have zones and are within those zones
 		
-		// Find out which zones are not take
-		ArrayList<Integer> freeZones = originalZones;
+		// Find out which zones are not taken
+		/*ArrayList<Integer> freeZones = originalZones;
 		for(int z : elevatorInZone) {
 			if(z >= 0) {
 				freeZones.remove((Integer)z);
 			}
+		}*/
+		
+		ArrayList<Integer> elevatorsHasZones = new ArrayList<Integer>();
+		boolean[] owns = new boolean[building.graph.getLoops().size()];
+		for(int i = 0; i < building.graph.getLoops().size(); i++) {
+			for(int z = 0; z < elevatorInZone.length; z++) {
+				int zone = elevatorInZone[z];
+				if(zone == i) { // There is an elevator that OWNS in this zone (i)
+					elevatorsHasZones.add(z);
+					// Check if elevator z is in their zone
+					owns[i] = true;
+				}
+			}
 		}
-		for (int i = 0; i < elevators.length; i++) {
-			Elevator e = elevators[i];
-			int next = e.getNextNode();
-			if(elevatorInZone[e.id] == -1) {
-				if(freeZones.isEmpty()) {
-					// This should not happen :-P
-					System.err.println("You have too many elevators for ye zones"); 
-					break; 
-				}
-
-				// We must get them a zone
-				if(e.getJobs().size() == 0) {
-					// Assign the first free zone to them
-					elevatorInZone[e.id] = freeZones.get(0);
-					freeZones.remove(0);
-				}
-			}
 			
-			
-			// Make sure elevator is in their zone
-			boolean inLoop = false;
-			for(int n : building.graph.getLoops().get(elevatorInZone[e.id])) {
-				if(next == n) {
-					inLoop = true;
+		for(int i = 0; i < building.graph.getLoops().size(); i++) {
+			int[] nodesInZone = building.graph.getLoops().get(i);
+			if (!owns[i]) {
+				ArrayList<Elevator> elevatorToUse = new ArrayList<Elevator>();
+				// Check all idle elevators
+				for(Elevator e : elevators) {
+					if(e.idle && e.jobs.isEmpty() && !elevatorsHasZones.contains(e.id)) {
+						elevatorToUse.add(e);
+					}
 				}
-			}
-			
-			if(!inLoop) {
-				if(true) return;
-				// Find out closest node in zone
-				HashMap<Integer, Integer> nodeFreq = new HashMap<Integer, Integer>();
-				for(int z : building.graph.getLoops().get(elevatorInZone[e.id])) {
-					int nextPath = building.getNextNodeInPath(e.nextNode, z);
-					int freq = nodeFreq.get(nextPath);
-					nodeFreq.put(nextPath, freq + 1);
-				}
-				Comparator<Map.Entry<Integer, Integer>> comparator =
-					new Comparator<Map.Entry<Integer, Integer>>() {
-						public int compare(
-							Map.Entry<Integer, Integer> e1, Map.Entry<Integer, Integer> e2) {
-					      return e1.getValue().compareTo(e2.getValue());
-					    }
-					};
-				int goTo = Collections.max(nodeFreq.entrySet(), comparator).getKey();
 				
-				// Go there
-				e.addJob(-1, goTo, -1, time);
+				if(elevatorToUse.isEmpty()) return;
+				
+				int to = nodesInZone[0];
+				int assigned = searchBased(-1, to, -1, elevatorToUse.toArray(new Elevator[elevatorToUse.size()]), time);
+				elevatorInZone[assigned] = i;
+				elevatorsHasZones.add((Integer)assigned);
+				if (DEBUG) System.out.println("Elevator " + assigned + " was assigned to zone " + i);
 			}
 		}
-	}
-	
-	
+	}	
 	
 	
 	/**
@@ -234,7 +220,11 @@ public class Controller {
 		searchBased(from, to, id, elevators, time);
 	}
 	
-	private void searchBased(int from, int to, int id, Elevator[] elevators, int time) {
+	/**
+	 * 
+	 * @return the elevator ID of the assigned elevator
+	 */
+	private int searchBased(int from, int to, int id, Elevator[] elevators, int time) {
 		/*
 		 * Look for the difference in distance for all elevators
 		 * for their jobs if they get the new job. 
@@ -318,7 +308,12 @@ public class Controller {
 				// The elevator has no active jobs.
 				int dist = 0;
 				int next = elevators[i].getNextNode();
-				int target = from;
+				int target;
+				if (from < 0) {
+					target = to;
+				} else {
+					target = from;
+				}
 				while (next != target) {
 					int tmp = next;
 					next = building.getNextNodeInPath(next, target);
@@ -337,6 +332,8 @@ public class Controller {
 		jobs.add(job);
 		jobs = minimizeTravel(jobs, null, elevators[mindex].id, 0);
 		elevators[mindex].setJobs(jobs);
+		
+		return elevators[mindex].id;
 	}
 	
 	/**
@@ -352,51 +349,30 @@ public class Controller {
 	private void zoneBased(int from, int to, int id, int time) {
 		// Find out if person wants to go from/to one single zone
 
-		// Approach 1 : Not hard coding zones.
-		boolean halfInZone = false;
-		ArrayList<Integer> fullyInZone = new ArrayList<Integer>();
+		// Get all the zones that this person is going from
+		ArrayList<Integer> InZone = new ArrayList<Integer>();
 		for (int i = 0; i < building.graph.getLoops().size(); i++) {
-			halfInZone = false;
 			int[] zone = building.graph.getLoops().get(i);
 			for (int z : zone) {
-				if ((z == from || z == to) && halfInZone) {
-					fullyInZone.add(i);
-					break;
-				}
-
 				if (z == from) {
-					halfInZone = true;
-				} else if (z == to) {
-					halfInZone = true;
+					InZone.add(i);
 				}
 			}
 		}
 
-		// If not, get the zone they're going from
-		if (fullyInZone.isEmpty()) {
+		// This node did not belong to any zones
+		// Just add all of the zones
+		if (InZone.isEmpty()) {
 			for (int i = 0; i < building.graph.getLoops().size(); i++) {
-				int[] zone = building.graph.getLoops().get(i);
-				for (int z : zone) {
-					if (z == from) {
-						fullyInZone.add(i);
-						break;
-					}
-				}
+				InZone.add(i);
 			}
 		}
 
-		if (fullyInZone.isEmpty()) {
-			for (int i = 0; i < building.graph.getLoops().size(); i++) {
-				System.out.println(i);
-				fullyInZone.add(i);
-			}
-		}
-		System.out.println("- " + fullyInZone.toString());
 		// Check which elevators are assigned to the zones
 		// elevatorInZone[elevator ID] = zone ID
 		int elevatorID = -1;
 		ArrayList<Elevator> elevatorToUse = new ArrayList<Elevator>();
-		for (int i : fullyInZone) { // i == zone
+		for (int i : InZone) { // i == zone
 			for (int z = 0; z < elevatorInZone.length; z++) {
 				if (elevatorInZone[z] == i) {
 					elevatorToUse.add(elevators[z]);
@@ -405,14 +381,15 @@ public class Controller {
 		}
 
 		// If no elevator is in a good place
+		// take all of the elevators
 		if (elevatorToUse.isEmpty()) {
 			for (Elevator e : elevators) {
 				elevatorToUse.add(e);
 			}
 		}
-		System.out.println(elevatorToUse.toString());
-		System.out.println(Arrays.toString(elevatorInZone));
-		searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()]), time) ;
+
+		int assigned = searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()]), time) ;
+		elevatorInZone[assigned] = -1;
 	}
 	
 	/*
