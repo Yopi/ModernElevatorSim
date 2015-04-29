@@ -16,7 +16,7 @@ import java.util.Random;
 
 class Debug {
 	public boolean Building = false;
-	public boolean Controller = false;
+	public boolean Controller = true;
 	public boolean Elevator = false;
 	public boolean Graph = false;
 	public boolean Meeting = false;
@@ -58,7 +58,7 @@ public class Simulator {
 		building = new Building(graph, numPersons, numElevators);
 		elevators = new Elevator[numElevators];
 		for (int i = 0; i < elevators.length; i++) {
-			elevators[i] = new Elevator(i, building, i, second);
+			elevators[i] = new Elevator(i*3, building, i, second);
 		}
 		
 		controller = new Controller(elevators, building, algorithm);
@@ -73,7 +73,7 @@ public class Simulator {
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
 		int limit = ((int)hour * hours) + ((int)hour * 24);
-		time = (int)(8 * hour); 
+		time = (int)(7 * hour);
 		for (; time < limit; time++) {
 			int localTime = time % (int)(hour * 24);
 			//System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
@@ -83,7 +83,7 @@ public class Simulator {
 			for(Person p : persons) { p.tick(localTime); }
 
 			
-			//try { Thread.sleep(1900); } catch (Exception e) {}
+			try { Thread.sleep(0); } catch (Exception e) {}
 			
 		}
 
@@ -94,7 +94,7 @@ public class Simulator {
 	}
 	
 	public static void main(String[] args) {
-		for(int e = 1; e < 8; e++) {
+		/*for(int e = 1; e < 8; e++) {
 			long startTime = System.currentTimeMillis();
 			for(int i = 0; i < days; i++) {
 				new Simulator("args[0]", 100, e, ALGORITHM_SEARCH);
@@ -103,7 +103,13 @@ public class Simulator {
 			System.out.println((endTime - startTime) + "ms");
 			System.out.println("Nu är " + e + " DONE");
 			try { Thread.sleep(5000); } catch (Exception fail) {}
-		}
+		}*/
+
+		// Testing
+		long startTime = System.currentTimeMillis();
+		new Simulator("args[0]", 2, 2, ALGORITHM_ZONE, 1);
+		long endTime = System.currentTimeMillis();
+		System.out.println((endTime - startTime) + "ms");
 	}
 	
 	/*
@@ -141,7 +147,8 @@ public class Simulator {
 		graph.addEdge(6, 7, 3);
 		graph.addEdge(6, 1, 2);
 		graph.addEdge(7, 0, 2);
-		
+
+		//graph.addLoop(new int[]{0, 1, 2, 3, 4, 5, 6, 7});
 		graph.addLoop(new int[]{0, 1, 2, 5, 6, 7});
 		graph.addLoop(new int[]{1, 2, 3, 4, 5, 6});
 		graph.addLoop(new int[]{1, 2, 5, 6});
