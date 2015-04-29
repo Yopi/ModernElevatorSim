@@ -351,42 +351,42 @@ public class Controller {
 	 */
 	private void zoneBased(int from, int to, int id, int time) {
 		// Find out if person wants to go from/to one single zone
-		
+
 		// Approach 1 : Not hard coding zones.
 		boolean halfInZone = false;
 		ArrayList<Integer> fullyInZone = new ArrayList<Integer>();
-		for(int i = 0; i < building.graph.getLoops().size(); i++) {
+		for (int i = 0; i < building.graph.getLoops().size(); i++) {
 			halfInZone = false;
 			int[] zone = building.graph.getLoops().get(i);
-			for(int z : zone) {
-				if((z == from || z == to) && halfInZone) {
+			for (int z : zone) {
+				if ((z == from || z == to) && halfInZone) {
 					fullyInZone.add(i);
 					break;
 				}
 
-				if(z == from) {
+				if (z == from) {
 					halfInZone = true;
-				} else if(z == to) {
+				} else if (z == to) {
 					halfInZone = true;
 				}
 			}
 		}
 
 		// If not, get the zone they're going from
-		if(fullyInZone.isEmpty()) {
-			for(int i = 0; i < building.graph.getLoops().size(); i++) {
+		if (fullyInZone.isEmpty()) {
+			for (int i = 0; i < building.graph.getLoops().size(); i++) {
 				int[] zone = building.graph.getLoops().get(i);
-				for(int z : zone) {
-					if(z == from) {
+				for (int z : zone) {
+					if (z == from) {
 						fullyInZone.add(i);
 						break;
 					}
 				}
 			}
 		}
-		
-		if(fullyInZone.isEmpty()) {
-			for(int i = 0; i < building.graph.getLoops().size(); i++) {
+
+		if (fullyInZone.isEmpty()) {
+			for (int i = 0; i < building.graph.getLoops().size(); i++) {
 				System.out.println(i);
 				fullyInZone.add(i);
 			}
@@ -396,19 +396,20 @@ public class Controller {
 		// elevatorInZone[elevator ID] = zone ID
 		int elevatorID = -1;
 		ArrayList<Elevator> elevatorToUse = new ArrayList<Elevator>();
-		for(int i : fullyInZone) { // i == zone
-			for(int z = 0; z < elevatorInZone.length; z++) {
-				if(elevatorInZone[z] == i) {
+		for (int i : fullyInZone) { // i == zone
+			for (int z = 0; z < elevatorInZone.length; z++) {
+				if (elevatorInZone[z] == i) {
 					elevatorToUse.add(elevators[z]);
 				}
 			}
 		}
 
 		// If no elevator is in a good place
-		for(Elevator e : elevators) {
-			elevatorToUse.add(e);
+		if (elevatorToUse.isEmpty()) {
+			for (Elevator e : elevators) {
+				elevatorToUse.add(e);
+			}
 		}
-
 		System.out.println(elevatorToUse.toString());
 		System.out.println(Arrays.toString(elevatorInZone));
 		searchBased(from, to, id, elevatorToUse.toArray(new Elevator[elevatorToUse.size()]), time) ;
