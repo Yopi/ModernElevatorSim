@@ -94,7 +94,7 @@ public class Statistics {
 	public void checkCounter() {
 		counter++;
 		if(counter > 50) {
-			System.err.println("Writing to the log");
+			//System.err.println("Writing to the log");
 			try {
 				db.exec("COMMIT");
 			} catch(Exception e){}
