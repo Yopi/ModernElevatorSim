@@ -54,7 +54,7 @@ public class Controller {
 		this.elevators = elevators;
 		this.building = building;
 		ACTIVE_ALGORITHM = algorithm;
-		elevatorInZone = new int[building.graph.getLoops().size()];
+		elevatorInZone = new int[elevators.length];
 		for(int i = 0; i < elevatorInZone.length; i++) { elevatorInZone[i] = -1;  }
 		for(int i = 0; i < building.graph.getLoops().size(); i++) { originalZones.add(i); }
 		if(DEBUG) System.out.println("Elevators: " + Arrays.toString(elevators));

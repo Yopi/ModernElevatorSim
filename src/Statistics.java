@@ -93,7 +93,7 @@ public class Statistics {
 	
 	public void checkCounter() {
 		counter++;
-		if(counter > 50) {
+		if(counter > 500) {
 			//System.err.println("Writing to the log");
 			try {
 				db.exec("COMMIT");
