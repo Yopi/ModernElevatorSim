@@ -110,7 +110,8 @@ public class Simulator {
 	public static void main(String[] args) {
 		int[] maxNumElevators = new int[]{8, 24, 28};
 		for(int graph = 1; graph < 4; graph++) {
-			for(int algorithm = ALGORITHM_NC; algorithm <= ALGORITHM_SEARCH; algorithm++) {
+			int algorithm = ALGORITHM_SEARCH;
+			//for(int algorithm = ALGORITHM_NC; algorithm <= ALGORITHM_SEARCH; algorithm++) {
 				for (int e = 1; e < maxNumElevators[graph - 1]; e++) {
 					DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
 					Date d = new Date();
@@ -127,7 +128,7 @@ public class Simulator {
 						Thread.sleep(5000);
 					} catch (Exception fail) {}
 				}
-			}
+			//}
 		}
 	}
 	

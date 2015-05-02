@@ -335,7 +335,7 @@ public class Controller {
 				}
 			}
 		}
-		System.out.println(Arrays.toString(elevators));
+		//System.out.println(Arrays.toString(elevators));
 		ArrayList<Job> jobs = elevators[mindex].getJobs();
 		jobs.add(job);
 		jobs = minimizeTravel(jobs, null, elevators[mindex].id, 0);
