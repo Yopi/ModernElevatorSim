@@ -123,38 +123,41 @@ public class Controller {
 			moving = building.elevatorMovedBy(elevators[i].id);
 			if (moving >= 0) {
 				if(DEBUG) System.out.println("elevator " + elevators[i].id + " was asked to move by elevator " + moving);
-				neighbors = building.getNodeNeighbours(elevators[i].getNextNode());
-				if (elevators[moving].getJobs().size() == 0) {
-					building.resetMove(elevators[i].id);
-					continue;
-				}
-	
-				for (int j = 0; j < neighbors.size(); j++) {
-					if (elevators[moving].getJobs().get(0).from >= 0) {
-						if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).from) != neighbors.get(j)) {
-							moveTo = neighbors.get(j);
-							break;
-						}
-					} else {
-						if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).to) != neighbors.get(j)) {
-							moveTo = neighbors.get(j);
-							break;
+				if(ACTIVE_ALGORITHM == ALGORITHM_ZONE && elevatorInZone[elevators[i].id] >= 0) {
+					int firstNodeInZone = building.graph.getLoops().get(elevatorInZone[elevators[i].id])[0];
+					if(firstNodeInZone == elevators[i].nextNode)
+						firstNodeInZone = building.graph.getLoops().get(elevatorInZone[elevators[i].id])[1];
+
+					moveTo = building.getNextNodeInPath(elevators[i].nextNode, firstNodeInZone);
+				} else {
+					neighbors = building.getNodeNeighbours(elevators[i].getNextNode());
+					if (elevators[moving].getJobs().size() == 0) {
+						building.resetMove(elevators[i].id);
+						continue;
+					}
+
+					for (int j = 0; j < neighbors.size(); j++) {
+						if (elevators[moving].getJobs().get(0).from >= 0) {
+							if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).from) != neighbors.get(j)) {
+								moveTo = neighbors.get(j);
+								break;
+							}
+						} else {
+							if (building.getNextNodeInPath(elevators[i].nextNode, elevators[moving].getJobs().get(0).to) != neighbors.get(j)) {
+								moveTo = neighbors.get(j);
+								break;
+							}
 						}
 					}
-				}
-				if (moveTo < 0) {
-					moveTo = neighbors.get(0);
+					if (moveTo < 0) {
+						moveTo = neighbors.get(0);
+					}
 				}
 				// Move the elevator to moveTo
 				ArrayList<Job> jobs = elevators[i].getJobs();
 				jobs.add(new Job(-1, moveTo, -1, time));
-				/*
-				 * Här skulle vi kunna lägga in kod som ser till att den överger
-				 * sin zon om det är så att moveTo ligger utanför den.
-				 * TODO
-				 */
-				building.resetMove(elevators[i].id);
 
+				building.resetMove(elevators[i].id);
 			}
 		}
 	}

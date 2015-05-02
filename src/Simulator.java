@@ -77,7 +77,7 @@ public class Simulator {
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
 		int limit = ((int)hour * hours) + ((int)hour * 24);
-		time = (int)(7 * hour) + 3000;
+		time = (int)(7 * hour);
 		for (; time < limit; time++) {
 			int localTime = time % (int)(hour * 24);
 			//System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
@@ -87,8 +87,7 @@ public class Simulator {
 			for(Person p : persons) { p.tick(localTime); }
 
 			
-			try { Thread.sleep(100); } catch (Exception e) {}
-			
+			try { Thread.sleep(1); } catch (Exception e) {}
 		}
 
 		try {
