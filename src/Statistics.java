@@ -10,6 +10,7 @@ import com.almworks.sqlite4java.*;
 public class Statistics {
 	SQLiteConnection db;
 	double second;
+	double hour;
 	int algorithmID;
 	int counter;
 	int numPeople;
@@ -18,19 +19,21 @@ public class Statistics {
 	public Statistics(String dbPath, double second, int algorithm, int numPeople, int numElevators) {
 		counter = 0;
 		this.second = second;
+		this.hour = second*3600;
 		this.numPeople = numPeople;
 		this.numElevators = numElevators;
 		algorithmID = algorithm;
 		
 		File dbFile = new File(dbPath);
-		boolean newDB = (dbFile.exists()) ? false : true; 
+		boolean newDB = (dbFile.exists()) ? false : true;
+		java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.OFF);
 		db = new SQLiteConnection(dbFile);
-		try {	
+		try {
 			db.open(true);
 			if(newDB) {
 				System.out.println("Creating new DB");
 				db.exec("BEGIN TRANSACTION");
-				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, algorithm_id INTEGER, num_elevators INTEGER, num_people INTEGER, person_id INTEGER, type VARCHAR(255), duration REAL, distance INTEGER, from_node INTEGER, to_node INTEGER)");
+				db.exec("CREATE TABLE statistics (id INTEGER PRIMARY KEY AUTOINCREMENT, algorithm_id INTEGER, timestamp TEXT, num_elevators INTEGER, num_people INTEGER, person_id INTEGER, type VARCHAR(255), duration REAL, distance INTEGER, from_node INTEGER, to_node INTEGER)");
 				db.exec("COMMIT");
 			}
 
@@ -40,17 +43,19 @@ public class Statistics {
 		}
 	}
 	
-	public void addWaitingTime(int personID, int ticksDuration) {
+	public void addWaitingTime(int personID, int ticksDuration, int time) {
 		checkCounter();
 		SQLiteStatement st = null;
+		String timestamp = getTimestamp(time);
 		try {
-			st = db.prepare("INSERT INTO statistics (person_id, algorithm_id, num_elevators, num_people, type, duration) VALUES (?, ?, ?, ?, ?, ?)");
+			st = db.prepare("INSERT INTO statistics (person_id, algorithm_id, timestamp, num_elevators, num_people, type, duration) VALUES (?, ?, ?, ?, ?, ?, ?)");
 			st.bind(1, personID);
 			st.bind(2, algorithmID);
-			st.bind(3, numElevators);
-			st.bind(4, numPeople);
-			st.bind(5, "wait");
-			st.bind(6, ticksDuration * second);
+			st.bind(3, timestamp);
+			st.bind(4, numElevators);
+			st.bind(5, numPeople);
+			st.bind(6, "wait");
+			st.bind(7, ticksDuration * second);
 			st.stepThrough();
 		} catch (SQLiteException e) {
 			e.printStackTrace();
@@ -59,20 +64,22 @@ public class Statistics {
 		}
 	}
 	
-	public void addTravelTime(int personID, int ticksDuration, int distance, int from, int to) {
+	public void addTravelTime(int personID, int ticksDuration, int distance, int from, int to, int time) {
 		checkCounter();
 		SQLiteStatement st = null;
+		String timestamp = getTimestamp(time);
 		try {
-			st = db.prepare("INSERT INTO statistics (person_id, algorithm_id, num_elevators, num_people, type, duration, distance, from_node, to_node) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			st = db.prepare("INSERT INTO statistics (person_id, algorithm_id, timestamp, num_elevators, num_people, type, duration, distance, from_node, to_node) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 			st.bind(1, personID);
 			st.bind(2, algorithmID);
-			st.bind(3, numElevators);
-			st.bind(4, numPeople);
-			st.bind(5, "travel");
-			st.bind(6, ticksDuration * second);
-			st.bind(7, distance);
-			st.bind(8, from);
-			st.bind(9, to);
+			st.bind(3, timestamp);
+			st.bind(4, numElevators);
+			st.bind(5, numPeople);
+			st.bind(6, "travel");
+			st.bind(7, ticksDuration * second);
+			st.bind(8, distance);
+			st.bind(9, from);
+			st.bind(10, to);
 			st.stepThrough();
 		} catch (SQLiteException e) {
 			e.printStackTrace();
@@ -91,5 +98,32 @@ public class Statistics {
 			} catch(Exception e){}
 			counter = 0;
 		}
+	}
+
+	private String getTimestamp(int time) {
+		//  (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60))
+		// hour : minutes : second
+
+		StringBuilder sb = new StringBuilder();
+		int hours = (int)(time / (hour));
+		if (hours < 10) {
+			sb.append("0");
+		}
+		sb.append(hours);
+		sb.append(":");
+		int minutes = (int)(((time / hour) * 60) % 60);
+		if (minutes < 10) {
+			sb.append("0");
+		}
+		sb.append(minutes);
+		sb.append(":");
+
+		int seconds = (int)(time % 60);
+		if (seconds < 10) {
+			sb.append("0");
+		}
+		sb.append(seconds);
+
+		return sb.toString();
 	}
 }

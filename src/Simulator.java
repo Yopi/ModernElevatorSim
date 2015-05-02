@@ -16,11 +16,11 @@ import java.util.Random;
 
 class Debug {
 	public boolean Building = false;
-	public boolean Controller = true;
-	public boolean Elevator = true;
+	public boolean Controller = false;
+	public boolean Elevator = false;
 	public boolean Graph = false;
 	public boolean Meeting = false;
-	public boolean Person = true;
+	public boolean Person = false;
 }
 
 public class Simulator {
@@ -95,24 +95,28 @@ public class Simulator {
 		} catch (Exception e) {}
 		stats.db.dispose();
 	}
-	
-	public static void main(String[] args) {
-		/*for(int e = 1; e < 8; e++) {
-			long startTime = System.currentTimeMillis();
-			for(int i = 0; i < days; i++) {
-				new Simulator("args[0]", 100, e, ALGORITHM_SEARCH);
-			}
-			long endTime = System.currentTimeMillis();
-			System.out.println((endTime - startTime) + "ms");
-			System.out.println("Nu är " + e + " DONE");
-			try { Thread.sleep(5000); } catch (Exception fail) {}
-		}*/
 
-		// Testing
-		long startTime = System.currentTimeMillis();
-		new Simulator("args[0]", 2, 2, ALGORITHM_ZONE, 3);
-		long endTime = System.currentTimeMillis();
-		System.out.println((endTime - startTime) + "ms");
+
+	public static void main(String[] args) {
+		int[] maxNumElevators = new int[]{8, 24, 28};
+		for(int graph = 1; graph < 4; graph++) {
+			for(int algorithm = ALGORITHM_NC; algorithm <= ALGORITHM_SEARCH; algorithm++) {
+				for (int e = 1; e < maxNumElevators[graph - 1]; e++) {
+					System.out.println("Running (elevators: " + e + ") (algorithm: " + algorithm + ") " + "(graph: " + graph + ")");
+					long startTime = System.currentTimeMillis();
+					for (int i = 0; i < days; i++) {
+						new Simulator("args[0]", 100, e, algorithm, graph);
+					}
+					long endTime = System.currentTimeMillis();
+					System.out.println((endTime - startTime) + "ms");
+					System.out.println("Nu är " + e + " DONE");
+					try {
+						Thread.sleep(5000);
+					} catch (Exception fail) {
+					}
+				}
+			}
+		}
 	}
 	
 	/*

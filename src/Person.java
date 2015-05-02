@@ -162,7 +162,7 @@ public class Person {
 			//try { Thread.sleep(5000); } catch (Exception e){}
 			
 			if(building.isInElevator(id)) {
-				stats.addWaitingTime(id, (time - startTime));
+				stats.addWaitingTime(id, (time - startTime), time);
 				startTime = time;
 				status = STATUS_ELEVATORING;
 			} else {
@@ -175,7 +175,7 @@ public class Person {
 		} else if (status == STATUS_ELEVATORING) {
 			if(!building.isInElevator(id)) {
 				//if(DEBUG) try { Thread.sleep(5000); } catch (Exception e) { System.err.println(e); System.exit(-1); }
-				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor);
+				stats.addTravelTime(id, (time - startTime), building.getPersonDistance(id), currentFloor, nextFloor, time);
 				if(DEBUG) System.out.println("Person " + id + " has gone from floor " + currentFloor + " -> " + nextFloor);
 
 				currentFloor = nextFloor;
