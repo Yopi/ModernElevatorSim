@@ -23,12 +23,14 @@ public class Statistics {
 		this.numPeople = numPeople;
 		this.numElevators = numElevators;
 		algorithmID = algorithm;
-		
+
+		java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.OFF);
+
 		File dbFile = new File(dbPath);
 		boolean newDB = (dbFile.exists()) ? false : true;
-		java.util.logging.Logger.getLogger("com.almworks.sqlite4java").setLevel(java.util.logging.Level.OFF);
 		db = new SQLiteConnection(dbFile);
 		try {
+		//	db.setBusyTimeout(800);
 			db.open(true);
 			if(newDB) {
 				System.out.println("Creating new DB");
@@ -37,7 +39,7 @@ public class Statistics {
 				db.exec("COMMIT");
 			}
 
-			db.exec("BEGIN");
+			//db.exec("BEGIN");
 		} catch(SQLiteException e) {
 			System.err.println("Could not connect to the database");
 		}
@@ -81,6 +83,7 @@ public class Statistics {
 			st.bind(9, from);
 			st.bind(10, to);
 			st.stepThrough();
+
 		} catch (SQLiteException e) {
 			e.printStackTrace();
 		} finally {
@@ -90,10 +93,13 @@ public class Statistics {
 	
 	public void checkCounter() {
 		counter++;
-		if(counter > 8000) {
-			System.err.println("Writing to the mothafuken log");
+		if(counter > 50) {
+			System.err.println("Writing to the log");
 			try {
 				db.exec("COMMIT");
+			} catch(Exception e){}
+
+			try {
 				db.exec("BEGIN");
 			} catch(Exception e){}
 			counter = 0;

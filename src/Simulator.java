@@ -80,23 +80,29 @@ public class Simulator {
 		/*
 		 * When the building, elevators and persons are created it is time to start ticking.
 		 */
-		int limit = ((int)hour * hours) + ((int)hour * 24);
+
+
+		int limit = ((int)hour * hours) + ((int)hour * 48);
 		time = (int)(7 * hour);
+
+		try {
+			stats.db.exec("BEGIN");
+		} catch (Exception e) {}
+
+
 		for (; time < limit; time++) {
-			int localTime = time % (int)(hour * 24);
+			int localTime = time % (int)(hour * 48);
 			//System.out.println("The time is: " + (int)(localTime/hour) + ":" + (int)(localTime/hour * 60 % 60) + ":" + (int)(localTime/hour * 3600 % 60));
 			controller.tick(localTime);
 			
 			for(Elevator e : elevators) { e.tick(localTime); }
 			for(Person p : persons) { p.tick(localTime); }
-
-			
-			try { Thread.sleep(1); } catch (Exception e) {}
 		}
 
 		try {
 			stats.db.exec("COMMIT");
 		} catch (Exception e) {}
+
 		stats.db.dispose();
 	}
 
@@ -111,6 +117,7 @@ public class Simulator {
 					System.out.println("(" + dateFormat.format(d) + ") " + "Running (elevators: " + e + ") (algorithm: " + algorithm + ") " + "(graph: " + graph + ")");
 					long startTime = System.currentTimeMillis();
 					for (int i = 0; i < days; i++) {
+						System.out.println("Day: " + i);
 						new Simulator("args[0]", 100, e, algorithm, graph);
 					}
 					long endTime = System.currentTimeMillis();
@@ -118,8 +125,7 @@ public class Simulator {
 					System.out.println("Nu är " + e + " DONE");
 					try {
 						Thread.sleep(5000);
-					} catch (Exception fail) {
-					}
+					} catch (Exception fail) {}
 				}
 			}
 		}
