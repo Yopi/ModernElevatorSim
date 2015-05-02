@@ -12,7 +12,11 @@
  * Authors: Viktor Björkholm & Jesper Bränn
  * Date: 2015-03-26
  */
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
+
 
 class Debug {
 	public boolean Building = false;
@@ -102,7 +106,9 @@ public class Simulator {
 		for(int graph = 1; graph < 4; graph++) {
 			for(int algorithm = ALGORITHM_NC; algorithm <= ALGORITHM_SEARCH; algorithm++) {
 				for (int e = 1; e < maxNumElevators[graph - 1]; e++) {
-					System.out.println("Running (elevators: " + e + ") (algorithm: " + algorithm + ") " + "(graph: " + graph + ")");
+					DateFormat dateFormat = new SimpleDateFormat("HH:mm:ss");
+					Date d = new Date();
+					System.out.println("(" + dateFormat.format(d) + ") " + "Running (elevators: " + e + ") (algorithm: " + algorithm + ") " + "(graph: " + graph + ")");
 					long startTime = System.currentTimeMillis();
 					for (int i = 0; i < days; i++) {
 						new Simulator("args[0]", 100, e, algorithm, graph);
